@@ -134,6 +134,11 @@ $result = null;
 $error = null;
 $code = '';
 
+$getCode = strtoupper(trim((string)($_GET['code'] ?? '')));
+if ($getCode !== '' && preg_match('/^[A-Z0-9-]{4,64}$/', $getCode)) {
+    $code = $getCode;
+}
+
 mmStartSecureSession();
 $_SESSION['mm_verify_attempts'] ??= [];
 $now = time();
