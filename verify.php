@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-mmHeader($c['title'], $c['lead']);
+mmHeader($c['title'], $c['lead'], in_array($verifyLang, ['tr','ar'], true) ? 'noindex,follow' : 'index,follow', $verifyLang);
 $rtl = $verifyLang === 'ar';
 ?>
 <section class="hero">
