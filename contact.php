@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
 
             $requestId = (int)$pdo->lastInsertId();
-            mmSendContactNotification(
+            $notificationSent = mmSendContactNotification(
                 $requestId,
                 $typeLabels[$type],
                 $name,
@@ -150,6 +150,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $subject,
                 $message
             );
+
+            $notificationStmt = $pdo->prepare(
+                $notificationSent
+                    ? 'UPDATE contact_requests SET notification_sent_at = NOW(), notification_failed_at = NULL WHERE id = :id'
+                    : 'UPDATE contact_requests SET notification_failed_at = NOW() WHERE id = :id'
+            );
+            $notificationStmt->execute(['id' => $requestId]);
 
             $success = true;
             $_SESSION['mm_csrf'] = bin2hex(random_bytes(24));
