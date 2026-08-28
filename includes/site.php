@@ -117,7 +117,7 @@ function mmFooter(): void
             <div class="footer-links">
                 <a href="<?= mmEscape(mmLangUrl('/legal-notice.php')) ?>"><?= mmEscape(mmT('footer.imprint', 'Impressum')) ?></a>
                 <a href="<?= mmEscape(mmLangUrl('/privacy.php')) ?>"><?= mmEscape(mmT('footer.privacy', 'Datenschutz')) ?></a>
-                <button type="button" class="link-button" data-cookie-settings><?= mmEscape(mmT('footer.cookies', 'Cookie-Einstellungen')) ?></button>
+                <a class="link-button" data-cookie-settings href="<?= mmEscape(mmLangUrl('/privacy.php')) ?>#cookies"><?= mmEscape(mmT('footer.cookies', 'Cookie-Einstellungen')) ?></a>
             </div>
         </div>
     </div>
