@@ -3,13 +3,14 @@
 Public website for MysteryMarket operational audit and field services.
 
 ## Positioning
-MysteryMarket represents active audit and field-service work. It is not a shopper marketplace.
+MysteryMarket represents active audit and field-service work for agencies and direct clients. The public positioning is operational execution and fieldwork, not full-service agency evaluation/reporting.
 
 Public areas:
 - Services
 - Current Audits
 - Verify
-- INSODEMA operational tools
+- OPS
+- Elite Shopper Partners
 - About
 - Contact
 - Legal Notice
@@ -19,25 +20,41 @@ Public areas:
 - PHP 8.5
 - MariaDB
 - Production: mysterymarket.de
-- Root: /var/www/vhosts/mysterymarket.de
+- Document root: /var/www/vhosts/mysterymarket.de/httpdocs
 - Plesk user: mysterymarket.de
+
+## Production safety
+
+Only operate inside the MysteryMarket document root:
+
+```text
+/var/www/vhosts/mysterymarket.de/httpdocs
+```
+
+Do not recursively lint, chown, chmod or otherwise modify:
+
+```text
+/var/www/vhosts/mysterymarket.de
+```
+
+The vhost contains separate subdomains/applications that are outside the MysteryMarket website scope.
 
 ## First server setup
 
 ```bash
-cd /var/www/vhosts/mysterymarket.de
+cd /var/www/vhosts/mysterymarket.de/httpdocs
 cp config/local.example.php config/local.php
-# edit verified legal + DB values
-mysql -u <user> -p <database> < database/schema.sql
+# edit verified legal + DB/mail values
+mariadb -u <user> -p <database> < database/schema.sql
 /opt/plesk/php/8.5/bin/php scripts/preflight.php
 ```
 
-After deployment from a root shell, restore Plesk ownership:
+For PHP linting, prefer tracked project files only:
 
 ```bash
-chown -R mysterymarket.de:psacln /var/www/vhosts/mysterymarket.de
-find /var/www/vhosts/mysterymarket.de -type d -exec chmod 755 {} \;
-find /var/www/vhosts/mysterymarket.de -type f -exec chmod 644 {} \;
+cd /var/www/vhosts/mysterymarket.de/httpdocs
+PHP=/opt/plesk/php/8.5/bin/php
+git ls-files '*.php' -z | xargs -0 -n1 "$PHP" -l
 ```
 
 Keep `config/local.php` server-local and out of Git.
