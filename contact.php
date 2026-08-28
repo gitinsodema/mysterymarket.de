@@ -7,7 +7,7 @@ require_once __DIR__ . '/includes/db.php';
 $types = [
     'client' => 'Kunde / Auftraggeber',
     'agency' => 'Agentur / Audit Partner',
-    'shopper' => 'Shopper / Auditor',
+    'elite_shopper' => 'Elite Shopper / Auditor',
     'other' => 'Andere Anfrage',
 ];
 
@@ -126,17 +126,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-mmHeader('Kontakt', 'Kontakt zu MysteryMarket für Kunden, Agenturen, Shopper und andere Anfragen.');
+mmHeader('Kontakt', 'Kontakt zu MysteryMarket für Kunden, Agenturen und Elite Shopper Partner.');
 ?>
 <section class="hero">
   <div>
     <p class="eyebrow">Kontakt</p>
-    <h1>Projekt, Partnerschaft oder Anfrage.</h1>
-    <p class="lead">Agenturen und Auftraggeber erreichen MysteryMarket direkt. Shopper- und Auditor-Anfragen werden getrennt erfasst.</p>
+    <h1>Projekt, Agenturpartnerschaft oder Elite Shopper.</h1>
+    <p class="lead">Wählen Sie den passenden Einstieg. Formularanfragen werden intern gesammelt und zentral bearbeitet.</p>
   </div>
   <div class="contact-channels">
-    <div><span>Allgemein</span><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a></div>
-    <div><span>Agenturen & Partnerschaften</span><a href="mailto:partners@mysterymarket.de">partners@mysterymarket.de</a></div>
+    <div><span>Allgemeine Anfragen</span><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a></div>
+    <div><span>Agenturen & Audit Partner</span><a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a></div>
+    <div><span>Elite Shopper Partner</span><a href="mailto:eliteshopper@mysterymarket.de">eliteshopper@mysterymarket.de</a><small>Für erfahrene Shopper und Auditoren, die regelmäßig und zuverlässig arbeiten.</small></div>
   </div>
 </section>
 
@@ -145,7 +146,7 @@ mmHeader('Kontakt', 'Kontakt zu MysteryMarket für Kunden, Agenturen, Shopper un
 <div class="form-intro">
   <p class="eyebrow">Kontaktformular</p>
   <h2>Ihre Anfrage</h2>
-  <p>Das Formular wird für die strukturierte Bearbeitung über unsere interne Datenbank erfasst. Allgemeine Rückfragen beantworten wir über hello@mysterymarket.de.</p>
+  <p>Alle Formularanfragen werden strukturiert gespeichert und intern an die zuständige Bearbeitung weitergegeben.</p>
 </div>
 <?php if ($success): ?><div class="alert success"><strong>Anfrage gespeichert.</strong><p>Ihre Anfrage wurde zur Bearbeitung aufgenommen.</p></div><?php endif; ?>
 <?php if ($errors): ?><div class="alert"><ul><?php foreach ($errors as $error): ?><li><?= mmEscape($error) ?></li><?php endforeach; ?></ul></div><?php endif; ?>
