@@ -1,0 +1,35 @@
+CREATE TABLE IF NOT EXISTS contact_requests (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    request_type VARCHAR(32) NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    organisation VARCHAR(200) NULL,
+    email VARCHAR(254) NOT NULL,
+    phone VARCHAR(60) NULL,
+    subject VARCHAR(200) NOT NULL,
+    message TEXT NOT NULL,
+    privacy_acknowledged_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'new',
+    PRIMARY KEY (id),
+    KEY idx_contact_created_at (created_at),
+    KEY idx_contact_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS audit_verifications (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    reference_code VARCHAR(64) NOT NULL,
+    public_title VARCHAR(200) NOT NULL,
+    public_partner VARCHAR(200) NULL,
+    public_client VARCHAR(200) NULL,
+    valid_from DATE NULL,
+    valid_until DATE NULL,
+    confidentiality_mode ENUM('public','confidential') NOT NULL DEFAULT 'public',
+    public_note TEXT NULL,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_audit_reference_code (reference_code),
+    KEY idx_audit_active (is_active),
+    KEY idx_audit_valid_until (valid_until)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
