@@ -73,6 +73,63 @@ $extra = [
 ];
 
 $c = $extra[$verifyLang] ?? $base;
+$scanCopy = [
+    'de' => [
+        'title' => 'QR-Code scannen',
+        'text' => 'Scannen Sie den MysteryMarket-QR-Code des Auditors. Die Kameraauswertung erfolgt lokal in Ihrem Browser; Kamerabilder werden nicht an MysteryMarket übertragen.',
+        'start' => 'Kamera öffnen',
+        'stop' => 'Scanner schließen',
+        'ready' => 'QR-Code in den markierten Bereich halten.',
+        'invalid' => 'Der gelesene QR-Code enthält keine gültige MysteryMarket-Referenz.',
+        'camera' => 'Die Kamera konnte nicht geöffnet werden. Bitte prüfen Sie die Kameraberechtigung oder geben Sie die Referenz manuell ein.',
+        'found' => 'Referenz erkannt. Verifikation wird gestartet …',
+        'manual' => 'Alternativ können Sie die Referenz weiterhin manuell eingeben.',
+    ],
+    'en' => [
+        'title' => 'Scan QR code',
+        'text' => 'Scan the auditor’s MysteryMarket QR code. Camera processing takes place locally in your browser; camera images are not transmitted to MysteryMarket.',
+        'start' => 'Open camera',
+        'stop' => 'Close scanner',
+        'ready' => 'Hold the QR code inside the marked area.',
+        'invalid' => 'The scanned QR code does not contain a valid MysteryMarket reference.',
+        'camera' => 'The camera could not be opened. Please check camera permission or enter the reference manually.',
+        'found' => 'Reference detected. Starting verification …',
+        'manual' => 'You can still enter the reference manually instead.',
+    ],
+    'nl' => [
+        'title' => 'QR-code scannen',
+        'text' => 'Scan de MysteryMarket-QR-code van de auditor. De cameraverwerking gebeurt lokaal in uw browser; camerabeelden worden niet naar MysteryMarket verzonden.',
+        'start' => 'Camera openen',
+        'stop' => 'Scanner sluiten',
+        'ready' => 'Houd de QR-code binnen het gemarkeerde gebied.',
+        'invalid' => 'De gescande QR-code bevat geen geldige MysteryMarket-referentie.',
+        'camera' => 'De camera kon niet worden geopend. Controleer de cameratoestemming of voer de referentie handmatig in.',
+        'found' => 'Referentie herkend. Verificatie wordt gestart …',
+        'manual' => 'U kunt de referentie ook handmatig blijven invoeren.',
+    ],
+    'tr' => [
+        'title' => 'QR kodunu tara',
+        'text' => 'Denetçinin MysteryMarket QR kodunu tarayın. Kamera görüntüsü yalnızca tarayıcınızda yerel olarak işlenir; görüntüler MysteryMarket’e gönderilmez.',
+        'start' => 'Kamerayı aç',
+        'stop' => 'Tarayıcıyı kapat',
+        'ready' => 'QR kodunu işaretli alanın içinde tutun.',
+        'invalid' => 'Okunan QR kodu geçerli bir MysteryMarket referansı içermiyor.',
+        'camera' => 'Kamera açılamadı. Kamera iznini kontrol edin veya referansı manuel olarak girin.',
+        'found' => 'Referans algılandı. Doğrulama başlatılıyor …',
+        'manual' => 'İsterseniz referansı manuel olarak da girebilirsiniz.',
+    ],
+    'ar' => [
+        'title' => 'مسح رمز QR',
+        'text' => 'امسح رمز MysteryMarket QR الخاص بالمدقق. تتم معالجة صورة الكاميرا محلياً داخل المتصفح ولا يتم إرسال صور الكاميرا إلى MysteryMarket.',
+        'start' => 'فتح الكاميرا',
+        'stop' => 'إغلاق الماسح',
+        'ready' => 'ضع رمز QR داخل المنطقة المحددة.',
+        'invalid' => 'رمز QR المقروء لا يحتوي على مرجع MysteryMarket صالح.',
+        'camera' => 'تعذر فتح الكاميرا. يرجى التحقق من إذن الكاميرا أو إدخال المرجع يدوياً.',
+        'found' => 'تم التعرف على المرجع. جارٍ بدء التحقق …',
+        'manual' => 'يمكنك أيضاً إدخال المرجع يدوياً.',
+    ],
+][$verifyLang] ?? [];
 $result = null;
 $error = null;
 $code = '';
@@ -177,6 +234,7 @@ $rtl = $verifyLang === 'ar';
   </div>
 </section>
 <section class="section"<?= $rtl ? ' dir="rtl"' : '' ?>>
+  <div class="verify-layout">
   <div class="verify-box">
     <?php if ($error): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
     <?php if ($result): ?>
@@ -200,5 +258,29 @@ $rtl = $verifyLang === 'ar';
       <button type="submit"><?= mmEscape($c['button']) ?></button>
     </form>
   </div>
+
+  <aside class="verify-scanner-card">
+    <p class="eyebrow"><?= mmEscape($scanCopy['title']) ?></p>
+    <h2><?= mmEscape($scanCopy['title']) ?></h2>
+    <p><?= mmEscape($scanCopy['text']) ?></p>
+    <div class="verify-scanner" data-verify-scanner
+         data-ready="<?= mmEscape($scanCopy['ready']) ?>"
+         data-invalid="<?= mmEscape($scanCopy['invalid']) ?>"
+         data-camera="<?= mmEscape($scanCopy['camera']) ?>"
+         data-found="<?= mmEscape($scanCopy['found']) ?>">
+      <div class="verify-video-wrap" hidden data-verify-video-wrap>
+        <video data-verify-video playsinline muted></video>
+        <span class="verify-scan-frame" aria-hidden="true"></span>
+      </div>
+      <p class="verify-scan-status" data-verify-scan-status aria-live="polite"></p>
+      <div class="actions">
+        <button type="button" data-verify-scan-start><?= mmEscape($scanCopy['start']) ?></button>
+        <button type="button" class="button secondary" data-verify-scan-stop hidden><?= mmEscape($scanCopy['stop']) ?></button>
+      </div>
+      <p class="verify-scan-manual"><?= mmEscape($scanCopy['manual']) ?></p>
+    </div>
+  </aside>
+  </div>
 </section>
+<script type="module" src="/public/js/verify-qr.js"></script>
 <?php mmFooter(); ?>
