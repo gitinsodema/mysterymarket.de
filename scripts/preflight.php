@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $root = dirname(__DIR__);
 $required = [
-    'index.php','services.php','audits.php','verify.php','tools.php','elite-shopper.php','about.php','contact.php',
+    'index.php','404.php','services.php','audits.php','verify.php','tools.php','elite-shopper.php','about.php','contact.php',
     'legal-notice.php','privacy.php',
     'includes/site.php','includes/config.php','includes/db.php','includes/i18n.php','includes/content.php',
     'lang/de.php','lang/en.php','lang/nl.php',
