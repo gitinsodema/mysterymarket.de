@@ -17,29 +17,6 @@ mmHeader($c['title'], $c['lead']);
   <div class="notice"><strong><?= mmEscape($c['status']) ?></strong><p><?= mmEscape($c['status_text']) ?></p></div>
 </section>
 
-<section class="section">
-  <div class="section-head"><p class="eyebrow"><?= mmEscape($c['why']) ?></p><h2><?= mmEscape($c['why_title']) ?></h2></div>
-  <div class="grid">
-    <article class="card"><h3><?= mmEscape($c['plan']) ?></h3><p><?= mmEscape($c['plan_text']) ?></p></article>
-    <article class="card"><h3><?= mmEscape($c['prio']) ?></h3><p><?= mmEscape($c['prio_text']) ?></p></article>
-    <article class="card"><h3><?= mmEscape($c['mobile']) ?></h3><p><?= mmEscape($c['mobile_text']) ?></p></article>
-  </div>
-</section>
-
-<section class="section">
-  <div class="section-head"><p class="eyebrow"><?= mmEscape($c['benefits']) ?></p><h2><?= mmEscape($c['benefits_title']) ?></h2><p class="lead"><?= mmEscape($c['benefits_lead']) ?></p></div>
-  <div class="ops-benefit-grid">
-    <?php foreach ([
-      [$c['benefit1'],$c['benefit1_text'],'01'],
-      [$c['benefit2'],$c['benefit2_text'],'02'],
-      [$c['benefit3'],$c['benefit3_text'],'03'],
-      [$c['benefit4'],$c['benefit4_text'],'04'],
-    ] as [$title,$text,$number]): ?>
-      <article class="ops-benefit-card"><span><?= mmEscape($number) ?></span><h3><?= mmEscape($title) ?></h3><p><?= mmEscape($text) ?></p></article>
-    <?php endforeach; ?>
-  </div>
-</section>
-
 <section class="section ops-preview-section">
   <div class="section-head"><p class="eyebrow"><?= mmEscape($c['preview']) ?></p><h2><?= mmEscape($c['preview_title']) ?></h2><p class="lead"><?= mmEscape($c['preview_lead']) ?></p></div>
   <div class="ops-preview-stage" aria-label="<?= mmEscape($c['preview_title']) ?>">
@@ -90,6 +67,31 @@ mmHeader($c['title'], $c['lead']);
   </div>
 </section>
 
+<section class="section">
+  <div class="section-head"><p class="eyebrow"><?= mmEscape($c['why']) ?></p><h2><?= mmEscape($c['why_title']) ?></h2></div>
+  <div class="grid">
+    <article class="card"><h3><?= mmEscape($c['plan']) ?></h3><p><?= mmEscape($c['plan_text']) ?></p></article>
+    <article class="card"><h3><?= mmEscape($c['prio']) ?></h3><p><?= mmEscape($c['prio_text']) ?></p></article>
+    <article class="card"><h3><?= mmEscape($c['mobile']) ?></h3><p><?= mmEscape($c['mobile_text']) ?></p></article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><p class="eyebrow"><?= mmEscape($c['benefits']) ?></p><h2><?= mmEscape($c['benefits_title']) ?></h2><p class="lead"><?= mmEscape($c['benefits_lead']) ?></p></div>
+  <div class="ops-benefit-grid">
+    <?php foreach ([
+      [$c['benefit1'],$c['benefit1_text'],'01'],
+      [$c['benefit2'],$c['benefit2_text'],'02'],
+      [$c['benefit3'],$c['benefit3_text'],'03'],
+      [$c['benefit4'],$c['benefit4_text'],'04'],
+    ] as [$title,$text,$number]): ?>
+      <article class="ops-benefit-card"><span><?= mmEscape($number) ?></span><h3><?= mmEscape($title) ?></h3><p><?= mmEscape($text) ?></p></article>
+    <?php endforeach; ?>
+  </div>
+</section>
+
+
+
 <section class="section ops-connect-section">
   <div class="ops-connect-copy">
     <p class="eyebrow"><?= mmEscape($c['connect']) ?></p>
@@ -98,13 +100,20 @@ mmHeader($c['title'], $c['lead']);
     <p><?= mmEscape($c['connect_note']) ?></p>
     <div class="notice"><strong><?= mmEscape($c['connect_custom']) ?></strong><p><?= mmEscape($c['connect_custom_text']) ?></p></div>
   </div>
-  <div class="ops-connector-map" aria-label="OPS Connect">
-    <div class="ops-hub">OPS<br><small>Connect</small></div>
-    <div class="ops-node node-a">Shopmetrics</div>
-    <div class="ops-node node-b">Sassie</div>
-    <div class="ops-node node-c">iSecretShop</div>
-    <div class="ops-node node-d">CSV / Excel</div>
-    <div class="ops-node node-e">API</div>
+  <div class="ops-bridge-flow" aria-label="OPS Connect Bridges">
+    <div class="ops-bridge-row">
+      <div class="ops-bridge-endpoint"><small>Company A</small><strong>Order System</strong><span>Assignments · Dates · Locations</span></div>
+      <div class="ops-bridge-arrow">→</div>
+      <div class="ops-bridge-core"><strong>OPS</strong><span>Bridge</span></div>
+      <div class="ops-bridge-arrow">→</div>
+      <div class="ops-bridge-endpoint"><small>Fieldwork</small><strong>Audit App</strong><span>Mobile execution</span></div>
+    </div>
+    <div class="ops-bridge-return">API / structured result return ↩</div>
+    <div class="ops-bridge-examples">
+      <div><small>Example</small><strong>Company B → OPS</strong><span>CSV / Excel import for planning</span></div>
+      <div><small>Example</small><strong>OPS → Client API</strong><span>Status, completion and selected result data</span></div>
+      <div><small>Example</small><strong>Custom Bridge</strong><span>Project-specific import / export workflow</span></div>
+    </div>
   </div>
 </section>
 
