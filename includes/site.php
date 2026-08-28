@@ -104,9 +104,20 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
     </a>
     <div class="header-right">
         <div class="global-language" aria-label="Language selector">
-            <a href="<?= mmEscape($current) ?>?lang=de"<?= $lang === 'de' ? ' aria-current="page"' : '' ?>>DE</a>
-            <a href="<?= mmEscape($current) ?>?lang=en"<?= $lang === 'en' ? ' aria-current="page"' : '' ?>>EN</a>
-            <a href="<?= mmEscape($current) ?>?lang=nl"<?= $lang === 'nl' ? ' aria-current="page"' : '' ?>>NL</a>
+            <?php
+            $verifyCode = $current === '/verify.php' ? strtoupper(trim((string)($_GET['code'] ?? ''))) : '';
+            $safeVerifyCode = preg_match('/^[A-Z0-9-]{4,64}$/', $verifyCode) ? $verifyCode : '';
+            foreach (['de'=>'DE','en'=>'EN','nl'=>'NL'] as $languageKey => $languageLabel):
+                $languageHref = $current . '?lang=' . rawurlencode($languageKey);
+                if ($current === '/verify.php') {
+                    $languageHref .= '&verify_lang=' . rawurlencode($languageKey);
+                    if ($safeVerifyCode !== '') {
+                        $languageHref .= '&code=' . rawurlencode($safeVerifyCode);
+                    }
+                }
+            ?>
+            <a href="<?= mmEscape($languageHref) ?>"<?= $lang === $languageKey ? ' aria-current="page"' : '' ?>><?= mmEscape($languageLabel) ?></a>
+            <?php endforeach; ?>
         </div>
         <nav aria-label="Hauptnavigation">
             <?php foreach ($nav as $href => $label): ?>
