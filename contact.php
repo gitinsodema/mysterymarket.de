@@ -31,6 +31,9 @@ $errors = [];
 $success = false;
 
 mmStartSecureSession();
+$success = !empty($_SESSION['mm_contact_success']);
+unset($_SESSION['mm_contact_success']);
+
 $_SESSION['mm_csrf'] ??= bin2hex(random_bytes(24));
 $_SESSION['mm_contact_attempts'] ??= [];
 $contactNow = time();
@@ -190,7 +193,27 @@ function mmSendContactReceipt(
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (count($_SESSION['mm_contact_attempts']) >= 8) {
+    $rateLimited = count($_SESSION['mm_contact_attempts']) >= 8;
+    $ipHash = mmClientIpHash();
+
+    if (!$rateLimited && $ipHash !== '') {
+        try {
+            $pdo = mmDb();
+            $pdo->exec("DELETE FROM contact_rate_limits WHERE attempted_at < (NOW() - INTERVAL 1 DAY)");
+
+            $limitStmt = $pdo->prepare(
+                'SELECT COUNT(*) FROM contact_rate_limits
+                 WHERE ip_hash = :ip_hash
+                   AND attempted_at > (NOW() - INTERVAL 30 MINUTE)'
+            );
+            $limitStmt->execute(['ip_hash' => $ipHash]);
+            $rateLimited = ((int)$limitStmt->fetchColumn()) >= 8;
+        } catch (Throwable $e) {
+            $rateLimited = count($_SESSION['mm_contact_attempts']) >= 8;
+        }
+    }
+
+    if ($rateLimited) {
         http_response_code(429);
         $errors[] = $lang === 'en'
             ? 'Too many form submissions. Please try again later or contact us by email.'
@@ -199,6 +222,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 : 'Zu viele Formularversuche. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns per E-Mail.');
     } else {
         $_SESSION['mm_contact_attempts'][] = $contactNow;
+
+        if ($ipHash !== '') {
+            try {
+                $attemptStmt = mmDb()->prepare(
+                    'INSERT INTO contact_rate_limits (ip_hash, attempted_at) VALUES (:ip_hash, NOW())'
+                );
+                $attemptStmt->execute(['ip_hash' => $ipHash]);
+            } catch (Throwable $e) {
+                // Session-based throttling remains active if persistent limiting is temporarily unavailable.
+            }
+        }
     }
 
     $type = trim((string)($_POST['type'] ?? ''));
@@ -278,8 +312,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
             $confirmationStmt->execute(['id' => $requestId]);
 
-            $success = true;
             $_SESSION['mm_csrf'] = bin2hex(random_bytes(24));
+            $_SESSION['mm_contact_success'] = true;
+            session_regenerate_id(true);
+
+            header('Location: ' . mmLangUrl('/contact.php'), true, 303);
+            exit;
         } catch (Throwable $e) {
             $errors[] = $validation['store'];
         }
