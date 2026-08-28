@@ -16,6 +16,9 @@ function mmConfig(): array
                 'notification_email' => '',
                 'from_email' => 'hello@mysterymarket.de',
             ],
+            'security' => [
+                'rate_limit_salt' => '',
+            ],
             'legal' => [
                 'brand' => 'MysteryMarket',
                 'legal_form' => 'Einzelunternehmen',
