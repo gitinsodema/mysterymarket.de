@@ -10,6 +10,36 @@ if (!in_array($verifyLang, ['de','en','nl','tr','ar'], true)) {
 }
 
 $extra = [
+    'en' => [
+        'title'=>'Audit Verification',
+        'hero'=>'Verify an audit or authorisation.',
+        'lead'=>'Were you contacted about an audit or is an auditor on site? Verify the supplied MysteryMarket reference here.',
+        'invalid'=>'Please enter a valid verification reference.',
+        'missing'=>'No active and currently valid verification record was found for this reference.',
+        'unavailable'=>'Verification is currently unavailable. Please contact MysteryMarket directly.',
+        'verified'=>'Verified · active record',
+        'conf'=>'This audit programme is confidential. Client and project details are not displayed publicly.',
+        'partner'=>'Audit Partner',
+        'client'=>'Client',
+        'valid'=>'Validity',
+        'label'=>'Verification Code / Reference',
+        'button'=>'Verify',
+    ],
+    'nl' => [
+        'title'=>'Audit Verification',
+        'hero'=>'Audit of legitimatie controleren.',
+        'lead'=>'Bent u benaderd over een audit of is er een auditor op locatie? Controleer hier de opgegeven MysteryMarket-referentie.',
+        'invalid'=>'Voer een geldige verificatiereferentie in.',
+        'missing'=>'Voor deze referentie is geen actieve en momenteel geldige verificatie gevonden.',
+        'unavailable'=>'Verificatie is momenteel niet beschikbaar. Neem rechtstreeks contact op met MysteryMarket.',
+        'verified'=>'Geverifieerd · actief dossier',
+        'conf'=>'Dit auditprogramma is vertrouwelijk. Opdrachtgever- en projectdetails worden niet openbaar weergegeven.',
+        'partner'=>'Audit Partner',
+        'client'=>'Klant',
+        'valid'=>'Geldigheid',
+        'label'=>'Verification Code / Referentie',
+        'button'=>'Verifiëren',
+    ],
     'tr' => [
         'title'=>'Audit Doğrulama',
         'hero'=>'Denetimi veya yetkilendirmeyi doğrulayın.',
@@ -42,7 +72,7 @@ $extra = [
     ],
 ];
 
-$c = $extra[$verifyLang] ?? ($verifyLang === mmLanguage() ? $base : $base);
+$c = $extra[$verifyLang] ?? $base;
 $result = null;
 $error = null;
 $code = '';
