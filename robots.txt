@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /internal/
+Disallow: /config/
+Disallow: /database/
+Disallow: /includes/
+Disallow: /scripts/
+
+Sitemap: https://mysterymarket.de/sitemap.xml
