@@ -34,6 +34,12 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 $_SESSION['mm_csrf'] ??= bin2hex(random_bytes(24));
+$_SESSION['mm_contact_attempts'] ??= [];
+$contactNow = time();
+$_SESSION['mm_contact_attempts'] = array_values(array_filter(
+    (array)$_SESSION['mm_contact_attempts'],
+    static fn($ts): bool => is_int($ts) && $ts > $contactNow - 1800
+));
 
 function mmSendContactNotification(
     int $requestId,
@@ -84,6 +90,17 @@ function mmSendContactNotification(
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (count($_SESSION['mm_contact_attempts']) >= 8) {
+        http_response_code(429);
+        $errors[] = $lang === 'en'
+            ? 'Too many form submissions. Please try again later or contact us by email.'
+            : ($lang === 'nl'
+                ? 'Te veel formulierverzendingen. Probeer het later opnieuw of neem per e-mail contact op.'
+                : 'Zu viele Formularversuche. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns per E-Mail.');
+    } else {
+        $_SESSION['mm_contact_attempts'][] = $contactNow;
+    }
+
     $type = trim((string)($_POST['type'] ?? ''));
     $name = trim((string)($_POST['name'] ?? ''));
     $organisation = trim((string)($_POST['organisation'] ?? ''));
@@ -95,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $csrf = (string)($_POST['csrf'] ?? '');
     $honeypot = trim((string)($_POST['company_url'] ?? ''));
 
-    if (!hash_equals((string)$_SESSION['mm_csrf'], $csrf)) $errors[] = $validation['session'];
+    if (!$errors && !hash_equals((string)$_SESSION['mm_csrf'], $csrf)) $errors[] = $validation['session'];
     if ($honeypot !== '') $errors[] = $validation['failed'];
     if (!isset($typeLabels[$type])) $errors[] = $validation['type'];
     if ($name === '') $errors[] = $validation['name'];
