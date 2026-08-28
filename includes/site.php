@@ -11,7 +11,7 @@ function mmNav(): array
         '/audits.php' => 'Aktuelle Audits',
         '/verify.php' => 'Verify',
         '/tools.php' => 'Unsere Tools',
-        '/about.php' => 'Über mich',
+        '/about.php' => 'About',
         '/contact.php' => 'Kontakt',
     ];
 }
@@ -55,6 +55,7 @@ function mmFooter(): void
     <div>
         <strong>MysteryMarket</strong>
         <p>Independent Audit & Field Services · Düsseldorf / Germany</p>
+        <p><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a> · <a href="mailto:partners@mysterymarket.de">partners@mysterymarket.de</a></p>
     </div>
     <div class="footer-links">
         <a href="/legal-notice.php">Impressum</a>
