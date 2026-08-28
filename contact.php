@@ -30,9 +30,7 @@ $validation = $validationByLang[$lang] ?? $validationByLang['de'];
 $errors = [];
 $success = false;
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+mmStartSecureSession();
 $_SESSION['mm_csrf'] ??= bin2hex(random_bytes(24));
 $_SESSION['mm_contact_attempts'] ??= [];
 $contactNow = time();
@@ -217,10 +215,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$errors && !hash_equals((string)$_SESSION['mm_csrf'], $csrf)) $errors[] = $validation['session'];
     if ($honeypot !== '') $errors[] = $validation['failed'];
     if (!isset($typeLabels[$type])) $errors[] = $validation['type'];
-    if ($name === '') $errors[] = $validation['name'];
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = $validation['email'];
-    if ($subject === '') $errors[] = $validation['subject'];
-    if (mb_strlen($message) < 10) $errors[] = $validation['message'];
+    if ($name === '' || mb_strlen($name) > 150) $errors[] = $validation['name'];
+    if ($organisation !== '' && mb_strlen($organisation) > 200) $errors[] = $validation['failed'];
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 254) $errors[] = $validation['email'];
+    if ($phone !== '' && mb_strlen($phone) > 60) $errors[] = $validation['failed'];
+    if ($subject === '' || mb_strlen($subject) > 200) $errors[] = $validation['subject'];
+    if (mb_strlen($message) < 10 || mb_strlen($message) > 10000) $errors[] = $validation['message'];
     if (!$privacy) $errors[] = $validation['privacy'];
 
     if (!$errors) {
