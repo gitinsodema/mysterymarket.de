@@ -305,9 +305,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || $autoVerify) {
     }
 }
 
-$verifyRobots = in_array($verifyLang, ['tr','ar'], true) || (($result['is_personal_verification'] ?? 0) == 1)
+$isPersonalResult = (($result['is_personal_verification'] ?? 0) == 1);
+$verifyRobots = in_array($verifyLang, ['tr','ar'], true) || $isPersonalResult
     ? 'noindex,follow'
     : 'index,follow';
+
+if ($isPersonalResult) {
+    header('Cache-Control: private, no-store, max-age=0');
+    header('Pragma: no-cache');
+    header('X-Robots-Tag: noindex, noarchive');
+}
+
 mmHeader($c['title'], $c['lead'], $verifyRobots, $verifyLang);
 $rtl = $verifyLang === 'ar';
 ?>
