@@ -21,14 +21,41 @@ mmHeader('Independent Audit & Field Services', 'MysteryMarket führt strukturier
 
 <section class="section">
   <div class="section-head">
+    <p class="eyebrow">Leistungsbereiche</p>
+    <h2>Von Asset Inspection bis Mystery Audit.</h2>
+    <p class="lead">Sechs operative Leistungsfelder, die einzeln oder innerhalb bestehender Agenturprogramme eingesetzt werden können.</p>
+  </div>
+  <div class="service-teaser-grid">
+    <a href="/services.php" class="service-teaser"><span>01</span><strong>Asset & Equipment Inspections</strong></a>
+    <a href="/services.php" class="service-teaser"><span>02</span><strong>Brand & Quality Audits</strong></a>
+    <a href="/services.php" class="service-teaser"><span>03</span><strong>Compliance & Process Audits</strong></a>
+    <a href="/services.php" class="service-teaser"><span>04</span><strong>Revenue Protection</strong></a>
+    <a href="/services.php" class="service-teaser"><span>05</span><strong>Process & Field Audits</strong></a>
+    <a href="/services.php" class="service-teaser"><span>06</span><strong>Mystery Audits & Mystery Visits</strong></a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
     <p class="eyebrow">Zusammenarbeit</p>
     <h2>Wir arbeiten in bestehenden Agentur- und Kundenstrukturen.</h2>
     <p class="lead">MysteryMarket ergänzt vorhandene Projektteams dort, wo zuverlässige operative Durchführung vor Ort gebraucht wird.</p>
   </div>
   <div class="grid">
-    <article class="card"><h3>Für Agenturen</h3><p>Operative Durchführung definierter Audit- und Mystery-Programme nach Briefing, Methodik und Qualitätsanforderungen des Auftraggebers.</p></article>
-    <article class="card"><h3>Für direkte Auftraggeber</h3><p>Vor-Ort-Prüfungen, Inspektionen und strukturierte Erhebungen mit klarer Dokumentation und abgestimmtem Leistungsumfang.</p></article>
-    <article class="card"><h3>Vertrauliche Projekte</h3><p>Projekt- und Kundenbezeichnungen werden nur veröffentlicht, wenn dies ausdrücklich freigegeben ist.</p></article>
+    <article class="card"><h3>Für Agenturen</h3><p>Operative Durchführung definierter Audit- und Mystery-Programme nach Briefing, Methodik und Qualitätsanforderungen des Auftraggebers.</p><a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a></article>
+    <article class="card"><h3>Für direkte Auftraggeber</h3><p>Vor-Ort-Prüfungen, Inspektionen und strukturierte Erhebungen mit klarer Dokumentation und abgestimmtem Leistungsumfang.</p><a href="/contact.php">Projekt anfragen →</a></article>
+    <article class="card"><h3>Elite Shopper Partner</h3><p>Ein qualitätsorientierter Partnerkreis erfahrener Shopper und Auditoren für geeignete Projekte und zusätzliche operative Kapazität.</p><a href="/elite-shopper.php">Elite Shopper Partner →</a></article>
+  </div>
+</section>
+
+<section class="section elite-signal">
+  <div>
+    <p class="eyebrow">Für Agenturpartner</p>
+    <h2>Zusätzliche Fieldwork-Kapazität mit qualifizierten Partnern.</h2>
+    <p>MysteryMarket entwickelt einen kleinen Kreis erfahrener Elite Shopper Partner: regelmäßige operative Erfahrung, Zuverlässigkeit, projektspezifische Qualifizierung und strukturierte Zusammenarbeit. Die Projektführung und Kundenbeziehung der Agentur bleiben dabei unberührt.</p>
+  </div>
+  <div class="actions">
+    <a class="button" href="/elite-shopper.php">Elite Shopper Konzept ansehen</a>
   </div>
 </section>
 
@@ -57,7 +84,7 @@ mmHeader('Independent Audit & Field Services', 'MysteryMarket führt strukturier
     <article class="card">
       <span class="badge">INSODEMA Tool</span>
       <h3>OPS · Operations Suite</h3>
-      <p>OPS unterstützt Planung, Priorisierung und operative Entscheidungsfindung in mobilen Field-Operations. MysteryMarket nutzt OPS im realen Feldeinsatz.</p>
+      <p>OPS unterstützt Planung, Priorisierung und operative Entscheidungsfindung in mobilen Field-Operations. MysteryMarket nutzt OPS im realen Feldeinsatz – perspektivisch auch als Infrastruktur für geeignete Elite Shopper Partner.</p>
       <a href="/tools.php">OPS ansehen →</a>
     </article>
   </div>
