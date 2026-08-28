@@ -7,7 +7,7 @@ $required = [
     'legal-notice.php','privacy.php',
     'includes/site.php','includes/config.php','includes/db.php','includes/i18n.php','includes/content.php',
     'lang/de.php','lang/en.php','lang/nl.php',
-    'public/css/style.css','public/js/cookie-consent.js','favicon.ico','robots.txt','sitemap.xml','database/schema.sql','database/20260828_contact_notification_status.sql','database/20260828_contact_reference_code.sql','database/20260828_verify_rate_limit.sql'
+    'public/css/style.css','public/js/cookie-consent.js','public/js/verify-qr.js','public/vendor/qr-scanner/qr-scanner.min.js','public/vendor/qr-scanner/qr-scanner-worker.min.js','public/vendor/qr-scanner/LICENSE','favicon.ico','robots.txt','sitemap.xml','database/schema.sql','database/20260828_contact_notification_status.sql','database/20260828_contact_reference_code.sql','database/20260828_verify_rate_limit.sql'
 ];
 
 $failures = 0;
