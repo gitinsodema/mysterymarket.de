@@ -19,6 +19,54 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 $_SESSION['mm_csrf'] ??= bin2hex(random_bytes(24));
 
+function mmSendContactNotification(
+    int $requestId,
+    string $typeLabel,
+    string $name,
+    string $organisation,
+    string $email,
+    string $phone,
+    string $subject,
+    string $message
+): bool {
+    $mail = mmConfig()['mail'] ?? [];
+    $to = trim((string)($mail['notification_email'] ?? ''));
+    $from = trim((string)($mail['from_email'] ?? 'hello@mysterymarket.de'));
+
+    if (!filter_var($to, FILTER_VALIDATE_EMAIL) || !filter_var($from, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+
+    $safeSubject = preg_replace('/[\r\n]+/', ' ', $subject) ?: 'Kontaktanfrage';
+    $mailSubject = sprintf('[MysteryMarket #%d] %s · %s', $requestId, $typeLabel, $safeSubject);
+
+    $body = implode(PHP_EOL, [
+        'Neue Anfrage über mysterymarket.de',
+        '',
+        'DB-ID: ' . $requestId,
+        'Anfrageart: ' . $typeLabel,
+        'Name: ' . $name,
+        'Organisation: ' . ($organisation !== '' ? $organisation : '—'),
+        'E-Mail: ' . $email,
+        'Telefon: ' . ($phone !== '' ? $phone : '—'),
+        'Betreff: ' . $safeSubject,
+        '',
+        'Nachricht:',
+        $message,
+        '',
+        'Die Anfrage wurde vor Versand dieser Benachrichtigung in MariaDB gespeichert.',
+    ]);
+
+    $headers = [
+        'From: MysteryMarket Website <' . $from . '>',
+        'Reply-To: ' . $email,
+        'Content-Type: text/plain; charset=UTF-8',
+        'X-Mailer: MysteryMarket Website',
+    ];
+
+    return mail($to, $mailSubject, $body, implode("\r\n", $headers));
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $type = trim((string)($_POST['type'] ?? ''));
     $name = trim((string)($_POST['name'] ?? ''));
@@ -42,7 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$errors) {
         try {
-            $stmt = mmDb()->prepare(
+            $pdo = mmDb();
+            $stmt = $pdo->prepare(
                 'INSERT INTO contact_requests
                 (request_type, name, organisation, email, phone, subject, message, privacy_acknowledged_at, created_at)
                 VALUES (:request_type,:name,:organisation,:email,:phone,:subject,:message,NOW(),NOW())'
@@ -56,6 +105,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'subject' => $subject,
                 'message' => $message,
             ]);
+
+            $requestId = (int)$pdo->lastInsertId();
+            mmSendContactNotification(
+                $requestId,
+                $types[$type],
+                $name,
+                $organisation,
+                $email,
+                $phone,
+                $subject,
+                $message
+            );
+
             $success = true;
             $_SESSION['mm_csrf'] = bin2hex(random_bytes(24));
         } catch (Throwable $e) {
