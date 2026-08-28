@@ -13,7 +13,8 @@ mmHeader('About', 'MysteryMarket Audit & Field Services.');
     <p><strong>Düsseldorf / Germany</strong></p>
     <p>Chief Audit Executive<br><strong>Robert Breuss</strong></p>
     <p>General enquiries:<br><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a></p>
-    <p>Business & audit partnerships:<br><a href="mailto:partners@mysterymarket.de">partners@mysterymarket.de</a></p>
+    <p>Agency & audit partnerships:<br><a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a></p>
+    <p>Elite Shopper Partners:<br><a href="mailto:eliteshopper@mysterymarket.de">eliteshopper@mysterymarket.de</a></p>
     <p>Shopmetrics ID: <strong>rbreuss</strong></p>
   </div>
 </section>
@@ -22,6 +23,6 @@ mmHeader('About', 'MysteryMarket Audit & Field Services.');
     <p class="eyebrow">Arbeitsweise</p>
     <h2>Operative Erfahrung vor Ort.</h2>
   </div>
-  <p class="lead">MysteryMarket steht für persönlich durchgeführte Audit- und Field-Service-Arbeit. Die Durchführung erfolgt projektbezogen nach den Vorgaben des jeweiligen Auditpartners oder Auftraggebers und unter Beachtung der vereinbarten Vertraulichkeit.</p>
+  <p class="lead">MysteryMarket steht für persönlich durchgeführte Audit- und Field-Service-Arbeit sowie einen qualitätsorientierten Kreis erfahrener operativer Partner. Die Durchführung erfolgt projektbezogen nach den Vorgaben des jeweiligen Auditpartners oder Auftraggebers und unter Beachtung der vereinbarten Vertraulichkeit.</p>
 </section>
 <?php mmFooter(); ?>
