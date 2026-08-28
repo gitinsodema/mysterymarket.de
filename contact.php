@@ -89,6 +89,86 @@ function mmSendContactNotification(
     return mail($to, $mailSubject, $body, implode("\r\n", $headers));
 }
 
+function mmSendContactReceipt(
+    int $requestId,
+    string $typeLabel,
+    string $name,
+    string $email,
+    string $lang
+): bool {
+    $mail = mmConfig()['mail'] ?? [];
+    $from = trim((string)($mail['from_email'] ?? 'hello@mysterymarket.de'));
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !filter_var($from, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+
+    $copy = [
+        'de' => [
+            'subject' => 'Vielen Dank – wir haben Ihre Anfrage erhalten',
+            'hello' => 'Guten Tag',
+            'thanks' => 'vielen Dank für Ihre Anfrage bei MysteryMarket.',
+            'received' => 'Wir haben Ihre Nachricht erhalten und unter der Referenz #%d gespeichert.',
+            'type' => 'Anfrageart',
+            'next' => 'Wir prüfen die Anfrage und melden uns, sobald eine Rückmeldung erforderlich oder möglich ist.',
+            'reply' => 'Wenn Sie noch etwas ergänzen möchten, können Sie einfach auf diese E-Mail antworten.',
+            'privacy' => 'Datenschutz',
+        ],
+        'en' => [
+            'subject' => 'Thank you – we have received your enquiry',
+            'hello' => 'Hello',
+            'thanks' => 'thank you for contacting MysteryMarket.',
+            'received' => 'We have received your message and stored it under reference #%d.',
+            'type' => 'Enquiry type',
+            'next' => 'We will review your enquiry and get back to you when a response is required or possible.',
+            'reply' => 'If you would like to add anything, simply reply to this email.',
+            'privacy' => 'Privacy',
+        ],
+        'nl' => [
+            'subject' => 'Bedankt – we hebben uw aanvraag ontvangen',
+            'hello' => 'Hallo',
+            'thanks' => 'bedankt voor uw aanvraag bij MysteryMarket.',
+            'received' => 'We hebben uw bericht ontvangen en opgeslagen onder referentie #%d.',
+            'type' => 'Type aanvraag',
+            'next' => 'We bekijken uw aanvraag en nemen contact op zodra een reactie nodig of mogelijk is.',
+            'reply' => 'Wilt u nog iets aanvullen, dan kunt u eenvoudig op deze e-mail antwoorden.',
+            'privacy' => 'Privacy',
+        ],
+    ];
+
+    $t = $copy[$lang] ?? $copy['de'];
+    $safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+    $safeType = htmlspecialchars($typeLabel, ENT_QUOTES, 'UTF-8');
+
+    $html = '<!doctype html><html><body style="margin:0;background:#f6f8fb;font-family:Arial,sans-serif;color:#001950">'
+        . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f8fb;padding:28px 12px"><tr><td align="center">'
+        . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border:1px solid #d8dee8;border-radius:14px;overflow:hidden">'
+        . '<tr><td style="padding:24px 28px;background:#001950;color:#ffffff"><div style="font-size:22px;font-weight:700">MysteryMarket</div><div style="font-size:13px;opacity:.85;margin-top:4px">Independent Audit &amp; Field Services</div></td></tr>'
+        . '<tr><td style="padding:30px 28px">'
+        . '<p style="margin:0 0 16px">' . $t['hello'] . ' ' . $safeName . ',</p>'
+        . '<p style="margin:0 0 16px">' . $t['thanks'] . '</p>'
+        . '<p style="margin:0 0 16px">' . sprintf($t['received'], $requestId) . '</p>'
+        . '<div style="margin:20px 0;padding:14px 16px;background:#e5f5f5;border-left:4px solid #008c96;border-radius:8px"><strong>' . $t['type'] . ':</strong> ' . $safeType . '</div>'
+        . '<p style="margin:0 0 16px">' . $t['next'] . '</p>'
+        . '<p style="margin:0">' . $t['reply'] . '</p>'
+        . '</td></tr>'
+        . '<tr><td style="padding:18px 28px;border-top:1px solid #d8dee8;color:#52617a;font-size:12px">'
+        . '<strong style="color:#001950">MysteryMarket</strong><br>Independent Audit &amp; Field Services · Düsseldorf / Germany<br>'
+        . '<a href="https://mysterymarket.de" style="color:#008c96">mysterymarket.de</a> · '
+        . '<a href="https://mysterymarket.de/privacy.php" style="color:#008c96">' . $t['privacy'] . '</a>'
+        . '</td></tr></table></td></tr></table></body></html>';
+
+    $headers = [
+        'From: MysteryMarket <' . $from . '>',
+        'Reply-To: ' . $from,
+        'MIME-Version: 1.0',
+        'Content-Type: text/html; charset=UTF-8',
+        'X-Mailer: MysteryMarket Website',
+    ];
+
+    return mail($email, $t['subject'], $html, implode("\r\n", $headers));
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (count($_SESSION['mm_contact_attempts']) >= 8) {
         http_response_code(429);
@@ -157,6 +237,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     : 'UPDATE contact_requests SET notification_failed_at = NOW() WHERE id = :id'
             );
             $notificationStmt->execute(['id' => $requestId]);
+
+            $confirmationSent = mmSendContactReceipt(
+                $requestId,
+                $typeLabels[$type],
+                $name,
+                $email,
+                $lang
+            );
+
+            $confirmationStmt = $pdo->prepare(
+                $confirmationSent
+                    ? 'UPDATE contact_requests SET confirmation_sent_at = NOW(), confirmation_failed_at = NULL WHERE id = :id'
+                    : 'UPDATE contact_requests SET confirmation_failed_at = NOW() WHERE id = :id'
+            );
+            $confirmationStmt->execute(['id' => $requestId]);
 
             $success = true;
             $_SESSION['mm_csrf'] = bin2hex(random_bytes(24));
