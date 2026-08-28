@@ -69,14 +69,22 @@ mmHeader('Kontakt', 'Kontakt zu MysteryMarket für Kunden, Agenturen, Shopper un
 <section class="hero">
   <div>
     <p class="eyebrow">Kontakt</p>
-    <h1>Worum geht es?</h1>
-    <p class="lead">Kunden, Agenturen, Shopper und andere Anfragen werden getrennt erfasst und zweckgebunden bearbeitet.</p>
-    <p><strong>Direkter Kontakt:</strong> <a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a><br>
-    <strong>Business & Partnerschaften:</strong> <a href="mailto:partners@mysterymarket.de">partners@mysterymarket.de</a></p>
+    <h1>Projekt, Partnerschaft oder Anfrage.</h1>
+    <p class="lead">Agenturen und Auftraggeber erreichen MysteryMarket direkt. Shopper- und Auditor-Anfragen werden getrennt erfasst.</p>
+  </div>
+  <div class="contact-channels">
+    <div><span>Allgemein</span><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a></div>
+    <div><span>Agenturen & Partnerschaften</span><a href="mailto:partners@mysterymarket.de">partners@mysterymarket.de</a></div>
   </div>
 </section>
+
 <section class="section">
 <div class="form-card">
+<div class="form-intro">
+  <p class="eyebrow">Kontaktformular</p>
+  <h2>Ihre Anfrage</h2>
+  <p>Das Formular wird für die strukturierte Bearbeitung über unsere interne Datenbank erfasst. Allgemeine Rückfragen beantworten wir über hello@mysterymarket.de.</p>
+</div>
 <?php if ($success): ?><div class="alert success"><strong>Anfrage gespeichert.</strong><p>Ihre Anfrage wurde zur Bearbeitung aufgenommen.</p></div><?php endif; ?>
 <?php if ($errors): ?><div class="alert"><ul><?php foreach ($errors as $error): ?><li><?= mmEscape($error) ?></li><?php endforeach; ?></ul></div><?php endif; ?>
 <form method="post">
@@ -90,9 +98,9 @@ mmHeader('Kontakt', 'Kontakt zu MysteryMarket für Kunden, Agenturen, Shopper un
 <label>Telefon<input type="tel" name="phone" maxlength="60"></label>
 <label>Betreff *<input name="subject" maxlength="200" required></label>
 <label class="wide">Nachricht *<textarea name="message" maxlength="10000" required></textarea></label>
-<label class="wide"><input type="checkbox" name="privacy" value="1" required style="width:auto;margin-right:8px">Ich habe die <a href="/privacy.php">Datenschutzhinweise</a> gelesen und bin mit der zweckgebundenen Verarbeitung meiner Anfrage einverstanden. *</label>
+<label class="wide privacy-check"><input type="checkbox" name="privacy" value="1" required> <span>Ich habe die <a href="/privacy.php">Datenschutzhinweise</a> gelesen und bin mit der zweckgebundenen Verarbeitung meiner Anfrage einverstanden. *</span></label>
 </div>
-<button type="submit">Anfrage an MysteryMarket senden</button>
+<button type="submit">Anfrage senden</button>
 </form>
 </div>
 </section>
