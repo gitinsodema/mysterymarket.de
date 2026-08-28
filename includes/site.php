@@ -45,6 +45,7 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
     <meta name="description" content="<?= mmEscape($description) ?>">
     <meta name="robots" content="<?= mmEscape($robots) ?>">
     <meta name="theme-color" content="#001950">
+    <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="canonical" href="<?= mmEscape($canonicalUrl) ?>">
     <link rel="alternate" hreflang="de" href="<?= mmEscape($baseUrl . mmLangUrl($current, 'de')) ?>">
     <link rel="alternate" hreflang="en" href="<?= mmEscape($baseUrl . mmLangUrl($current, 'en')) ?>">
