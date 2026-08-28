@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS contact_requests (
     status VARCHAR(32) NOT NULL DEFAULT 'new',
     notification_sent_at DATETIME NULL,
     notification_failed_at DATETIME NULL,
+    confirmation_sent_at DATETIME NULL,
+    confirmation_failed_at DATETIME NULL,
     PRIMARY KEY (id),
     KEY idx_contact_created_at (created_at),
     KEY idx_contact_status (status)
