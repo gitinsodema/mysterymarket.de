@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS contact_requests (
     privacy_acknowledged_at DATETIME NOT NULL,
     created_at DATETIME NOT NULL,
     status VARCHAR(32) NOT NULL DEFAULT 'new',
+    notification_sent_at DATETIME NULL,
+    notification_failed_at DATETIME NULL,
     PRIMARY KEY (id),
     KEY idx_contact_created_at (created_at),
     KEY idx_contact_status (status)
