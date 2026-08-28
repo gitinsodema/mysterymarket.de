@@ -22,9 +22,10 @@ function mmHeader(string $title, string $description = ''): void
 {
     $nav = mmNav();
     $current = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $lang = mmLanguage();
     ?>
 <!doctype html>
-<html lang="<?= mmEscape(mmLanguage()) ?>">
+<html lang="<?= mmEscape($lang) ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -39,11 +40,18 @@ function mmHeader(string $title, string $description = ''): void
         <span class="brand-mark">MM</span>
         <span><strong>MysteryMarket</strong><small>Audit & Field Services</small></span>
     </a>
-    <nav aria-label="Hauptnavigation">
-        <?php foreach ($nav as $href => $label): ?>
-            <a href="<?= mmEscape(mmLangUrl($href)) ?>"<?= $current === $href ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
-        <?php endforeach; ?>
-    </nav>
+    <div class="header-right">
+        <div class="global-language" aria-label="Language selector">
+            <a href="<?= mmEscape($current) ?>?lang=de"<?= $lang === 'de' ? ' aria-current="page"' : '' ?>>DE</a>
+            <a href="<?= mmEscape($current) ?>?lang=en"<?= $lang === 'en' ? ' aria-current="page"' : '' ?>>EN</a>
+            <a href="<?= mmEscape($current) ?>?lang=nl"<?= $lang === 'nl' ? ' aria-current="page"' : '' ?>>NL</a>
+        </div>
+        <nav aria-label="Hauptnavigation">
+            <?php foreach ($nav as $href => $label): ?>
+                <a href="<?= mmEscape(mmLangUrl($href)) ?>"<?= $current === $href ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
+            <?php endforeach; ?>
+        </nav>
+    </div>
 </header>
 <main>
 <?php
@@ -89,15 +97,15 @@ function mmFooter(): void
     </div>
 </footer>
 
-<div class="cookie-panel" data-cookie-panel hidden role="dialog" aria-live="polite" aria-label="Datenschutz-Einstellungen">
+<div class="cookie-panel" data-cookie-panel hidden role="dialog" aria-live="polite" aria-label="<?= mmEscape(mmT('cookie.title','Datenschutz-Einstellungen')) ?>">
     <div>
-        <strong>Datenschutz-Einstellungen</strong>
-        <p>Wir verwenden nur technisch notwendige Speicherungen für sichere Formulare und um Ihre Einstellung zu merken. Analyse- oder Marketing-Cookies sind derzeit nicht aktiviert.</p>
-        <a href="/privacy.php">Datenschutzhinweise</a>
+        <strong><?= mmEscape(mmT('cookie.title','Datenschutz-Einstellungen')) ?></strong>
+        <p><?= mmEscape(mmT('cookie.text','Wir verwenden nur technisch notwendige Speicherungen für sichere Formulare und um Ihre Einstellung zu merken. Analyse- oder Marketing-Cookies sind derzeit nicht aktiviert.')) ?></p>
+        <a href="<?= mmEscape(mmLangUrl('/privacy.php')) ?>"><?= mmEscape(mmT('footer.privacy','Datenschutz')) ?></a>
     </div>
     <div class="cookie-actions">
-        <button type="button" data-cookie-necessary>Nur notwendige</button>
-        <button type="button" data-cookie-accept>Auswahl speichern</button>
+        <button type="button" data-cookie-necessary><?= mmEscape(mmT('cookie.necessary','Nur notwendige')) ?></button>
+        <button type="button" data-cookie-accept><?= mmEscape(mmT('cookie.save','Auswahl speichern')) ?></button>
     </div>
 </div>
 <script src="/public/js/cookie-consent.js" defer></script>
