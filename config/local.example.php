@@ -7,6 +7,10 @@ return [
         'user' => 'mysterymarket',
         'password' => '',
     ],
+    'mail' => [
+        'notification_email' => 'REPLACE_WITH_INTERNAL_NOTIFICATION_EMAIL',
+        'from_email' => 'hello@mysterymarket.de',
+    ],
     'legal' => [
         'brand' => 'MysteryMarket',
         'legal_form' => 'Einzelunternehmen',
