@@ -55,30 +55,30 @@ header('Cache-Control: private, no-store, max-age=0');
 :root{--card-w:85.6mm;--card-h:53.98mm}
 body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
 .card-print-shell{min-height:100vh;display:grid;place-items:center;padding:24px}
-.id-card{width:var(--card-w);height:var(--card-h);background:white;border-radius:3.2mm;overflow:hidden;box-shadow:0 8px 30px #00195020;display:grid;grid-template-columns:28mm 1fr;position:relative}
-.id-left{background:#001950;color:white;padding:4.2mm 3.6mm;display:flex;flex-direction:column;gap:2.5mm}
+.id-card{width:var(--card-w);height:var(--card-h);background:white;border-radius:3.2mm;overflow:hidden;box-shadow:0 8px 30px #00195020;display:grid;grid-template-columns:24.5mm 1fr;position:relative}
+.id-left{background:#001950;color:white;padding:3.8mm 3.1mm;display:flex;flex-direction:column;gap:2.1mm}
 .id-brand{font-size:3.3mm;font-weight:800;line-height:1.05}
 .id-brand small{display:block;font-size:1.7mm;font-weight:500;opacity:.8;margin-top:1mm}
-.id-photo{width:20mm;height:25mm;border-radius:1.8mm;object-fit:cover;background:#e8edf4;border:0.4mm solid #ffffff55}
-.id-photo-placeholder{width:20mm;height:25mm;border-radius:1.8mm;background:#ffffff16;border:0.4mm solid #ffffff55;display:grid;place-items:center;text-align:center;font-size:1.8mm;padding:1.5mm}
+.id-photo{width:18.5mm;height:23mm;border-radius:1.6mm;object-fit:cover;background:#e8edf4;border:0.35mm solid #ffffff55}
+.id-photo-placeholder{width:18.5mm;height:23mm;border-radius:1.6mm;background:#ffffff16;border:0.35mm solid #ffffff55;display:grid;place-items:center;text-align:center;font-size:1.65mm;padding:1.2mm}
 .id-left-bottom{margin-top:auto;font-size:1.6mm;opacity:.8}
-.id-main{padding:4mm 4.3mm 3.4mm;display:grid;grid-template-columns:1fr 22mm;gap:3mm}
-.id-kicker{text-transform:uppercase;letter-spacing:.08em;font-size:1.7mm;font-weight:800;color:#008c96}
-.id-name{font-size:5.2mm;line-height:1;margin:1.4mm 0 .8mm}
-.id-role{font-size:2.4mm;font-weight:800;color:#be001e;margin:0 0 2.4mm}
-.id-meta{display:grid;gap:1.45mm;font-size:1.85mm;line-height:1.25}
-.id-meta span{display:block;color:#667085;font-size:1.45mm;text-transform:uppercase;letter-spacing:.05em}
-.id-meta strong{display:block}
-.id-logo{display:block;max-width:20mm;max-height:8mm;object-fit:contain;object-position:left center;margin-bottom:1.6mm}
-.id-qrcol{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4mm}
-#id-qr{width:20mm;height:20mm;background:white}
-#id-qr img,#id-qr canvas{width:20mm!important;height:20mm!important;display:block}
-.id-ref{font-size:1.65mm;font-weight:800;text-align:center}
-.id-scan{font-size:1.35mm;color:#667085;text-align:center;line-height:1.25}
+.id-main{padding:3.6mm 4mm 3.2mm;display:grid;grid-template-columns:minmax(0,1fr) 19mm;gap:2.6mm}
+.id-kicker{text-transform:uppercase;letter-spacing:.08em;font-size:1.55mm;font-weight:800;color:#008c96;line-height:1.2}
+.id-name{font-size:5.1mm;line-height:.95;margin:1.1mm 0 .6mm}
+.id-role{font-size:2.2mm;font-weight:800;color:#be001e;margin:0 0 1.8mm}
+.id-meta{display:grid;gap:1.05mm;font-size:1.72mm;line-height:1.18}
+.id-meta span{display:block;color:#667085;font-size:1.28mm;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2mm}
+.id-meta strong{display:block}.id-project strong{line-height:1.12;word-break:normal;overflow-wrap:anywhere}
+.id-logo{display:block;max-width:18mm;max-height:7mm;object-fit:contain;object-position:left center;margin-bottom:1.35mm}
+.id-qrcol{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1.05mm;padding-top:7.2mm}
+#id-qr{width:18mm;height:18mm;background:white}
+#id-qr img,#id-qr canvas{width:18mm!important;height:18mm!important;display:block}
+.id-ref{font-size:1.5mm;font-weight:800;text-align:center;line-height:1.1}
+.id-scan{font-size:1.2mm;color:#667085;text-align:center;line-height:1.15}
 .print-controls{margin-top:18px;display:flex;gap:10px;justify-content:center}
 @media print{
   @page{size:85.6mm 53.98mm;margin:0}
-  html,body{width:85.6mm;height:53.98mm;background:white}
+  html,body{width:85.6mm;height:53.98mm;background:white;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .card-print-shell{display:block;min-height:0;padding:0}
   .id-card{box-shadow:none;border-radius:0;width:85.6mm;height:53.98mm}
   .print-controls{display:none!important}
@@ -108,7 +108,7 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
           <p class="id-role"><?= mmEscape((string)$row['role_label']) ?></p>
           <div class="id-meta">
             <div><span>Agency Partner</span><strong><?= mmEscape((string)$row['agency_name']) ?></strong></div>
-            <div><span>Project</span><strong><?= mmEscape((string)$row['project_name']) ?></strong></div>
+            <div class="id-project"><span>Project</span><strong><?= mmEscape((string)$row['project_name']) ?></strong></div>
             <div><span>Valid until</span><strong><?= mmEscape((string)$row['valid_until']) ?></strong></div>
           </div>
         </div>
