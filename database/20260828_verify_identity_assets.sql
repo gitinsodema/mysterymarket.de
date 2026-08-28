@@ -1,0 +1,15 @@
+ALTER TABLE audit_verifications
+    ADD COLUMN IF NOT EXISTS person_name VARCHAR(150) NULL AFTER public_note,
+    ADD COLUMN IF NOT EXISTS role_label VARCHAR(120) NULL AFTER person_name,
+    ADD COLUMN IF NOT EXISTS agency_name VARCHAR(200) NULL AFTER role_label,
+    ADD COLUMN IF NOT EXISTS project_name VARCHAR(200) NULL AFTER agency_name,
+    ADD COLUMN IF NOT EXISTS brand_name VARCHAR(200) NULL AFTER project_name,
+    ADD COLUMN IF NOT EXISTS photo_asset VARCHAR(255) NULL AFTER brand_name,
+    ADD COLUMN IF NOT EXISTS brand_logo_asset VARCHAR(255) NULL AFTER photo_asset,
+    ADD COLUMN IF NOT EXISTS agency_logo_asset VARCHAR(255) NULL AFTER brand_logo_asset,
+    ADD COLUMN IF NOT EXISTS scope_key VARCHAR(80) NULL AFTER agency_logo_asset,
+    ADD COLUMN IF NOT EXISTS document_asset VARCHAR(255) NULL AFTER scope_key,
+    ADD COLUMN IF NOT EXISTS document_label VARCHAR(200) NULL AFTER document_asset,
+    ADD COLUMN IF NOT EXISTS document_enabled TINYINT(1) NOT NULL DEFAULT 0 AFTER document_label,
+    ADD COLUMN IF NOT EXISTS print_card_enabled TINYINT(1) NOT NULL DEFAULT 0 AFTER document_enabled,
+    ADD COLUMN IF NOT EXISTS is_personal_verification TINYINT(1) NOT NULL DEFAULT 0 AFTER print_card_enabled;
