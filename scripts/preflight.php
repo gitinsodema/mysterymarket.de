@@ -7,7 +7,7 @@ $required = [
     'legal-notice.php','privacy.php',
     'includes/site.php','includes/config.php','includes/db.php','includes/i18n.php','includes/content.php',
     'lang/de.php','lang/en.php','lang/nl.php',
-    'public/css/style.css','public/js/cookie-consent.js','favicon.ico','robots.txt','sitemap.xml','database/schema.sql'
+    'public/css/style.css','public/js/cookie-consent.js','favicon.ico','robots.txt','sitemap.xml','database/schema.sql','database/20260828_contact_notification_status.sql'
 ];
 
 $failures = 0;
