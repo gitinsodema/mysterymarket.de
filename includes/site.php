@@ -63,38 +63,56 @@ function mmFooter(): void
     ?>
 </main>
 <footer class="site-footer">
-    <div class="footer-brand">
-        <strong>MysteryMarket</strong>
-        <p>Independent Audit & Field Services<br>Düsseldorf / Germany</p>
-    </div>
-    <div>
-        <strong class="footer-heading"><?= mmEscape(mmT('footer.contact', 'Kontakt')) ?></strong>
-        <p>
-            <a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a><br>
-            <a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a><br>
-            <a href="mailto:eliteshopper@mysterymarket.de">eliteshopper@mysterymarket.de</a>
-        </p>
-    </div>
-    <div>
-        <strong class="footer-heading"><?= mmEscape(mmT('footer.navigation', 'Navigation')) ?></strong>
-        <div class="footer-links">
-            <a href="<?= mmEscape(mmLangUrl('/services.php')) ?>"><?= mmEscape(mmT('nav.services', 'Leistungen')) ?></a>
-            <a href="<?= mmEscape(mmLangUrl('/audits.php')) ?>"><?= mmEscape(mmT('nav.audits', 'Aktuelle Audits')) ?></a>
-            <a href="<?= mmEscape(mmLangUrl('/elite-shopper.php')) ?>"><?= mmEscape(mmT('nav.elite', 'Elite Shopper')) ?></a>
-            <a href="<?= mmEscape(mmLangUrl('/tools.php')) ?>">OPS</a>
+    <div class="footer-primary">
+        <div class="footer-brand">
+            <strong>MysteryMarket</strong>
+            <p>Independent Audit & Field Services<br>Düsseldorf / Germany</p>
+        </div>
+        <div>
+            <strong class="footer-heading"><?= mmEscape(mmT('footer.contact', 'Kontakt')) ?></strong>
+            <p>
+                <a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a><br>
+                <a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a><br>
+                <a href="mailto:eliteshopper@mysterymarket.de">eliteshopper@mysterymarket.de</a>
+            </p>
+        </div>
+        <div>
+            <strong class="footer-heading"><?= mmEscape(mmT('footer.navigation', 'Navigation')) ?></strong>
+            <div class="footer-links">
+                <a href="<?= mmEscape(mmLangUrl('/services.php')) ?>"><?= mmEscape(mmT('nav.services', 'Leistungen')) ?></a>
+                <a href="<?= mmEscape(mmLangUrl('/audits.php')) ?>"><?= mmEscape(mmT('nav.audits', 'Aktuelle Audits')) ?></a>
+                <a href="<?= mmEscape(mmLangUrl('/elite-shopper.php')) ?>"><?= mmEscape(mmT('nav.elite', 'Elite Shopper')) ?></a>
+                <a href="<?= mmEscape(mmLangUrl('/tools.php')) ?>">OPS</a>
+            </div>
+        </div>
+        <div>
+            <strong class="footer-heading"><?= mmEscape(mmT('footer.legal', 'Rechtliches')) ?></strong>
+            <div class="footer-links">
+                <a href="<?= mmEscape(mmLangUrl('/legal-notice.php')) ?>"><?= mmEscape(mmT('footer.imprint', 'Impressum')) ?></a>
+                <a href="<?= mmEscape(mmLangUrl('/privacy.php')) ?>"><?= mmEscape(mmT('footer.privacy', 'Datenschutz')) ?></a>
+                <button type="button" class="link-button" data-cookie-settings><?= mmEscape(mmT('footer.cookies', 'Cookie-Einstellungen')) ?></button>
+            </div>
         </div>
     </div>
-    <div>
-        <strong class="footer-heading"><?= mmEscape(mmT('footer.legal', 'Rechtliches')) ?></strong>
-        <div class="footer-links">
-            <a href="<?= mmEscape(mmLangUrl('/legal-notice.php')) ?>"><?= mmEscape(mmT('footer.imprint', 'Impressum')) ?></a>
-            <a href="<?= mmEscape(mmLangUrl('/privacy.php')) ?>"><?= mmEscape(mmT('footer.privacy', 'Datenschutz')) ?></a>
-            <button type="button" class="link-button" data-cookie-settings><?= mmEscape(mmT('footer.cookies', 'Cookie-Einstellungen')) ?></button>
+
+    <div class="product-strip" aria-label="<?= mmEscape(mmT('products.title','INSODEMA Products')) ?>">
+        <div class="product-strip-intro">
+            <span><?= mmEscape(mmT('products.eyebrow','INSODEMA Product Family')) ?></span>
+            <strong><?= mmEscape(mmT('products.title','Tools built from operational work.')) ?></strong>
         </div>
+        <a class="product-mini" href="<?= mmEscape(mmLangUrl('/tools.php')) ?>">
+            <span class="product-code">OPS</span>
+            <span><strong>Operations Suite</strong><small><?= mmEscape(mmT('products.ops','Planning and decision support for mobile field operations.')) ?></small></span>
+        </a>
+        <a class="product-mini" href="https://shopper-match.com" target="_blank" rel="noopener noreferrer">
+            <span class="product-code">SM</span>
+            <span><strong>ShopperMatch</strong><small><?= mmEscape(mmT('products.shoppermatch','Connect suitable shoppers, locations and project opportunities.')) ?></small></span>
+        </a>
     </div>
+
     <div class="footer-bottom">
         <span>© <?= date('Y') ?> MysteryMarket</span>
-        <span>Operational tools by INSODEMA · Research & Decision Lab</span>
+        <span>INSODEMA · Research & Decision Lab</span>
     </div>
 </footer>
 
