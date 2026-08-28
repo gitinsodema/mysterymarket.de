@@ -96,6 +96,7 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
     <link rel="stylesheet" href="/public/css/style.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content"><?= mmEscape(mmT('accessibility.skip', 'Zum Hauptinhalt')) ?></a>
 <header class="site-header">
     <a class="brand" href="<?= mmEscape(mmLangUrl('/')) ?>" aria-label="MysteryMarket">
         <span class="brand-mark">MM</span>
@@ -114,7 +115,7 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
         </nav>
     </div>
 </header>
-<main>
+<main id="main-content" tabindex="-1">
 <?php
 }
 
