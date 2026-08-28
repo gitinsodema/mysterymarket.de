@@ -18,6 +18,7 @@ function mmConfig(): array
             ],
             'security' => [
                 'rate_limit_salt' => '',
+                'verify_asset_dir' => '',
             ],
             'legal' => [
                 'brand' => 'MysteryMarket',
