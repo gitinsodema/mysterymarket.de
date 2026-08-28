@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://mysterymarket.de/</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/?lang=nl"/>
+  </url>
+  <url><loc>https://mysterymarket.de/services.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/services.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/services.php?lang=nl"/></url>
+  <url><loc>https://mysterymarket.de/audits.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/audits.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/audits.php?lang=nl"/></url>
+  <url><loc>https://mysterymarket.de/verify.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/verify.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/verify.php?lang=nl"/></url>
+  <url><loc>https://mysterymarket.de/tools.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/tools.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/tools.php?lang=nl"/></url>
+  <url><loc>https://mysterymarket.de/elite-shopper.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/elite-shopper.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/elite-shopper.php?lang=nl"/></url>
+  <url><loc>https://mysterymarket.de/about.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/about.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/about.php?lang=nl"/></url>
+  <url><loc>https://mysterymarket.de/contact.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/contact.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/contact.php?lang=nl"/></url>
+</urlset>
