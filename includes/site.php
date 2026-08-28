@@ -2,17 +2,19 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/i18n.php';
 
 function mmNav(): array
 {
     return [
-        '/' => 'Home',
-        '/services.php' => 'Leistungen',
-        '/audits.php' => 'Aktuelle Audits',
-        '/verify.php' => 'Verify',
-        '/tools.php' => 'OPS',
-        '/about.php' => 'About',
-        '/contact.php' => 'Kontakt',
+        '/' => mmT('nav.home', 'Home'),
+        '/services.php' => mmT('nav.services', 'Leistungen'),
+        '/audits.php' => mmT('nav.audits', 'Aktuelle Audits'),
+        '/verify.php' => mmT('nav.verify', 'Verify'),
+        '/tools.php' => mmT('nav.ops', 'OPS'),
+        '/elite-shopper.php' => mmT('nav.elite', 'Elite Shopper'),
+        '/about.php' => mmT('nav.about', 'About'),
+        '/contact.php' => mmT('nav.contact', 'Kontakt'),
     ];
 }
 
@@ -22,7 +24,7 @@ function mmHeader(string $title, string $description = ''): void
     $current = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
     ?>
 <!doctype html>
-<html lang="de">
+<html lang="<?= mmEscape(mmLanguage()) ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -33,13 +35,13 @@ function mmHeader(string $title, string $description = ''): void
 </head>
 <body>
 <header class="site-header">
-    <a class="brand" href="/" aria-label="MysteryMarket Startseite">
+    <a class="brand" href="<?= mmEscape(mmLangUrl('/')) ?>" aria-label="MysteryMarket">
         <span class="brand-mark">MM</span>
         <span><strong>MysteryMarket</strong><small>Audit & Field Services</small></span>
     </a>
     <nav aria-label="Hauptnavigation">
         <?php foreach ($nav as $href => $label): ?>
-            <a href="<?= mmEscape($href) ?>"<?= $current === $href ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
+            <a href="<?= mmEscape(mmLangUrl($href)) ?>"<?= $current === $href ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
         <?php endforeach; ?>
     </nav>
 </header>
@@ -57,24 +59,28 @@ function mmFooter(): void
         <p>Independent Audit & Field Services<br>Düsseldorf / Germany</p>
     </div>
     <div>
-        <strong class="footer-heading">Kontakt</strong>
-        <p><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a><br><a href="mailto:partners@mysterymarket.de">partners@mysterymarket.de</a></p>
+        <strong class="footer-heading"><?= mmEscape(mmT('footer.contact', 'Kontakt')) ?></strong>
+        <p>
+            <a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a><br>
+            <a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a><br>
+            <a href="mailto:eliteshopper@mysterymarket.de">eliteshopper@mysterymarket.de</a>
+        </p>
     </div>
     <div>
-        <strong class="footer-heading">Navigation</strong>
+        <strong class="footer-heading"><?= mmEscape(mmT('footer.navigation', 'Navigation')) ?></strong>
         <div class="footer-links">
-            <a href="/services.php">Leistungen</a>
-            <a href="/audits.php">Aktuelle Audits</a>
-            <a href="/verify.php">Verify</a>
-            <a href="/tools.php">OPS</a>
+            <a href="<?= mmEscape(mmLangUrl('/services.php')) ?>"><?= mmEscape(mmT('nav.services', 'Leistungen')) ?></a>
+            <a href="<?= mmEscape(mmLangUrl('/audits.php')) ?>"><?= mmEscape(mmT('nav.audits', 'Aktuelle Audits')) ?></a>
+            <a href="<?= mmEscape(mmLangUrl('/elite-shopper.php')) ?>"><?= mmEscape(mmT('nav.elite', 'Elite Shopper')) ?></a>
+            <a href="<?= mmEscape(mmLangUrl('/tools.php')) ?>">OPS</a>
         </div>
     </div>
     <div>
-        <strong class="footer-heading">Rechtliches</strong>
+        <strong class="footer-heading"><?= mmEscape(mmT('footer.legal', 'Rechtliches')) ?></strong>
         <div class="footer-links">
-            <a href="/legal-notice.php">Impressum</a>
-            <a href="/privacy.php">Datenschutz</a>
-            <button type="button" class="link-button" data-cookie-settings>Cookie-Einstellungen</button>
+            <a href="<?= mmEscape(mmLangUrl('/legal-notice.php')) ?>"><?= mmEscape(mmT('footer.imprint', 'Impressum')) ?></a>
+            <a href="<?= mmEscape(mmLangUrl('/privacy.php')) ?>"><?= mmEscape(mmT('footer.privacy', 'Datenschutz')) ?></a>
+            <button type="button" class="link-button" data-cookie-settings><?= mmEscape(mmT('footer.cookies', 'Cookie-Einstellungen')) ?></button>
         </div>
     </div>
     <div class="footer-bottom">
