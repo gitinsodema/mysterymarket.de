@@ -11,6 +11,9 @@ return [
         'notification_email' => 'REPLACE_WITH_INTERNAL_NOTIFICATION_EMAIL',
         'from_email' => 'hello@mysterymarket.de',
     ],
+    'security' => [
+        'rate_limit_salt' => 'REPLACE_WITH_A_LONG_RANDOM_SECRET',
+    ],
     'legal' => [
         'brand' => 'MysteryMarket',
         'legal_form' => 'Einzelunternehmen',
