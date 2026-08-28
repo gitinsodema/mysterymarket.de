@@ -270,3 +270,33 @@ textarea{min-height:150px;resize:vertical}
 .verify-scanner .actions{margin-top:12px}
 .verify-scan-manual{font-size:13px;margin-top:16px}
 @media(max-width:850px){.verify-layout{grid-template-columns:1fr}.verify-scanner-card{order:-1}}
+
+.verify-credential{background:white;border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 12px 32px #0019500c}
+.verify-credential-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.verify-brand-lockup{display:flex;flex-direction:column;gap:7px;align-items:flex-start}
+.verify-brand-lockup img{display:block;max-width:190px;max-height:52px;object-fit:contain;object-position:left center}
+.verify-brand-lockup>strong{font-size:25px;line-height:1}
+.verify-brand-lockup>span{font-size:12px;color:var(--ok);font-weight:800}
+.verify-person{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;padding:24px 0}
+.verify-person-photo{width:112px;height:138px;border-radius:12px;object-fit:cover;border:1px solid var(--line);background:#f5f7fa}
+.verify-person small,.verify-context-grid small{display:block;text-transform:uppercase;letter-spacing:.08em;font-size:10px;font-weight:900;color:var(--muted)}
+.verify-person h2{font-size:31px;margin:3px 0}
+.verify-role{font-weight:800;color:var(--accent);margin:.2em 0 .8em}
+.verify-context-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.verify-context-grid>div{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:16px}
+.verify-context-grid strong{display:block;margin-top:5px}
+.verify-partner-logo{display:block;max-width:140px;max-height:38px;object-fit:contain;object-position:left center;margin:7px 0}
+.verify-scope{padding-top:24px}
+.verify-scope h3{font-size:21px}
+.verify-scope ul{padding-left:20px}
+.verify-scope li{margin:7px 0}
+.verify-scope .notice{margin-top:20px}
+@media(max-width:620px){
+  .verify-credential{padding:20px}
+  .verify-credential-head{display:block}
+  .verify-credential-head .status{margin-top:14px}
+  .verify-person{grid-template-columns:88px 1fr;gap:15px}
+  .verify-person-photo{width:88px;height:112px}
+  .verify-person h2{font-size:25px}
+  .verify-context-grid{grid-template-columns:1fr}
+}
