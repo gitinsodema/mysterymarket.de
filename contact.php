@@ -59,14 +59,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success = true;
             $_SESSION['mm_csrf'] = bin2hex(random_bytes(24));
         } catch (Throwable $e) {
-            $errors[] = 'Die Anfrage konnte derzeit nicht gespeichert werden. Bitte nutzen Sie alternativ E-Mail oder Telefon.';
+            $errors[] = 'Die Anfrage konnte derzeit nicht gespeichert werden. Bitte schreiben Sie alternativ an hello@mysterymarket.de.';
         }
     }
 }
 
 mmHeader('Kontakt', 'Kontakt zu MysteryMarket für Kunden, Agenturen, Shopper und andere Anfragen.');
 ?>
-<section class="hero"><div><p class="eyebrow">Kontakt</p><h1>Worum geht es?</h1><p class="lead">Kunden, Agenturen, Shopper und andere Anfragen werden getrennt erfasst und zweckgebunden bearbeitet.</p></div></section>
+<section class="hero">
+  <div>
+    <p class="eyebrow">Kontakt</p>
+    <h1>Worum geht es?</h1>
+    <p class="lead">Kunden, Agenturen, Shopper und andere Anfragen werden getrennt erfasst und zweckgebunden bearbeitet.</p>
+    <p><strong>Direkter Kontakt:</strong> <a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a><br>
+    <strong>Business & Partnerschaften:</strong> <a href="mailto:partners@mysterymarket.de">partners@mysterymarket.de</a></p>
+  </div>
+</section>
 <section class="section">
 <div class="form-card">
 <?php if ($success): ?><div class="alert success"><strong>Anfrage gespeichert.</strong><p>Ihre Anfrage wurde zur Bearbeitung aufgenommen.</p></div><?php endif; ?>
@@ -84,7 +92,7 @@ mmHeader('Kontakt', 'Kontakt zu MysteryMarket für Kunden, Agenturen, Shopper un
 <label class="wide">Nachricht *<textarea name="message" maxlength="10000" required></textarea></label>
 <label class="wide"><input type="checkbox" name="privacy" value="1" required style="width:auto;margin-right:8px">Ich habe die <a href="/privacy.php">Datenschutzhinweise</a> gelesen und bin mit der zweckgebundenen Verarbeitung meiner Anfrage einverstanden. *</label>
 </div>
-<button type="submit">Anfrage senden</button>
+<button type="submit">Anfrage an MysteryMarket senden</button>
 </form>
 </div>
 </section>
