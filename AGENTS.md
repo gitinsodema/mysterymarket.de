@@ -1,23 +1,36 @@
 # MysteryMarket Development Rules
 
 ## Scope
-mysterymarket.de is the public presence for Robert Breuss' operational audit and field services.
+mysterymarket.de is the public presence for MysteryMarket operational audit and field services.
 
-It is not a shopper marketplace and not a replacement for ShopperMatch.
+Public positioning:
+- operational audit and fieldwork partner
+- works for agencies and direct clients
+- does not present MysteryMarket as a competing full-service evaluation/reporting agency
+- ShopperMatch, OPS and future INSODEMA products remain clearly separate products/infrastructure
 
 ## Runtime
 - PHP 8.5
 - MariaDB
 - Production domain: mysterymarket.de
-- Production root: /var/www/vhosts/mysterymarket.de
+- Production document root: /var/www/vhosts/mysterymarket.de/httpdocs
 - Plesk user: mysterymarket.de
 
-## Deployment
+## Deployment safety
 Production deployment is performed separately from Git publication.
-After deployment, ownership and permissions must be set for the Plesk user.
+
+All website operations must remain inside:
+
+`/var/www/vhosts/mysterymarket.de/httpdocs`
+
+Never recursively lint, chown, chmod or modify the parent vhost path `/var/www/vhosts/mysterymarket.de`; it contains unrelated subdomains/applications.
+
+Prefer tracked-file linting with `git ls-files '*.php'`.
 
 ## Security
-- Never commit production database credentials.
+- Never commit production database credentials or private notification recipients.
 - Never expose confidential client or audit-program information.
 - Verification references must reveal only explicitly public information.
-- Public customer/partner names require explicit approval.
+- Public customer/partner names require an approved public context.
+- Partner/company logos require explicit written approval before publication.
+- Files under `internal/` must remain inaccessible from the public web.
