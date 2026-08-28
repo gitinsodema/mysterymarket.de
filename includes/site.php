@@ -32,7 +32,7 @@ function mmClientIpHash(): string
     $ip = trim((string)($_SERVER['REMOTE_ADDR'] ?? ''));
 
     if ($salt === '' || $ip === '') {
-        throw new RuntimeException('Rate-limit hashing is not configured.');
+        return '';
     }
 
     return hash_hmac('sha256', $ip, $salt);
