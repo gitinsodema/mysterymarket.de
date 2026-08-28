@@ -130,6 +130,80 @@ $scanCopy = [
         'manual' => 'يمكنك أيضاً إدخال المرجع يدوياً.',
     ],
 ][$verifyLang] ?? [];
+
+$detailCopy = [
+    'de' => [
+        'identity'=>'Legitimierte Person','role'=>'Rolle','agency'=>'Beauftragte Agentur','project'=>'Projekt / Prüfkontext',
+        'scope'=>'Umfang der Berechtigung','restriction'=>'Wichtige Einschränkung',
+        'restriction_text'=>'Die Berechtigung ist auf Vodafone-relevante Prozesse und Datenverarbeitungen beschränkt. Eine Prüfung sonstiger Geschäftstätigkeiten des Untervertriebspartners ist nicht umfasst.',
+        'scope_items'=>[
+            'Durchführung von Vor-Ort-Kontrollen und Prüfgesprächen im Umfeld der Vodafone-Vermarktung.',
+            'Einsichtnahme in für Vodafone relevante Prozesse, Nachweise und Dokumentationen.',
+            'Prüfung der weitergegebenen Datenschutz- und Compliance-Vorgaben sowie der Prozess- und Qualitätsanforderungen von Vodafone.',
+        ],
+        'document'=>'Offizieller Legitimationsnachweis','document_open'=>'Legitimationsschreiben ansehen',
+        'reference'=>'Verify-Referenz','status'=>'Legitimation gültig','photo_alt'=>'Foto der legitimierten Person',
+        'logo_alt'=>'Projektlogo','partner_logo_alt'=>'Logo der beauftragten Agentur',
+        'print'=>'Ausweisansicht vorbereiten',
+    ],
+    'en' => [
+        'identity'=>'Authorised person','role'=>'Role','agency'=>'Commissioned agency','project'=>'Project / audit context',
+        'scope'=>'Scope of authorisation','restriction'=>'Important limitation',
+        'restriction_text'=>'The authorisation is limited to Vodafone-related processes and data processing. It does not include an audit of other business activities of the subcontracting sales partner.',
+        'scope_items'=>[
+            'On-site checks and audit discussions in the context of Vodafone marketing.',
+            'Inspection of Vodafone-relevant processes, evidence and documentation.',
+            'Verification of applicable data-protection and compliance requirements as well as Vodafone process and quality requirements.',
+        ],
+        'document'=>'Official authorisation document','document_open'=>'View authorisation letter',
+        'reference'=>'Verify reference','status'=>'Authorisation valid','photo_alt'=>'Photo of the authorised person',
+        'logo_alt'=>'Project logo','partner_logo_alt'=>'Logo of the commissioned agency',
+        'print'=>'Prepare ID card view',
+    ],
+    'nl' => [
+        'identity'=>'Geleitimeerde persoon','role'=>'Rol','agency'=>'Opdrachtgevend bureau','project'=>'Project / auditcontext',
+        'scope'=>'Omvang van de bevoegdheid','restriction'=>'Belangrijke beperking',
+        'restriction_text'=>'De bevoegdheid is beperkt tot Vodafone-gerelateerde processen en gegevensverwerking. Controle van andere bedrijfsactiviteiten van de onderverkooppartner valt hier niet onder.',
+        'scope_items'=>[
+            'Controles op locatie en auditgesprekken in de context van Vodafone-verkoop.',
+            'Inzage in voor Vodafone relevante processen, bewijsstukken en documentatie.',
+            'Controle van toepasselijke privacy- en compliancevereisten en van proces- en kwaliteitseisen van Vodafone.',
+        ],
+        'document'=>'Officieel legitimatiebewijs','document_open'=>'Legitimatiebrief bekijken',
+        'reference'=>'Verify-referentie','status'=>'Legitimatie geldig','photo_alt'=>'Foto van de gelegitimeerde persoon',
+        'logo_alt'=>'Projectlogo','partner_logo_alt'=>'Logo van het opdrachtgevende bureau',
+        'print'=>'ID-kaartweergave voorbereiden',
+    ],
+    'tr' => [
+        'identity'=>'Yetkilendirilmiş kişi','role'=>'Rol','agency'=>'Görevlendirilen ajans','project'=>'Proje / denetim kapsamı',
+        'scope'=>'Yetki kapsamı','restriction'=>'Önemli sınırlama',
+        'restriction_text'=>'Yetki yalnızca Vodafone ile ilgili süreçler ve veri işleme faaliyetleriyle sınırlıdır. Alt satış ortağının diğer ticari faaliyetlerinin denetimini kapsamaz.',
+        'scope_items'=>[
+            'Vodafone pazarlama ortamında yerinde kontroller ve denetim görüşmeleri.',
+            'Vodafone açısından ilgili süreç, kanıt ve belgelerin incelenmesi.',
+            'İlgili veri koruma ve uyum gereklilikleri ile Vodafone süreç ve kalite gerekliliklerinin kontrolü.',
+        ],
+        'document'=>'Resmî yetkilendirme belgesi','document_open'=>'Yetkilendirme yazısını görüntüle',
+        'reference'=>'Verify referansı','status'=>'Yetkilendirme geçerli','photo_alt'=>'Yetkilendirilmiş kişinin fotoğrafı',
+        'logo_alt'=>'Proje logosu','partner_logo_alt'=>'Görevlendirilen ajansın logosu',
+        'print'=>'Kimlik kartı görünümünü hazırla',
+    ],
+    'ar' => [
+        'identity'=>'الشخص المخول','role'=>'الصفة','agency'=>'الوكالة المكلفة','project'=>'المشروع / نطاق التدقيق',
+        'scope'=>'نطاق التفويض','restriction'=>'قيد مهم',
+        'restriction_text'=>'يقتصر التفويض على العمليات ومعالجة البيانات ذات الصلة بـ Vodafone، ولا يشمل فحص الأنشطة التجارية الأخرى لشريك التوزيع الفرعي.',
+        'scope_items'=>[
+            'إجراء عمليات تفتيش ميدانية ومحادثات تدقيق في سياق تسويق Vodafone.',
+            'الاطلاع على العمليات والأدلة والوثائق ذات الصلة بـ Vodafone.',
+            'فحص متطلبات حماية البيانات والامتثال المعمول بها ومتطلبات العمليات والجودة الخاصة بـ Vodafone.',
+        ],
+        'document'=>'وثيقة التفويض الرسمية','document_open'=>'عرض خطاب التفويض',
+        'reference'=>'مرجع التحقق','status'=>'التفويض ساري','photo_alt'=>'صورة الشخص المخول',
+        'logo_alt'=>'شعار المشروع','partner_logo_alt'=>'شعار الوكالة المكلفة',
+        'print'=>'إعداد عرض بطاقة الهوية',
+    ],
+][$verifyLang] ?? [];
+
 $result = null;
 $error = null;
 $code = '';
@@ -199,7 +273,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             try {
                 $stmt = mmDb()->prepare(
-                    'SELECT reference_code, public_title, public_partner, public_client, valid_from, valid_until, confidentiality_mode, public_note
+                    'SELECT reference_code, public_title, public_partner, public_client, valid_from, valid_until, confidentiality_mode, public_note,
+                            person_name, role_label, agency_name, project_name, brand_name,
+                            photo_asset, brand_logo_asset, agency_logo_asset, scope_key,
+                            document_asset, document_label, document_enabled, print_card_enabled, is_personal_verification
                      FROM audit_verifications
                      WHERE reference_code = :code
                        AND is_active = 1
@@ -211,6 +288,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $row = $stmt->fetch();
                 if ($row) {
                     $result = $row;
+                    $_SESSION['mm_verified_records'] ??= [];
+                    $_SESSION['mm_verified_records'][(string)$row['reference_code']] = time();
                 } else {
                     $error = $c['missing'];
                 }
@@ -221,7 +300,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-mmHeader($c['title'], $c['lead'], in_array($verifyLang, ['tr','ar'], true) ? 'noindex,follow' : 'index,follow', $verifyLang);
+$verifyRobots = in_array($verifyLang, ['tr','ar'], true) || (($result['is_personal_verification'] ?? 0) == 1)
+    ? 'noindex,follow'
+    : 'index,follow';
+mmHeader($c['title'], $c['lead'], $verifyRobots, $verifyLang);
 $rtl = $verifyLang === 'ar';
 ?>
 <section class="hero">
@@ -243,18 +325,75 @@ $rtl = $verifyLang === 'ar';
   <div class="verify-box">
     <?php if ($error): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
     <?php if ($result): ?>
-      <div class="alert success">
-        <strong><?= mmEscape($c['verified']) ?></strong>
-        <p><?= mmEscape((string)$result['public_title']) ?></p>
-        <?php if (($result['confidentiality_mode'] ?? '') === 'confidential'): ?>
-          <p><?= mmEscape($c['conf']) ?></p>
-        <?php else: ?>
-          <?php if (!empty($result['public_partner'])): ?><p><strong><?= mmEscape($c['partner']) ?>:</strong> <?= mmEscape((string)$result['public_partner']) ?></p><?php endif; ?>
-          <?php if (!empty($result['public_client'])): ?><p><strong><?= mmEscape($c['client']) ?>:</strong> <?= mmEscape((string)$result['public_client']) ?></p><?php endif; ?>
-        <?php endif; ?>
-        <?php if (!empty($result['valid_from']) || !empty($result['valid_until'])): ?><p><strong><?= mmEscape($c['valid']) ?>:</strong> <?= mmEscape((string)($result['valid_from'] ?: '—')) ?> – <?= mmEscape((string)($result['valid_until'] ?: '—')) ?></p><?php endif; ?>
-        <?php if (!empty($result['public_note'])): ?><p><?= mmEscape((string)$result['public_note']) ?></p><?php endif; ?>
-      </div>
+      <?php $isPersonal = ((int)($result['is_personal_verification'] ?? 0)) === 1; ?>
+      <?php if ($isPersonal): ?>
+        <article class="verify-credential">
+          <div class="verify-credential-head">
+            <div class="verify-brand-lockup">
+              <?php if (!empty($result['brand_logo_asset'])): ?>
+                <img src="/verify-asset.php?code=<?= rawurlencode((string)$result['reference_code']) ?>&type=brand_logo" alt="<?= mmEscape($detailCopy['logo_alt']) ?>">
+              <?php else: ?>
+                <strong><?= mmEscape((string)($result['brand_name'] ?: $result['public_client'])) ?></strong>
+              <?php endif; ?>
+              <span><?= mmEscape($detailCopy['status']) ?></span>
+            </div>
+            <span class="status"><?= mmEscape($c['verified']) ?></span>
+          </div>
+
+          <div class="verify-person">
+            <?php if (!empty($result['photo_asset'])): ?>
+              <img class="verify-person-photo" src="/verify-asset.php?code=<?= rawurlencode((string)$result['reference_code']) ?>&type=photo" alt="<?= mmEscape($detailCopy['photo_alt']) ?>">
+            <?php endif; ?>
+            <div>
+              <small><?= mmEscape($detailCopy['identity']) ?></small>
+              <h2><?= mmEscape((string)$result['person_name']) ?></h2>
+              <?php if (!empty($result['role_label'])): ?><p class="verify-role"><?= mmEscape((string)$result['role_label']) ?></p><?php endif; ?>
+              <p><strong><?= mmEscape($detailCopy['reference']) ?>:</strong> <?= mmEscape((string)$result['reference_code']) ?></p>
+              <?php if (!empty($result['valid_until'])): ?><p><strong><?= mmEscape($c['valid']) ?>:</strong> <?= mmEscape((string)$result['valid_until']) ?></p><?php endif; ?>
+            </div>
+          </div>
+
+          <div class="verify-context-grid">
+            <div><small><?= mmEscape($detailCopy['agency']) ?></small>
+              <?php if (!empty($result['agency_logo_asset'])): ?><img class="verify-partner-logo" src="/verify-asset.php?code=<?= rawurlencode((string)$result['reference_code']) ?>&type=agency_logo" alt="<?= mmEscape($detailCopy['partner_logo_alt']) ?>"><?php endif; ?>
+              <strong><?= mmEscape((string)($result['agency_name'] ?: $result['public_partner'])) ?></strong>
+            </div>
+            <div><small><?= mmEscape($detailCopy['project']) ?></small><strong><?= mmEscape((string)($result['project_name'] ?: $result['public_title'])) ?></strong></div>
+          </div>
+
+          <?php if (($result['scope_key'] ?? '') === 'vodafone_skopos_2026'): ?>
+            <div class="verify-scope">
+              <h3><?= mmEscape($detailCopy['scope']) ?></h3>
+              <ul><?php foreach ($detailCopy['scope_items'] as $item): ?><li><?= mmEscape($item) ?></li><?php endforeach; ?></ul>
+              <div class="notice"><strong><?= mmEscape($detailCopy['restriction']) ?></strong><p><?= mmEscape($detailCopy['restriction_text']) ?></p></div>
+            </div>
+          <?php endif; ?>
+
+          <?php if (!empty($result['public_note'])): ?><p><?= mmEscape((string)$result['public_note']) ?></p><?php endif; ?>
+
+          <div class="actions">
+            <?php if (!empty($result['document_enabled']) && !empty($result['document_asset'])): ?>
+              <a class="button" href="/verify-asset.php?code=<?= rawurlencode((string)$result['reference_code']) ?>&type=document" target="_blank" rel="noopener"><?= mmEscape($detailCopy['document_open']) ?></a>
+            <?php endif; ?>
+            <?php if (!empty($result['print_card_enabled'])): ?>
+              <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$result['reference_code']) ?>"><?= mmEscape($detailCopy['print']) ?></a>
+            <?php endif; ?>
+          </div>
+        </article>
+      <?php else: ?>
+        <div class="alert success">
+          <strong><?= mmEscape($c['verified']) ?></strong>
+          <p><?= mmEscape((string)$result['public_title']) ?></p>
+          <?php if (($result['confidentiality_mode'] ?? '') === 'confidential'): ?>
+            <p><?= mmEscape($c['conf']) ?></p>
+          <?php else: ?>
+            <?php if (!empty($result['public_partner'])): ?><p><strong><?= mmEscape($c['partner']) ?>:</strong> <?= mmEscape((string)$result['public_partner']) ?></p><?php endif; ?>
+            <?php if (!empty($result['public_client'])): ?><p><strong><?= mmEscape($c['client']) ?>:</strong> <?= mmEscape((string)$result['public_client']) ?></p><?php endif; ?>
+          <?php endif; ?>
+          <?php if (!empty($result['valid_from']) || !empty($result['valid_until'])): ?><p><strong><?= mmEscape($c['valid']) ?>:</strong> <?= mmEscape((string)($result['valid_from'] ?: '—')) ?> – <?= mmEscape((string)($result['valid_until'] ?: '—')) ?></p><?php endif; ?>
+          <?php if (!empty($result['public_note'])): ?><p><?= mmEscape((string)$result['public_note']) ?></p><?php endif; ?>
+        </div>
+      <?php endif; ?>
     <?php endif; ?>
     <form method="post" action="/verify.php?lang=<?= mmEscape(mmLanguage()) ?>&verify_lang=<?= mmEscape($verifyLang) ?>">
       <label><?= mmEscape($c['label']) ?>
