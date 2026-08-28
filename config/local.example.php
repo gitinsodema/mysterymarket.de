@@ -13,6 +13,7 @@ return [
     ],
     'security' => [
         'rate_limit_salt' => 'REPLACE_WITH_A_LONG_RANDOM_SECRET',
+        'verify_asset_dir' => '/var/www/vhosts/mysterymarket.de/private/verify-assets',
     ],
     'legal' => [
         'brand' => 'MysteryMarket',
