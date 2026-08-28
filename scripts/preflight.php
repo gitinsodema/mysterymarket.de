@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 $root = dirname(__DIR__);
 $required = [
+    '.htaccess','VERSION','docs/RELEASE_V1.md',
     'index.php','404.php','services.php','audits.php','verify.php','verify-asset.php','verify-card.php','tools.php','elite-shopper.php','about.php','contact.php',
     'legal-notice.php','privacy.php',
     'includes/site.php','includes/config.php','includes/db.php','includes/i18n.php','includes/content.php',
@@ -11,6 +12,23 @@ $required = [
 ];
 
 $failures = 0;
+
+$version = trim((string)@file_get_contents($root . '/VERSION'));
+if ($version === '1.0.0') {
+    echo "[PASS] MysteryMarket release version 1.0.0\n";
+} else {
+    fwrite(STDERR, "[FAIL] VERSION must be 1.0.0 for the V1 release candidate\n");
+    $failures++;
+}
+
+$htaccess = @file_get_contents($root . '/.htaccess') ?: '';
+if (str_contains($htaccess, 'Permissions-Policy "camera=(self), microphone=(), geolocation=(), payment=(), usb=()"')) {
+    echo "[PASS] first-party Verify camera permission is configured\n";
+} else {
+    fwrite(STDERR, "[FAIL] Verify camera Permissions-Policy is missing or too restrictive\n");
+    $failures++;
+}
+
 foreach ($required as $file) {
     if (!is_file($root . '/' . $file)) {
         fwrite(STDERR, "[FAIL] Missing: {$file}\n");
