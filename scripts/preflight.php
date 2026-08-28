@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 $root = dirname(__DIR__);
 $required = [
-    'index.php','404.php','services.php','audits.php','verify.php','tools.php','elite-shopper.php','about.php','contact.php',
+    'index.php','404.php','services.php','audits.php','verify.php','verify-asset.php','tools.php','elite-shopper.php','about.php','contact.php',
     'legal-notice.php','privacy.php',
     'includes/site.php','includes/config.php','includes/db.php','includes/i18n.php','includes/content.php',
     'lang/de.php','lang/en.php','lang/nl.php',
-    'public/css/style.css','public/js/cookie-consent.js','public/js/verify-qr.js','public/vendor/qr-scanner/qr-scanner.min.js','public/vendor/qr-scanner/qr-scanner-worker.min.js','public/vendor/qr-scanner/LICENSE','favicon.ico','robots.txt','sitemap.xml','database/schema.sql','database/20260828_contact_notification_status.sql','database/20260828_contact_reference_code.sql','database/20260828_verify_rate_limit.sql'
+    'public/css/style.css','public/js/cookie-consent.js','public/js/verify-qr.js','public/vendor/qr-scanner/qr-scanner.min.js','public/vendor/qr-scanner/qr-scanner-worker.min.js','public/vendor/qr-scanner/LICENSE','favicon.ico','robots.txt','sitemap.xml','database/schema.sql','database/20260828_contact_notification_status.sql','database/20260828_contact_reference_code.sql','database/20260828_verify_rate_limit.sql','database/20260828_verify_identity_assets.sql'
 ];
 
 $failures = 0;
@@ -52,6 +52,13 @@ if (!is_file($config)) {
         echo "[PASS] security.rate_limit_salt is configured\n";
     } else {
         fwrite(STDERR, "[WARN] security.rate_limit_salt should contain at least 32 random characters; Verify will fall back to session-only throttling until configured\n");
+    }
+
+    $assetDir = rtrim((string)($local['security']['verify_asset_dir'] ?? ''), '/');
+    if ($assetDir !== '' && is_dir($assetDir) && !str_starts_with($assetDir, $root . '/')) {
+        echo "[PASS] security.verify_asset_dir is configured outside the webroot\n";
+    } else {
+        fwrite(STDERR, "[WARN] security.verify_asset_dir should point to an existing directory outside the webroot\n");
     }
 }
 
