@@ -41,8 +41,29 @@ $_SESSION['mm_contact_attempts'] = array_values(array_filter(
     static fn($ts): bool => is_int($ts) && $ts > $contactNow - 1800
 ));
 
+function mmGenerateContactReference(PDO $pdo): string
+{
+    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+    for ($attempt = 0; $attempt < 20; $attempt++) {
+        $reference = '';
+        for ($i = 0; $i < 5; $i++) {
+            $reference .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+        }
+
+        $stmt = $pdo->prepare('SELECT 1 FROM contact_requests WHERE reference_code = :reference LIMIT 1');
+        $stmt->execute(['reference' => $reference]);
+        if (!$stmt->fetchColumn()) {
+            return $reference;
+        }
+    }
+
+    throw new RuntimeException('Could not generate a unique contact reference.');
+}
+
 function mmSendContactNotification(
     int $requestId,
+    string $referenceCode,
     string $typeLabel,
     string $name,
     string $organisation,
@@ -60,12 +81,13 @@ function mmSendContactNotification(
     }
 
     $safeSubject = preg_replace('/[\r\n]+/', ' ', $subject) ?: 'Contact enquiry';
-    $mailSubject = sprintf('[MysteryMarket #%d] %s · %s', $requestId, $typeLabel, $safeSubject);
+    $mailSubject = sprintf('[MysteryMarket %s] %s · %s', $referenceCode, $typeLabel, $safeSubject);
 
     $body = implode(PHP_EOL, [
         'New enquiry via mysterymarket.de',
         '',
         'DB-ID: ' . $requestId,
+        'Reference: ' . $referenceCode,
         'Type: ' . $typeLabel,
         'Name: ' . $name,
         'Organisation: ' . ($organisation !== '' ? $organisation : '—'),
@@ -90,7 +112,7 @@ function mmSendContactNotification(
 }
 
 function mmSendContactReceipt(
-    int $requestId,
+    string $referenceCode,
     string $typeLabel,
     string $name,
     string $email,
@@ -108,7 +130,7 @@ function mmSendContactReceipt(
             'subject' => 'Vielen Dank – wir haben Ihre Anfrage erhalten',
             'hello' => 'Guten Tag',
             'thanks' => 'vielen Dank für Ihre Anfrage bei MysteryMarket.',
-            'received' => 'Wir haben Ihre Nachricht erhalten und unter der Referenz #%d gespeichert.',
+            'received' => 'Wir haben Ihre Nachricht erhalten und unter der Referenz %s gespeichert.',
             'type' => 'Anfrageart',
             'next' => 'Wir prüfen die Anfrage und melden uns, sobald eine Rückmeldung erforderlich oder möglich ist.',
             'reply' => 'Wenn Sie noch etwas ergänzen möchten, können Sie einfach auf diese E-Mail antworten.',
@@ -118,7 +140,7 @@ function mmSendContactReceipt(
             'subject' => 'Thank you – we have received your enquiry',
             'hello' => 'Hello',
             'thanks' => 'thank you for contacting MysteryMarket.',
-            'received' => 'We have received your message and stored it under reference #%d.',
+            'received' => 'We have received your message and stored it under reference %s.',
             'type' => 'Enquiry type',
             'next' => 'We will review your enquiry and get back to you when a response is required or possible.',
             'reply' => 'If you would like to add anything, simply reply to this email.',
@@ -128,7 +150,7 @@ function mmSendContactReceipt(
             'subject' => 'Bedankt – we hebben uw aanvraag ontvangen',
             'hello' => 'Hallo',
             'thanks' => 'bedankt voor uw aanvraag bij MysteryMarket.',
-            'received' => 'We hebben uw bericht ontvangen en opgeslagen onder referentie #%d.',
+            'received' => 'We hebben uw bericht ontvangen en opgeslagen onder referentie %s.',
             'type' => 'Type aanvraag',
             'next' => 'We bekijken uw aanvraag en nemen contact op zodra een reactie nodig of mogelijk is.',
             'reply' => 'Wilt u nog iets aanvullen, dan kunt u eenvoudig op deze e-mail antwoorden.',
@@ -147,7 +169,7 @@ function mmSendContactReceipt(
         . '<tr><td style="padding:30px 28px">'
         . '<p style="margin:0 0 16px">' . $t['hello'] . ' ' . $safeName . ',</p>'
         . '<p style="margin:0 0 16px">' . $t['thanks'] . '</p>'
-        . '<p style="margin:0 0 16px">' . sprintf($t['received'], $requestId) . '</p>'
+        . '<p style="margin:0 0 16px">' . sprintf($t['received'], htmlspecialchars($referenceCode, ENT_QUOTES, 'UTF-8')) . '</p>'
         . '<div style="margin:20px 0;padding:14px 16px;background:#e5f5f5;border-left:4px solid #008c96;border-radius:8px"><strong>' . $t['type'] . ':</strong> ' . $safeType . '</div>'
         . '<p style="margin:0 0 16px">' . $t['next'] . '</p>'
         . '<p style="margin:0">' . $t['reply'] . '</p>'
@@ -204,12 +226,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$errors) {
         try {
             $pdo = mmDb();
+            $referenceCode = mmGenerateContactReference($pdo);
             $stmt = $pdo->prepare(
                 'INSERT INTO contact_requests
-                (request_type, name, organisation, email, phone, subject, message, privacy_acknowledged_at, created_at)
-                VALUES (:request_type,:name,:organisation,:email,:phone,:subject,:message,NOW(),NOW())'
+                (reference_code, request_type, name, organisation, email, phone, subject, message, privacy_acknowledged_at, created_at)
+                VALUES (:reference_code,:request_type,:name,:organisation,:email,:phone,:subject,:message,NOW(),NOW())'
             );
             $stmt->execute([
+                'reference_code' => $referenceCode,
                 'request_type' => $type,
                 'name' => $name,
                 'organisation' => $organisation,
@@ -222,6 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $requestId = (int)$pdo->lastInsertId();
             $notificationSent = mmSendContactNotification(
                 $requestId,
+                $referenceCode,
                 $typeLabels[$type],
                 $name,
                 $organisation,
@@ -239,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $notificationStmt->execute(['id' => $requestId]);
 
             $confirmationSent = mmSendContactReceipt(
-                $requestId,
+                $referenceCode,
                 $typeLabels[$type],
                 $name,
                 $email,
