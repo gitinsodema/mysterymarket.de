@@ -92,8 +92,8 @@ mmHeader($c['title'], $c['description']);
   <div class="partner-grid">
     <div class="partner-card"><span><?= mmEscape($c['audit_partner']) ?></span><strong>SKOPOS NEXT</strong></div>
     <div class="partner-card"><span><?= mmEscape($c['project_context']) ?></span><strong>Vodafone</strong></div>
-    <div class="partner-card"><span><?= mmEscape($c['audit_partner']) ?></span><strong>BARE International</strong></div>
-    <div class="partner-card"><span><?= mmEscape($c['project_context']) ?></span><strong>HP</strong></div>
+    <div class="partner-card"><span><?= mmEscape($c['audit_partner']) ?></span><strong>Specialised Audit Partner</strong></div>
+    <div class="partner-card"><span><?= mmEscape($c['project_context']) ?></span><strong>Brand & Retail Audits</strong></div>
   </div>
 </section>
 
