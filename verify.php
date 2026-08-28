@@ -221,7 +221,9 @@ $_SESSION['mm_verify_attempts'] = array_values(array_filter(
     static fn($ts): bool => is_int($ts) && $ts > $now - 600
 ));
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$autoVerify = $_SERVER['REQUEST_METHOD'] === 'GET' && $getCode !== '' && preg_match('/^[A-Z0-9-]{4,64}$/', $getCode);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' || $autoVerify) {
     $rateLimited = count($_SESSION['mm_verify_attempts']) >= 12;
     $ipHash = mmClientIpHash();
 
@@ -267,7 +269,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        $code = strtoupper(trim((string)($_POST['code'] ?? '')));
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $code = strtoupper(trim((string)($_POST['code'] ?? '')));
+        }
+
         if ($code === '' || strlen($code) > 64) {
             $error = $c['invalid'];
         } else {
@@ -316,7 +321,8 @@ $rtl = $verifyLang === 'ar';
     <span>Verify language</span>
     <?php foreach (['de'=>'DE','en'=>'EN','nl'=>'NL','tr'=>'TR','ar'=>'AR'] as $key => $label): ?>
       <?php $globalLang = in_array($key, ['de','en','nl'], true) ? $key : mmLanguage(); ?>
-      <a href="/verify.php?lang=<?= mmEscape($globalLang) ?>&verify_lang=<?= mmEscape($key) ?>"<?= $verifyLang === $key ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
+      <?php $langHref = '/verify.php?lang=' . rawurlencode($globalLang) . '&verify_lang=' . rawurlencode($key) . ($code !== '' ? '&code=' . rawurlencode($code) : ''); ?>
+      <a href="<?= mmEscape($langHref) ?>"<?= $verifyLang === $key ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
     <?php endforeach; ?>
   </div>
 </section>
@@ -373,7 +379,7 @@ $rtl = $verifyLang === 'ar';
 
           <div class="actions">
             <?php if (!empty($result['document_enabled']) && !empty($result['document_asset'])): ?>
-              <a class="button" href="/verify-asset.php?code=<?= rawurlencode((string)$result['reference_code']) ?>&type=document" target="_blank" rel="noopener"><?= mmEscape($detailCopy['document_open']) ?></a>
+              <a class="button" href="/verify-asset.php?code=<?= rawurlencode((string)$result['reference_code']) ?>&type=document" target="_blank" rel="noopener" title="<?= mmEscape((string)($result['document_label'] ?: $detailCopy['document'])) ?>"><?= mmEscape((string)($result['document_label'] ?: $detailCopy['document_open'])) ?></a>
             <?php endif; ?>
             <?php if (!empty($result['print_card_enabled'])): ?>
               <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$result['reference_code']) ?>"><?= mmEscape($detailCopy['print']) ?></a>
