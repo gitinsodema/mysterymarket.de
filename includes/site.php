@@ -19,20 +19,46 @@ function mmNav(): array
     ];
 }
 
-function mmHeader(string $title, string $description = '', string $robots = 'index,follow'): void
+function mmHeader(string $title, string $description = '', string $robots = 'index,follow', ?string $htmlLang = null): void
 {
     $nav = mmNav();
     $current = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
     $lang = mmLanguage();
+    $docLang = $htmlLang ?? $lang;
+    $baseUrl = 'https://mysterymarket.de';
+    $canonicalPath = mmLangUrl($current, $lang);
+    $canonicalUrl = $baseUrl . $canonicalPath;
+    $ogLocale = match ($docLang) {
+        'en' => 'en_GB',
+        'nl' => 'nl_NL',
+        'tr' => 'tr_TR',
+        'ar' => 'ar_AR',
+        default => 'de_DE',
+    };
     ?>
 <!doctype html>
-<html lang="<?= mmEscape($lang) ?>">
+<html lang="<?= mmEscape($docLang) ?>"<?= $docLang === 'ar' ? ' dir="rtl"' : '' ?>>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title><?= mmEscape($title) ?> · MysteryMarket</title>
     <meta name="description" content="<?= mmEscape($description) ?>">
     <meta name="robots" content="<?= mmEscape($robots) ?>">
+    <meta name="theme-color" content="#001950">
+    <link rel="canonical" href="<?= mmEscape($canonicalUrl) ?>">
+    <link rel="alternate" hreflang="de" href="<?= mmEscape($baseUrl . mmLangUrl($current, 'de')) ?>">
+    <link rel="alternate" hreflang="en" href="<?= mmEscape($baseUrl . mmLangUrl($current, 'en')) ?>">
+    <link rel="alternate" hreflang="nl" href="<?= mmEscape($baseUrl . mmLangUrl($current, 'nl')) ?>">
+    <link rel="alternate" hreflang="x-default" href="<?= mmEscape($baseUrl . mmLangUrl($current, 'de')) ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MysteryMarket">
+    <meta property="og:title" content="<?= mmEscape($title . ' · MysteryMarket') ?>">
+    <meta property="og:description" content="<?= mmEscape($description) ?>">
+    <meta property="og:url" content="<?= mmEscape($canonicalUrl) ?>">
+    <meta property="og:locale" content="<?= mmEscape($ogLocale) ?>">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="<?= mmEscape($title . ' · MysteryMarket') ?>">
+    <meta name="twitter:description" content="<?= mmEscape($description) ?>">
     <link rel="stylesheet" href="/public/css/style.css">
 </head>
 <body>
