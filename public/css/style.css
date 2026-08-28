@@ -163,3 +163,10 @@ textarea{min-height:150px;resize:vertical}
 .site-footer .footer-bottom{margin-top:18px}
 @media(max-width:900px){.footer-primary{grid-template-columns:1fr 1fr}.product-strip{grid-template-columns:1fr 1fr}.product-strip-intro{grid-column:1/-1}}
 @media(max-width:620px){.footer-primary,.product-strip{grid-template-columns:1fr}.product-strip-intro{grid-column:auto}}
+
+.not-found{min-height:62vh;padding:70px 0;display:grid;grid-template-columns:.45fr 1fr;gap:42px;align-items:center}
+.not-found-code{font-size:clamp(110px,18vw,220px);font-weight:900;line-height:.8;letter-spacing:-.08em;color:#e5e9f0}
+.not-found-copy{max-width:760px}
+.not-found-copy h1{font-size:clamp(40px,6vw,70px)}
+.audit-quote{margin-top:26px;padding:18px 20px;background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:10px;color:var(--ink);font-weight:700}
+@media(max-width:850px){.not-found{grid-template-columns:1fr;gap:10px}.not-found-code{font-size:110px}}
