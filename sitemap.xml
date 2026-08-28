@@ -6,12 +6,69 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/?lang=en"/>
     <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/"/>
   </url>
-  <url><loc>https://mysterymarket.de/services.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/services.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/services.php?lang=nl"/></url>
-  <url><loc>https://mysterymarket.de/audits.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/audits.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/audits.php?lang=nl"/></url>
-  <url><loc>https://mysterymarket.de/verify.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/verify.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/verify.php?lang=nl"/></url>
-  <url><loc>https://mysterymarket.de/tools.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/tools.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/tools.php?lang=nl"/></url>
-  <url><loc>https://mysterymarket.de/elite-shopper.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/elite-shopper.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/elite-shopper.php?lang=nl"/></url>
-  <url><loc>https://mysterymarket.de/about.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/about.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/about.php?lang=nl"/></url>
-  <url><loc>https://mysterymarket.de/contact.php</loc><xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/contact.php?lang=en"/><xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/contact.php?lang=nl"/></url>
+  <url>
+    <loc>https://mysterymarket.de/services.php</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/services.php"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/services.php?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/services.php?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/services.php"/>
+  </url>
+  <url>
+    <loc>https://mysterymarket.de/audits.php</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/audits.php"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/audits.php?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/audits.php?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/audits.php"/>
+  </url>
+  <url>
+    <loc>https://mysterymarket.de/verify.php</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/verify.php"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/verify.php?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/verify.php?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/verify.php"/>
+  </url>
+  <url>
+    <loc>https://mysterymarket.de/tools.php</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/tools.php"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/tools.php?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/tools.php?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/tools.php"/>
+  </url>
+  <url>
+    <loc>https://mysterymarket.de/elite-shopper.php</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/elite-shopper.php"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/elite-shopper.php?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/elite-shopper.php?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/elite-shopper.php"/>
+  </url>
+  <url>
+    <loc>https://mysterymarket.de/about.php</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/about.php"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/about.php?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/about.php?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/about.php"/>
+  </url>
+  <url>
+    <loc>https://mysterymarket.de/contact.php</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/contact.php"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/contact.php?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/contact.php?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/contact.php"/>
+  </url>
+  <url>
+    <loc>https://mysterymarket.de/legal-notice.php</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/legal-notice.php"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/legal-notice.php?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/legal-notice.php?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/legal-notice.php"/>
+  </url>
+  <url>
+    <loc>https://mysterymarket.de/privacy.php</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/privacy.php"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/privacy.php?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/privacy.php?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/privacy.php"/>
+  </url>
 </urlset>
