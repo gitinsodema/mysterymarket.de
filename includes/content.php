@@ -11,7 +11,7 @@ function mmPageCopy(string $page): array
                 'description'=>'MysteryMarket führt strukturierte Audits, Inspektionen und Field Services für Agenturen und direkte Auftraggeber durch.',
                 'hero'=>'Operative Audits für Agenturen und Auftraggeber.',
                 'lead'=>'MysteryMarket übernimmt strukturierte Vor-Ort-Prüfungen, Field Audits und Mystery Visits nach definierten Vorgaben – als operativer Partner für Audit-, Research- und Field-Service-Agenturen sowie für direkte Auftraggeber.',
-                'services'=>'Leistungsbereiche','services_title'=>'Von Asset Inspection bis Mystery Audit.','services_lead'=>'Sechs operative Leistungsfelder, die einzeln oder innerhalb bestehender Agenturprogramme eingesetzt werden können.',
+                'services'=>'Leistungsbereiche','services_title'=>'Audits · Inspections · Mystery Visits.','services_lead'=>'Sechs operative Leistungsfelder, die einzeln oder innerhalb bestehender Agenturprogramme eingesetzt werden können.',
                 'collab'=>'Zusammenarbeit','collab_title'=>'Wir arbeiten in bestehenden Agentur- und Kundenstrukturen.','collab_lead'=>'MysteryMarket ergänzt vorhandene Projektteams dort, wo zuverlässige operative Durchführung vor Ort gebraucht wird.',
                 'agency'=>'Für Agenturen','agency_text'=>'Operative Durchführung definierter Audit- und Mystery-Programme nach Briefing, Methodik und Qualitätsanforderungen des Auftraggebers.',
                 'direct'=>'Für direkte Auftraggeber','direct_text'=>'Vor-Ort-Prüfungen, Inspektionen und strukturierte Erhebungen mit klarer Dokumentation und abgestimmtem Leistungsumfang.',
@@ -25,7 +25,7 @@ function mmPageCopy(string $page): array
             'en' => [
                 'title'=>'Independent Audit & Field Services','description'=>'MysteryMarket delivers structured audits, inspections and field services for agencies and direct clients.',
                 'hero'=>'Operational audits for agencies and clients.','lead'=>'MysteryMarket delivers structured on-site inspections, field audits and mystery visits based on defined requirements – as an operational partner for audit, research and field-service agencies as well as direct clients.',
-                'services'=>'Service areas','services_title'=>'From asset inspection to mystery audit.','services_lead'=>'Six operational service areas that can be used independently or within existing agency programmes.',
+                'services'=>'Service areas','services_title'=>'Audits · Inspections · Mystery Visits.','services_lead'=>'Six operational service areas that can be used independently or within existing agency programmes.',
                 'collab'=>'Collaboration','collab_title'=>'We work within existing agency and client structures.','collab_lead'=>'MysteryMarket complements existing project teams wherever reliable on-site execution is required.',
                 'agency'=>'For agencies','agency_text'=>'Operational delivery of defined audit and mystery programmes according to the agency’s brief, methodology and quality requirements.',
                 'direct'=>'For direct clients','direct_text'=>'On-site checks, inspections and structured data collection with clear documentation and an agreed scope.',
@@ -39,7 +39,7 @@ function mmPageCopy(string $page): array
             'nl' => [
                 'title'=>'Independent Audit & Field Services','description'=>'MysteryMarket voert gestructureerde audits, inspecties en field services uit voor bureaus en directe opdrachtgevers.',
                 'hero'=>'Operationele audits voor bureaus en opdrachtgevers.','lead'=>'MysteryMarket voert gestructureerde controles op locatie, field audits en mystery visits uit volgens duidelijke projectvereisten – als operationele partner voor audit-, research- en field-servicebureaus en directe opdrachtgevers.',
-                'services'=>'Diensten','services_title'=>'Van asset inspection tot mystery audit.','services_lead'=>'Zes operationele dienstgebieden die afzonderlijk of binnen bestaande bureauprogramma’s kunnen worden ingezet.',
+                'services'=>'Diensten','services_title'=>'Audits · Inspections · Mystery Visits.','services_lead'=>'Zes operationele dienstgebieden die afzonderlijk of binnen bestaande bureauprogramma’s kunnen worden ingezet.',
                 'collab'=>'Samenwerking','collab_title'=>'We werken binnen bestaande bureau- en klantstructuren.','collab_lead'=>'MysteryMarket vult bestaande projectteams aan waar betrouwbare uitvoering op locatie nodig is.',
                 'agency'=>'Voor bureaus','agency_text'=>'Operationele uitvoering van gedefinieerde audit- en mysteryprogramma’s volgens briefing, methodiek en kwaliteitseisen van de opdrachtgever.',
                 'direct'=>'Voor directe opdrachtgevers','direct_text'=>'Controles op locatie, inspecties en gestructureerde gegevensverzameling met duidelijke documentatie en afgesproken scope.',
