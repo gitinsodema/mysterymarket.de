@@ -46,7 +46,7 @@ mmHeader($c['title'], $c['lead']);
 <div class="definition"><strong><?= mmEscape($c['hosting']) ?></strong><div><?= mmEscape($text['hosting']) ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['contact']) ?></strong><div><?= mmEscape($text['contact']) ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['verify']) ?></strong><div><?= mmEscape($text['verify']) ?></div></div>
-<div class="definition"><strong><?= mmEscape($c['cookies']) ?></strong><div><?= mmEscape($text['cookies']) ?></div></div>
+<div class="definition" id="cookies"><strong><?= mmEscape($c['cookies']) ?></strong><div><?= mmEscape($text['cookies']) ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['recipients']) ?></strong><div><?= mmEscape($text['recipients']) ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['retention']) ?></strong><div><?= mmEscape($text['retention']) ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['rights']) ?></strong><div><?= mmEscape($text['rights']) ?><br><a href="mailto:privacy@mysterymarket.de">privacy@mysterymarket.de</a></div></div>
