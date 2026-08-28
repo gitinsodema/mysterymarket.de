@@ -57,8 +57,8 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
 .card-print-shell{min-height:100vh;display:grid;place-items:center;padding:24px}
 .id-card{width:var(--card-w);height:var(--card-h);background:white;border-radius:3.2mm;overflow:hidden;box-shadow:0 8px 30px #00195020;display:grid;grid-template-columns:24.5mm 1fr;position:relative}
 .id-left{background:#001950;color:white;padding:3.8mm 3.1mm;display:flex;flex-direction:column;gap:2.1mm}
-.id-brand{font-size:3.3mm;font-weight:800;line-height:1.05}
-.id-brand small{display:block;font-size:1.7mm;font-weight:500;opacity:.8;margin-top:1mm}
+.id-brand{font-size:2.75mm;font-weight:800;line-height:.96;letter-spacing:-.01em}
+.id-brand span{display:block}.id-brand small{display:block;font-size:1.55mm;font-weight:500;opacity:.8;margin-top:.9mm;line-height:1.15}
 .id-photo{width:18.5mm;height:23mm;border-radius:1.6mm;object-fit:cover;background:#e8edf4;border:0.35mm solid #ffffff55}
 .id-photo-placeholder{width:18.5mm;height:23mm;border-radius:1.6mm;background:#ffffff16;border:0.35mm solid #ffffff55;display:grid;place-items:center;text-align:center;font-size:1.65mm;padding:1.2mm}
 .id-left-bottom{margin-top:auto;font-size:1.6mm;opacity:.8}
@@ -70,6 +70,7 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
 .id-meta span{display:block;color:#667085;font-size:1.28mm;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2mm}
 .id-meta strong{display:block}.id-project strong{line-height:1.12;word-break:normal;overflow-wrap:anywhere}
 .id-logo{display:block;max-width:18mm;max-height:7mm;object-fit:contain;object-position:left center;margin-bottom:1.35mm}
+.id-agency-logo{display:block;max-width:14mm;max-height:4.2mm;object-fit:contain;object-position:left center;margin-top:.55mm;opacity:.82}
 .id-qrcol{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1.05mm;padding-top:7.2mm}
 #id-qr{width:18mm;height:18mm;background:white}
 #id-qr img,#id-qr canvas{width:18mm!important;height:18mm!important;display:block}
@@ -90,7 +91,7 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
   <div>
     <section class="id-card">
       <div class="id-left">
-        <div class="id-brand">MysteryMarket<small>Audit & Field Services</small></div>
+        <div class="id-brand"><span>Mystery</span><span>Market</span><small>Audit & Field Services</small></div>
         <?php if (!empty($row['photo_asset'])): ?>
           <img class="id-photo" src="/verify-asset.php?code=<?= rawurlencode($code) ?>&type=photo" alt="">
         <?php else: ?>
@@ -107,7 +108,7 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
           <h1 class="id-name"><?= mmEscape((string)$row['person_name']) ?></h1>
           <p class="id-role"><?= mmEscape((string)$row['role_label']) ?></p>
           <div class="id-meta">
-            <div><span>Agency Partner</span><strong><?= mmEscape((string)$row['agency_name']) ?></strong></div>
+            <div><span>Agency Partner</span><strong><?= mmEscape((string)$row['agency_name']) ?></strong><?php if (!empty($row['agency_logo_asset'])): ?><img class="id-agency-logo" src="/verify-asset.php?code=<?= rawurlencode($code) ?>&type=agency_logo" alt=""><?php endif; ?></div>
             <div class="id-project"><span>Project</span><strong><?= mmEscape((string)$row['project_name']) ?></strong></div>
             <div><span>Valid until</span><strong><?= mmEscape((string)$row['valid_until']) ?></strong></div>
           </div>
