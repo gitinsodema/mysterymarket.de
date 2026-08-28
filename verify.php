@@ -77,9 +77,7 @@ $result = null;
 $error = null;
 $code = '';
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+mmStartSecureSession();
 $_SESSION['mm_verify_attempts'] ??= [];
 $now = time();
 $_SESSION['mm_verify_attempts'] = array_values(array_filter(
@@ -88,7 +86,27 @@ $_SESSION['mm_verify_attempts'] = array_values(array_filter(
 ));
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (count($_SESSION['mm_verify_attempts']) >= 12) {
+    $rateLimited = count($_SESSION['mm_verify_attempts']) >= 12;
+    $ipHash = mmClientIpHash();
+
+    if (!$rateLimited && $ipHash !== '') {
+        try {
+            $pdo = mmDb();
+            $pdo->exec("DELETE FROM verify_rate_limits WHERE attempted_at < (NOW() - INTERVAL 1 DAY)");
+
+            $limitStmt = $pdo->prepare(
+                'SELECT COUNT(*) FROM verify_rate_limits
+                 WHERE ip_hash = :ip_hash
+                   AND attempted_at > (NOW() - INTERVAL 10 MINUTE)'
+            );
+            $limitStmt->execute(['ip_hash' => $ipHash]);
+            $rateLimited = ((int)$limitStmt->fetchColumn()) >= 12;
+        } catch (Throwable $e) {
+            $rateLimited = count($_SESSION['mm_verify_attempts']) >= 12;
+        }
+    }
+
+    if ($rateLimited) {
         http_response_code(429);
         $error = $verifyLang === 'de'
             ? 'Zu viele Verifikationsversuche. Bitte versuchen Sie es in einigen Minuten erneut.'
@@ -101,6 +119,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         : 'Too many verification attempts. Please try again in a few minutes.')));
     } else {
         $_SESSION['mm_verify_attempts'][] = $now;
+
+        if ($ipHash !== '') {
+            try {
+                $attemptStmt = mmDb()->prepare(
+                    'INSERT INTO verify_rate_limits (ip_hash, attempted_at) VALUES (:ip_hash, NOW())'
+                );
+                $attemptStmt->execute(['ip_hash' => $ipHash]);
+            } catch (Throwable $e) {
+                // Session-based limiting remains active if persistent limiting is temporarily unavailable.
+            }
+        }
+
         $code = strtoupper(trim((string)($_POST['code'] ?? '')));
         if ($code === '' || strlen($code) > 64) {
             $error = $c['invalid'];
@@ -141,7 +171,8 @@ $rtl = $verifyLang === 'ar';
   <div class="verify-language" aria-label="Verification language">
     <span>Verify language</span>
     <?php foreach (['de'=>'DE','en'=>'EN','nl'=>'NL','tr'=>'TR','ar'=>'AR'] as $key => $label): ?>
-      <a href="/verify.php?verify_lang=<?= mmEscape($key) ?>"<?= $verifyLang === $key ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
+      <?php $globalLang = in_array($key, ['de','en','nl'], true) ? $key : mmLanguage(); ?>
+      <a href="/verify.php?lang=<?= mmEscape($globalLang) ?>&verify_lang=<?= mmEscape($key) ?>"<?= $verifyLang === $key ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
     <?php endforeach; ?>
   </div>
 </section>
@@ -162,7 +193,7 @@ $rtl = $verifyLang === 'ar';
         <?php if (!empty($result['public_note'])): ?><p><?= mmEscape((string)$result['public_note']) ?></p><?php endif; ?>
       </div>
     <?php endif; ?>
-    <form method="post" action="/verify.php?verify_lang=<?= mmEscape($verifyLang) ?>">
+    <form method="post" action="/verify.php?lang=<?= mmEscape(mmLanguage()) ?>&verify_lang=<?= mmEscape($verifyLang) ?>">
       <label><?= mmEscape($c['label']) ?>
         <input name="code" maxlength="64" autocomplete="off" placeholder="MM-26-XXXX" value="<?= mmEscape($code) ?>" required>
       </label>
