@@ -46,6 +46,38 @@ mmHeader($c['title'], $c['description']);
   </div>
 </section>
 
+<section class="section">
+  <div class="section-head">
+    <p class="eyebrow"><?= mmEscape($c['coverage']) ?></p>
+    <h2><?= mmEscape($c['coverage_title']) ?></h2>
+    <p class="lead"><?= mmEscape($c['coverage_text']) ?></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <p class="eyebrow"><?= mmEscape($c['quality']) ?></p>
+    <h2><?= mmEscape($c['quality_title']) ?></h2>
+  </div>
+  <div class="grid">
+    <article class="card"><h3><?= mmEscape($c['quality1']) ?></h3><p><?= mmEscape($c['quality1_text']) ?></p></article>
+    <article class="card"><h3><?= mmEscape($c['quality2']) ?></h3><p><?= mmEscape($c['quality2_text']) ?></p></article>
+    <article class="card"><h3><?= mmEscape($c['quality3']) ?></h3><p><?= mmEscape($c['quality3_text']) ?></p></article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <p class="eyebrow"><?= mmEscape($c['process']) ?></p>
+    <h2><?= mmEscape($c['process_title']) ?></h2>
+  </div>
+  <div class="process-grid">
+    <article><span>01</span><h3><?= mmEscape($c['process1']) ?></h3><p><?= mmEscape($c['process1_text']) ?></p></article>
+    <article><span>02</span><h3><?= mmEscape($c['process2']) ?></h3><p><?= mmEscape($c['process2_text']) ?></p></article>
+    <article><span>03</span><h3><?= mmEscape($c['process3']) ?></h3><p><?= mmEscape($c['process3_text']) ?></p></article>
+  </div>
+</section>
+
 <section class="section elite-signal">
   <div>
     <p class="eyebrow"><?= mmEscape($c['signal']) ?></p>
