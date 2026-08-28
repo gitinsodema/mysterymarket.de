@@ -10,7 +10,7 @@ function mmNav(): array
         '/services.php' => 'Leistungen',
         '/audits.php' => 'Aktuelle Audits',
         '/verify.php' => 'Verify',
-        '/tools.php' => 'Unsere Tools',
+        '/tools.php' => 'OPS',
         '/about.php' => 'About',
         '/contact.php' => 'Kontakt',
     ];
@@ -52,26 +52,46 @@ function mmFooter(): void
     ?>
 </main>
 <footer class="site-footer">
-    <div>
+    <div class="footer-brand">
         <strong>MysteryMarket</strong>
-        <p>Independent Audit & Field Services · Düsseldorf / Germany</p>
-        <p><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a> · <a href="mailto:partners@mysterymarket.de">partners@mysterymarket.de</a></p>
+        <p>Independent Audit & Field Services<br>Düsseldorf / Germany</p>
     </div>
-    <div class="footer-links">
-        <a href="/legal-notice.php">Impressum</a>
-        <a href="/privacy.php">Datenschutz</a>
-        <button type="button" class="link-button" data-cookie-settings>Cookie-Einstellungen</button>
+    <div>
+        <strong class="footer-heading">Kontakt</strong>
+        <p><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a><br><a href="mailto:partners@mysterymarket.de">partners@mysterymarket.de</a></p>
     </div>
-    <p class="system-note">Operational tools include INSODEMA systems. INSODEMA · Research & Decision Lab.</p>
+    <div>
+        <strong class="footer-heading">Navigation</strong>
+        <div class="footer-links">
+            <a href="/services.php">Leistungen</a>
+            <a href="/audits.php">Aktuelle Audits</a>
+            <a href="/verify.php">Verify</a>
+            <a href="/tools.php">OPS</a>
+        </div>
+    </div>
+    <div>
+        <strong class="footer-heading">Rechtliches</strong>
+        <div class="footer-links">
+            <a href="/legal-notice.php">Impressum</a>
+            <a href="/privacy.php">Datenschutz</a>
+            <button type="button" class="link-button" data-cookie-settings>Cookie-Einstellungen</button>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© <?= date('Y') ?> MysteryMarket</span>
+        <span>Operational tools by INSODEMA · Research & Decision Lab</span>
+    </div>
 </footer>
-<div class="cookie-panel" data-cookie-panel hidden>
+
+<div class="cookie-panel" data-cookie-panel hidden role="dialog" aria-live="polite" aria-label="Datenschutz-Einstellungen">
     <div>
         <strong>Datenschutz-Einstellungen</strong>
-        <p>Diese Website verwendet technisch notwendige Speicherungen für sichere Formulare und Ihre Cookie-Einstellung. Analyse- oder Marketing-Cookies sind derzeit nicht aktiviert.</p>
+        <p>Wir verwenden nur technisch notwendige Speicherungen für sichere Formulare und um Ihre Einstellung zu merken. Analyse- oder Marketing-Cookies sind derzeit nicht aktiviert.</p>
+        <a href="/privacy.php">Datenschutzhinweise</a>
     </div>
     <div class="cookie-actions">
         <button type="button" data-cookie-necessary>Nur notwendige</button>
-        <button type="button" data-cookie-accept>Akzeptieren</button>
+        <button type="button" data-cookie-accept>Auswahl speichern</button>
     </div>
 </div>
 <script src="/public/js/cookie-consent.js" defer></script>
