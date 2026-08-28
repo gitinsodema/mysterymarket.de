@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS contact_requests (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    reference_code CHAR(5) NULL,
     request_type VARCHAR(32) NOT NULL,
     name VARCHAR(150) NOT NULL,
     organisation VARCHAR(200) NULL,
@@ -15,6 +16,7 @@ CREATE TABLE IF NOT EXISTS contact_requests (
     confirmation_sent_at DATETIME NULL,
     confirmation_failed_at DATETIME NULL,
     PRIMARY KEY (id),
+    UNIQUE KEY uq_contact_reference_code (reference_code),
     KEY idx_contact_created_at (created_at),
     KEY idx_contact_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
