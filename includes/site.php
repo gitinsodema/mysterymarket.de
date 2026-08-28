@@ -19,7 +19,7 @@ function mmNav(): array
     ];
 }
 
-function mmHeader(string $title, string $description = ''): void
+function mmHeader(string $title, string $description = '', string $robots = 'index,follow'): void
 {
     $nav = mmNav();
     $current = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
@@ -32,7 +32,7 @@ function mmHeader(string $title, string $description = ''): void
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title><?= mmEscape($title) ?> · MysteryMarket</title>
     <meta name="description" content="<?= mmEscape($description) ?>">
-    <meta name="robots" content="index,follow">
+    <meta name="robots" content="<?= mmEscape($robots) ?>">
     <link rel="stylesheet" href="/public/css/style.css">
 </head>
 <body>
