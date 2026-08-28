@@ -4,12 +4,28 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/site.php';
 require_once __DIR__ . '/includes/db.php';
 
-$types = [
-    'client' => 'Kunde / Auftraggeber',
-    'agency' => 'Agentur / Audit Partner',
-    'elite_shopper' => 'Elite Shopper / Auditor',
-    'other' => 'Andere Anfrage',
+$c = mmPageCopy('contact');
+$lang = mmLanguage();
+
+$typeLabelsByLang = [
+    'de'=>['client'=>'Kunde / Auftraggeber','agency'=>'Agentur / Audit Partner','elite_shopper'=>'Elite Shopper / Auditor','other'=>'Andere Anfrage'],
+    'en'=>['client'=>'Client / Commissioning organisation','agency'=>'Agency / Audit Partner','elite_shopper'=>'Elite Shopper / Auditor','other'=>'Other enquiry'],
+    'nl'=>['client'=>'Klant / Opdrachtgever','agency'=>'Bureau / Audit Partner','elite_shopper'=>'Elite Shopper / Auditor','other'=>'Andere aanvraag'],
 ];
+$typeLabels = $typeLabelsByLang[$lang] ?? $typeLabelsByLang['de'];
+
+$validationByLang = [
+    'de'=>[
+        'session'=>'Die Formularsitzung ist abgelaufen.','failed'=>'Die Anfrage konnte nicht verarbeitet werden.','type'=>'Bitte wählen Sie die Art Ihrer Anfrage.','name'=>'Bitte geben Sie Ihren Namen ein.','email'=>'Bitte geben Sie eine gültige E-Mail-Adresse ein.','subject'=>'Bitte geben Sie einen Betreff ein.','message'=>'Bitte beschreiben Sie Ihre Anfrage.','privacy'=>'Bitte bestätigen Sie die Datenschutzhinweise.','store'=>'Die Anfrage konnte derzeit nicht gespeichert werden. Bitte schreiben Sie alternativ an hello@mysterymarket.de.'
+    ],
+    'en'=>[
+        'session'=>'The form session has expired.','failed'=>'The enquiry could not be processed.','type'=>'Please select the type of enquiry.','name'=>'Please enter your name.','email'=>'Please enter a valid email address.','subject'=>'Please enter a subject.','message'=>'Please describe your enquiry.','privacy'=>'Please confirm the privacy notice.','store'=>'The enquiry could not be saved at this time. Please email hello@mysterymarket.de instead.'
+    ],
+    'nl'=>[
+        'session'=>'De formuliesessie is verlopen.','failed'=>'De aanvraag kon niet worden verwerkt.','type'=>'Selecteer het type aanvraag.','name'=>'Vul uw naam in.','email'=>'Vul een geldig e-mailadres in.','subject'=>'Vul een onderwerp in.','message'=>'Beschrijf uw aanvraag.','privacy'=>'Bevestig de privacyverklaring.','store'=>'De aanvraag kon momenteel niet worden opgeslagen. Mail eventueel naar hello@mysterymarket.de.'
+    ],
+];
+$validation = $validationByLang[$lang] ?? $validationByLang['de'];
 
 $errors = [];
 $success = false;
@@ -37,24 +53,24 @@ function mmSendContactNotification(
         return false;
     }
 
-    $safeSubject = preg_replace('/[\r\n]+/', ' ', $subject) ?: 'Kontaktanfrage';
+    $safeSubject = preg_replace('/[\r\n]+/', ' ', $subject) ?: 'Contact enquiry';
     $mailSubject = sprintf('[MysteryMarket #%d] %s · %s', $requestId, $typeLabel, $safeSubject);
 
     $body = implode(PHP_EOL, [
-        'Neue Anfrage über mysterymarket.de',
+        'New enquiry via mysterymarket.de',
         '',
         'DB-ID: ' . $requestId,
-        'Anfrageart: ' . $typeLabel,
+        'Type: ' . $typeLabel,
         'Name: ' . $name,
         'Organisation: ' . ($organisation !== '' ? $organisation : '—'),
-        'E-Mail: ' . $email,
-        'Telefon: ' . ($phone !== '' ? $phone : '—'),
-        'Betreff: ' . $safeSubject,
+        'Email: ' . $email,
+        'Phone: ' . ($phone !== '' ? $phone : '—'),
+        'Subject: ' . $safeSubject,
         '',
-        'Nachricht:',
+        'Message:',
         $message,
         '',
-        'Die Anfrage wurde vor Versand dieser Benachrichtigung in MariaDB gespeichert.',
+        'The enquiry was stored in MariaDB before this notification was sent.',
     ]);
 
     $headers = [
@@ -79,14 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $csrf = (string)($_POST['csrf'] ?? '');
     $honeypot = trim((string)($_POST['company_url'] ?? ''));
 
-    if (!hash_equals((string)$_SESSION['mm_csrf'], $csrf)) $errors[] = 'Die Formularsitzung ist abgelaufen.';
-    if ($honeypot !== '') $errors[] = 'Die Anfrage konnte nicht verarbeitet werden.';
-    if (!isset($types[$type])) $errors[] = 'Bitte wählen Sie die Art Ihrer Anfrage.';
-    if ($name === '') $errors[] = 'Bitte geben Sie Ihren Namen ein.';
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
-    if ($subject === '') $errors[] = 'Bitte geben Sie einen Betreff ein.';
-    if (mb_strlen($message) < 10) $errors[] = 'Bitte beschreiben Sie Ihre Anfrage.';
-    if (!$privacy) $errors[] = 'Bitte bestätigen Sie die Datenschutzhinweise.';
+    if (!hash_equals((string)$_SESSION['mm_csrf'], $csrf)) $errors[] = $validation['session'];
+    if ($honeypot !== '') $errors[] = $validation['failed'];
+    if (!isset($typeLabels[$type])) $errors[] = $validation['type'];
+    if ($name === '') $errors[] = $validation['name'];
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = $validation['email'];
+    if ($subject === '') $errors[] = $validation['subject'];
+    if (mb_strlen($message) < 10) $errors[] = $validation['message'];
+    if (!$privacy) $errors[] = $validation['privacy'];
 
     if (!$errors) {
         try {
@@ -109,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $requestId = (int)$pdo->lastInsertId();
             mmSendContactNotification(
                 $requestId,
-                $types[$type],
+                $typeLabels[$type],
                 $name,
                 $organisation,
                 $email,
@@ -121,49 +137,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success = true;
             $_SESSION['mm_csrf'] = bin2hex(random_bytes(24));
         } catch (Throwable $e) {
-            $errors[] = 'Die Anfrage konnte derzeit nicht gespeichert werden. Bitte schreiben Sie alternativ an hello@mysterymarket.de.';
+            $errors[] = $validation['store'];
         }
     }
 }
 
-mmHeader('Kontakt', 'Kontakt zu MysteryMarket für Kunden, Agenturen und Elite Shopper Partner.');
+mmHeader($c['title'], $c['lead']);
 ?>
 <section class="hero">
-  <div>
-    <p class="eyebrow">Kontakt</p>
-    <h1>Projekt, Agenturpartnerschaft oder Elite Shopper.</h1>
-    <p class="lead">Wählen Sie den passenden Einstieg. Formularanfragen werden intern gesammelt und zentral bearbeitet.</p>
-  </div>
+  <div><p class="eyebrow"><?= mmEscape($c['title']) ?></p><h1><?= mmEscape($c['hero']) ?></h1><p class="lead"><?= mmEscape($c['lead']) ?></p></div>
   <div class="contact-channels">
-    <div><span>Allgemeine Anfragen</span><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a></div>
-    <div><span>Agenturen & Audit Partner</span><a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a></div>
-    <div><span>Elite Shopper Partner</span><a href="mailto:eliteshopper@mysterymarket.de">eliteshopper@mysterymarket.de</a><small>Für erfahrene Shopper und Auditoren, die regelmäßig und zuverlässig arbeiten.</small></div>
+    <div><span><?= mmEscape($c['general']) ?></span><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a></div>
+    <div><span><?= mmEscape($c['agency']) ?></span><a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a></div>
+    <div><span><?= mmEscape($c['elite']) ?></span><a href="mailto:eliteshopper@mysterymarket.de">eliteshopper@mysterymarket.de</a><small><?= mmEscape($c['elite_note']) ?></small></div>
   </div>
 </section>
 
 <section class="section">
 <div class="form-card">
-<div class="form-intro">
-  <p class="eyebrow">Kontaktformular</p>
-  <h2>Ihre Anfrage</h2>
-  <p>Alle Formularanfragen werden strukturiert gespeichert und intern an die zuständige Bearbeitung weitergegeben.</p>
-</div>
-<?php if ($success): ?><div class="alert success"><strong>Anfrage gespeichert.</strong><p>Ihre Anfrage wurde zur Bearbeitung aufgenommen.</p></div><?php endif; ?>
+<div class="form-intro"><p class="eyebrow"><?= mmEscape($c['form']) ?></p><h2><?= mmEscape($c['form_title']) ?></h2><p><?= mmEscape($c['form_text']) ?></p></div>
+<?php if ($success): ?><div class="alert success"><strong><?= mmEscape($c['success']) ?></strong><p><?= mmEscape($c['success_text']) ?></p></div><?php endif; ?>
 <?php if ($errors): ?><div class="alert"><ul><?php foreach ($errors as $error): ?><li><?= mmEscape($error) ?></li><?php endforeach; ?></ul></div><?php endif; ?>
 <form method="post">
 <input type="hidden" name="csrf" value="<?= mmEscape((string)$_SESSION['mm_csrf']) ?>">
 <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company URL<input name="company_url" tabindex="-1" autocomplete="off"></label></div>
 <div class="form-grid">
-<label>Wer sind Sie? *<select name="type" required><option value="">Bitte wählen</option><?php foreach ($types as $value => $label): ?><option value="<?= mmEscape($value) ?>"><?= mmEscape($label) ?></option><?php endforeach; ?></select></label>
-<label>Name *<input name="name" maxlength="150" required></label>
-<label>Organisation<input name="organisation" maxlength="200"></label>
-<label>E-Mail *<input type="email" name="email" maxlength="254" required></label>
-<label>Telefon<input type="tel" name="phone" maxlength="60"></label>
-<label>Betreff *<input name="subject" maxlength="200" required></label>
-<label class="wide">Nachricht *<textarea name="message" maxlength="10000" required></textarea></label>
-<label class="wide privacy-check"><input type="checkbox" name="privacy" value="1" required> <span>Ich habe die <a href="/privacy.php">Datenschutzhinweise</a> gelesen und bin mit der zweckgebundenen Verarbeitung meiner Anfrage einverstanden. *</span></label>
+<label><?= mmEscape($c['who']) ?> *<select name="type" required><option value=""><?= mmEscape($c['choose']) ?></option><?php foreach ($typeLabels as $value => $label): ?><option value="<?= mmEscape($value) ?>"><?= mmEscape($label) ?></option><?php endforeach; ?></select></label>
+<label><?= mmEscape($c['name']) ?> *<input name="name" maxlength="150" required></label>
+<label><?= mmEscape($c['org']) ?><input name="organisation" maxlength="200"></label>
+<label><?= mmEscape($c['email']) ?> *<input type="email" name="email" maxlength="254" required></label>
+<label><?= mmEscape($c['phone']) ?><input type="tel" name="phone" maxlength="60"></label>
+<label><?= mmEscape($c['subject']) ?> *<input name="subject" maxlength="200" required></label>
+<label class="wide"><?= mmEscape($c['message']) ?> *<textarea name="message" maxlength="10000" required></textarea></label>
+<label class="wide privacy-check"><input type="checkbox" name="privacy" value="1" required> <span><?= mmEscape($c['privacy']) ?> *</span></label>
 </div>
-<button type="submit">Anfrage senden</button>
+<button type="submit"><?= mmEscape($c['send']) ?></button>
 </form>
 </div>
 </section>
