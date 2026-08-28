@@ -2,6 +2,9 @@ ErrorDocument 404 /404.php
 
 Options -Indexes
 
-<FilesMatch "^(local\.php|\.env|.*\.sql|AGENTS\.md)$">
+RewriteEngine On
+RewriteRule ^(?:config|database|includes|internal|lang|scripts)(?:/|$) - [F,L,NC]
+
+<FilesMatch "^(local\.php|\.env|.*\.sql|AGENTS\.md|README\.md)$">
   Require all denied
 </FilesMatch>
