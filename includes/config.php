@@ -12,6 +12,10 @@ function mmConfig(): array
     if (!is_file($path)) {
         $config = [
             'db' => [],
+            'mail' => [
+                'notification_email' => '',
+                'from_email' => 'hello@mysterymarket.de',
+            ],
             'legal' => [
                 'brand' => 'MysteryMarket',
                 'legal_form' => 'Einzelunternehmen',
@@ -20,8 +24,8 @@ function mmConfig(): array
                 'postal_code' => '',
                 'city' => 'Düsseldorf',
                 'country' => 'Deutschland',
-                'email' => 'robert.breuss@mysterymarket.de',
-                'phone' => '+49 (0)152 223554659',
+                'email' => 'hello@mysterymarket.de',
+                'phone' => '',
                 'vat_id' => '',
                 'small_business_regulation' => false,
                 'hosting_provider_name' => '',
