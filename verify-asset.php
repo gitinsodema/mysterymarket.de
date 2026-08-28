@@ -74,14 +74,32 @@ $mime = match ($extension) {
     'png' => 'image/png',
     'jpg', 'jpeg' => 'image/jpeg',
     'webp' => 'image/webp',
-    'svg' => 'image/svg+xml',
     default => '',
 };
 
-if ($mime === '' || ($type === 'document' && $extension !== 'pdf') || ($type !== 'document' && !in_array($extension, ['png','jpg','jpeg','webp','svg'], true))) {
+if ($mime === '' || ($type === 'document' && $extension !== 'pdf') || ($type !== 'document' && !in_array($extension, ['png','jpg','jpeg','webp'], true))) {
     http_response_code(415);
     exit;
 }
+
+$maxBytes = $type === 'document' ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
+$fileSize = filesize($file);
+if ($fileSize === false || $fileSize > $maxBytes) {
+    http_response_code(413);
+    exit;
+}
+
+$detectedMime = (new finfo(FILEINFO_MIME_TYPE))->file($file) ?: '';
+$allowedMime = $type === 'document'
+    ? ['application/pdf']
+    : ['image/png','image/jpeg','image/webp'];
+
+if (!in_array($detectedMime, $allowedMime, true)) {
+    http_response_code(415);
+    exit;
+}
+
+$mime = $detectedMime;
 
 header('Content-Type: ' . $mime);
 header('Content-Length: ' . (string)filesize($file));
