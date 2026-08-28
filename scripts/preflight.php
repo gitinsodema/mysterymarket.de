@@ -6,7 +6,7 @@ $required = [
     'index.php','404.php','services.php','audits.php','verify.php','verify-asset.php','verify-card.php','tools.php','elite-shopper.php','about.php','contact.php',
     'legal-notice.php','privacy.php',
     'includes/site.php','includes/config.php','includes/db.php','includes/i18n.php','includes/content.php',
-    'lang/de.php','lang/en.php','lang/nl.php',
+    'lang/de.php','lang/en.php','lang/nl.php','scripts/verify-asset-bind.php',
     'public/css/style.css','public/js/cookie-consent.js','public/js/verify-qr.js','public/vendor/qr-scanner/qr-scanner.min.js','public/vendor/qr-scanner/qr-scanner-worker.min.js','public/vendor/qr-scanner/LICENSE','public/vendor/qrcodejs/qrcode.min.js','public/vendor/qrcodejs/LICENSE','favicon.ico','robots.txt','sitemap.xml','database/schema.sql','database/20260828_contact_notification_status.sql','database/20260828_contact_reference_code.sql','database/20260828_verify_rate_limit.sql','database/20260828_verify_identity_assets.sql'
 ];
 
