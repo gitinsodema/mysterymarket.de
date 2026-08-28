@@ -345,12 +345,12 @@ mmHeader($c['title'], $c['lead']);
 <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Company URL<input name="company_url" tabindex="-1" autocomplete="off"></label></div>
 <div class="form-grid">
 <label><?= mmEscape($c['who']) ?> *<select name="type" required><option value=""><?= mmEscape($c['choose']) ?></option><?php foreach ($typeLabels as $value => $label): ?><option value="<?= mmEscape($value) ?>"><?= mmEscape($label) ?></option><?php endforeach; ?></select></label>
-<label><?= mmEscape($c['name']) ?> *<input name="name" maxlength="150" required></label>
-<label><?= mmEscape($c['org']) ?><input name="organisation" maxlength="200"></label>
-<label><?= mmEscape($c['email']) ?> *<input type="email" name="email" maxlength="254" required></label>
-<label><?= mmEscape($c['phone']) ?><input type="tel" name="phone" maxlength="60"></label>
+<label><?= mmEscape($c['name']) ?> *<input name="name" maxlength="150" autocomplete="name" required></label>
+<label><?= mmEscape($c['org']) ?><input name="organisation" maxlength="200" autocomplete="organization"></label>
+<label><?= mmEscape($c['email']) ?> *<input type="email" name="email" maxlength="254" autocomplete="email" inputmode="email" required></label>
+<label><?= mmEscape($c['phone']) ?><input type="tel" name="phone" maxlength="60" autocomplete="tel" inputmode="tel"></label>
 <label><?= mmEscape($c['subject']) ?> *<input name="subject" maxlength="200" required></label>
-<label class="wide"><?= mmEscape($c['message']) ?> *<textarea name="message" maxlength="10000" required></textarea></label>
+<label class="wide"><?= mmEscape($c['message']) ?> *<textarea name="message" minlength="10" maxlength="10000" required></textarea></label>
 <label class="wide privacy-check"><input type="checkbox" name="privacy" value="1" required> <span><?= mmEscape($c['privacy']) ?> *</span></label>
 </div>
 <button type="submit"><?= mmEscape($c['send']) ?></button>
