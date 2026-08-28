@@ -5,6 +5,39 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/i18n.php';
 require_once __DIR__ . '/content.php';
 
+function mmStartSecureSession(): void
+{
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        return;
+    }
+
+    ini_set('session.use_only_cookies', '1');
+    ini_set('session.use_strict_mode', '1');
+
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
+    session_start();
+}
+
+function mmClientIpHash(): string
+{
+    $security = mmConfig()['security'] ?? [];
+    $salt = trim((string)($security['rate_limit_salt'] ?? ''));
+    $ip = trim((string)($_SERVER['REMOTE_ADDR'] ?? ''));
+
+    if ($salt === '' || $ip === '') {
+        throw new RuntimeException('Rate-limit hashing is not configured.');
+    }
+
+    return hash_hmac('sha256', $ip, $salt);
+}
+
 function mmNav(): array
 {
     return [
