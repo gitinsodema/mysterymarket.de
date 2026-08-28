@@ -87,14 +87,8 @@ mmHeader($c['title'], $c['description']);
     <p class="lead"><?= mmEscape($c['lead']) ?></p>
     <div class="actions">
       <a class="button" href="mailto:<?= mmEscape($c['mail']) ?>?subject=Elite%20Shopper%20Partner"><?= mmEscape($c['cta']) ?></a>
-      <a class="button secondary" href="<?= mmEscape(mmLangUrl('/tools.php')) ?>">OPS ansehen</a>
+      <a class="button secondary" href="<?= mmEscape(mmLangUrl('/tools.php')) ?>">OPS</a>
     </div>
-  </div>
-  <div class="language-switcher" aria-label="Language">
-    <span>Language</span>
-    <a href="/elite-shopper.php?lang=de"<?= $lang === 'de' ? ' aria-current="page"' : '' ?>>DE</a>
-    <a href="/elite-shopper.php?lang=en"<?= $lang === 'en' ? ' aria-current="page"' : '' ?>>EN</a>
-    <a href="/elite-shopper.php?lang=nl"<?= $lang === 'nl' ? ' aria-current="page"' : '' ?>>NL</a>
   </div>
 </section>
 
