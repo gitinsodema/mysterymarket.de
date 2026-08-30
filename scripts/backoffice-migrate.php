@@ -12,6 +12,7 @@ if (PHP_SAPI !== 'cli') {
 $files = [
     dirname(__DIR__) . '/database/20260830_backoffice_foundation.sql',
     dirname(__DIR__) . '/database/20260830_backoffice_activation_tokens.sql',
+    dirname(__DIR__) . '/database/20260830_elite_membership_requests.sql',
 ];
 
 $pdo = mmDb();
@@ -40,6 +41,7 @@ $required = [
     'backoffice_audit_log',
     'backoffice_login_rate_limits',
     'backoffice_activation_tokens',
+    'elite_membership_requests',
 ];
 
 $check = $pdo->prepare(
