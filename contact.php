@@ -347,9 +347,9 @@ mmHeader($c['title'], $c['lead']);
 <section class="hero">
   <div><p class="eyebrow"><?= mmEscape($c['title']) ?></p><h1><?= mmEscape($c['hero']) ?></h1><p class="lead"><?= mmEscape($c['lead']) ?></p></div>
   <div class="contact-channels">
-    <div><span><?= mmEscape($c['general']) ?></span><a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a></div>
-    <div><span><?= mmEscape($c['agency']) ?></span><a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a></div>
-    <div><span><?= mmEscape($c['elite']) ?></span><a href="mailto:eliteshopper@mysterymarket.de">eliteshopper@mysterymarket.de</a><small><?= mmEscape($c['elite_note']) ?></small></div>
+    <div><span><?= mmEscape($c['general']) ?></span><?= mmEmailLink('hello', 'E-Mail') ?></div>
+    <div><span><?= mmEscape($c['agency']) ?></span><?= mmEmailLink('agency', 'Agentur-Kontakt') ?></div>
+    <div><span><?= mmEscape($c['elite']) ?></span><?= mmEmailLink('eliteshopper', 'Elite-Shopper-Kontakt') ?><small><?= mmEscape($c['elite_note']) ?></small></div>
   </div>
 </section>
 
