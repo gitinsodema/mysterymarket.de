@@ -47,9 +47,7 @@ $required = [
     'backoffice_activation_tokens',
     'elite_membership_requests',
     'agencies',
-    'credential_subjects',
-    'credentials',
-    'credential_orders',
+    'verify_credential_outputs',
 ];
 
 $check = $pdo->prepare(
