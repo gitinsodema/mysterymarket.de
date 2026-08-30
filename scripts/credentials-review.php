@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once dirname(__DIR__) . '/includes/db.php';
+require_once dirname(__DIR__) . '/includes/credentials.php';
 
 if (PHP_SAPI !== 'cli') {
     fwrite(STDERR, "CLI only\n");
@@ -44,6 +44,28 @@ if ($failures === 0) {
     $orphanOutputs === 0
         ? passCredential('all output requests reference Verify credentials')
         : failCredential("{$orphanOutputs} orphan output request(s)");
+
+    $activeRows = $pdo->query(
+        'SELECT *
+         FROM audit_verifications
+         WHERE is_personal_verification = 1
+           AND is_active = 1
+         ORDER BY id ASC'
+    )->fetchAll();
+
+    $activeIntegrityFailures = 0;
+    foreach ($activeRows as $row) {
+        $errors = mmCredentialIntegrityErrors($row);
+        if ($errors !== []) {
+            $activeIntegrityFailures++;
+            failCredential(
+                (string)$row['reference_code'] . ' active credential integrity: ' . implode('; ', $errors)
+            );
+        }
+    }
+    if ($activeIntegrityFailures === 0) {
+        passCredential('all active Verify credentials pass activation integrity');
+    }
 
     echo "[INFO] personal_verify_credentials={$personal}\n";
     echo "[INFO] active_personal_verify_credentials={$activePersonal}\n";
