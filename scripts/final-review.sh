@@ -20,7 +20,15 @@ check_status() {
 check_body() {
   local url="$1"
   local pattern="$2"
-  if curl -sS "$url" | grep -qE "$pattern"; then
+  local body
+
+  if ! body="$(curl -sS "$url")"; then
+    echo "[FAIL] could not load $url" >&2
+    fail=1
+    return
+  fi
+
+  if grep -qE "$pattern" <<<"$body"; then
     echo "[PASS] content $url"
   else
     echo "[FAIL] expected content not found on $url" >&2
