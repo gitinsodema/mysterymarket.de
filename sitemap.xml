@@ -23,11 +23,11 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/audits.php"/>
   </url>
   <url>
-    <loc>https://mysterymarket.de/verify.php</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/verify.php"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/verify.php?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/verify.php?lang=nl"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/verify.php"/>
+    <loc>https://mysterymarket.de/verify</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://mysterymarket.de/verify"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mysterymarket.de/verify?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://mysterymarket.de/verify?lang=nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mysterymarket.de/verify"/>
   </url>
   <url>
     <loc>https://mysterymarket.de/tools.php</loc>
