@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T19:26:00+02:00",
+  "report_generated_at": "2026-08-30T19:32:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,10 +134,12 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed live ATLAS authentication and country lookup succeeded in production with HTTP 200 and 249 countries.",
-    "Added a safe CLI contract inspector that prints only ATLAS reference payload shapes/sample reference data and never the Bearer token.",
-    "Inspector covers countries, DE subdivisions, DE 50667 postal-area lookup and DE 50667 locality lookup for Köln.",
-    "Preflight now requires the contract inspector."
+    "Owner provided live ATLAS response shapes for countries, DE subdivisions, postal area 50667 and Köln locality; all returned HTTP 200.",
+    "Bound Elite profile UX to exact ATLAS country/subdivision/postal/locality field names from live responses.",
+    "Elite profile now loads the 249-country reference list, country subdivisions, validates postal codes and loads matching localities through the authenticated MysteryMarket backend proxy.",
+    "Canonical ATLAS IDs and readable administrative/locality snapshots are persisted alongside existing profile address values.",
+    "Added explicit manual locality fallback that clears canonical locality identity rather than fabricating an ATLAS ID.",
+    "Added a compact one-record street inspector so the remaining Street item schema can be confirmed without large diagnostic output."
   ],
   "blockers": [
     {
@@ -398,9 +400,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the contract inspector and run it once in production. Use its output to bind the final address UI to exact ATLAS payload field names, then enable country/subdivision/postal/locality/street interactions.",
-    "owner_action_required": "Run scripts/atlas-contract-inspect.php and provide the output.",
-    "blocker": "Final browser UX binding intentionally waits for exact live payload field names."
+    "action": "Deploy the ATLAS-backed Elite profile UX and test country/subdivision/postal/locality selection. Run the compact street inspector once; then bind exact street autocomplete and finish the reusable ATLAS address component for other MysteryMarket forms.",
+    "owner_action_required": "Test the Elite profile ATLAS fields and paste the short output of scripts/atlas-street-inspect.php.",
+    "blocker": "Only exact Street item field names remain to finish street autocomplete."
   },
   "evidence": [
     {
