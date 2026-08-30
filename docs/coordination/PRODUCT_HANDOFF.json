@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T16:32:00+02:00",
+  "report_generated_at": "2026-08-30T16:48:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -130,13 +130,14 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner approved final V1 polish using the existing light layout as the base.",
-    "Added a local brand-safe hero visual at public/media/hero-audit-office.svg with abstract office, audit checklist and data-analysis cues.",
-    "Homepage hero now spans full width and uses the local visual beneath a restrained white readability wash.",
-    "Global V1 styling now follows the Verify visual language: white surfaces, blue structural accents, orange highlights and green status accents.",
-    "Service cards, generic content cards, partner cards, product tiles, OPS decision cards and footer received coordinated blue/orange/green accents.",
-    "Header logo mark now uses the final blue/orange/green signature.",
-    "Preflight now requires the local hero visual."
+    "Owner approved the second service-card visual direction for the Services page.",
+    "Services expanded from eight to nine service areas in DE/EN/NL.",
+    "Added service 09: Individuelle Auditlösungen & Pilotprojekte / Custom Audit Solutions & Pilot Projects / Maatwerk Auditoplossingen & Pilotprojecten.",
+    "Service 09 explicitly covers unusual requirements, project-specific check/documentation logic, custom audit apps or digital workflows, and rapid pilot iteration.",
+    "Added reusable inline SVG icons for all nine service categories.",
+    "Services page now uses a three-column icon-led card system with white surfaces and blue/orange/green/navy accents.",
+    "Homepage service teasers retain their compact layout and now receive only the matching service icons.",
+    "Removed the remaining static agency mailto link from services.php in favour of the shared anti-scraping email helper."
   ],
   "blockers": [
     {
@@ -341,8 +342,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the final visual polish and inspect homepage on desktop and iPhone. If accepted, run preflight, release-smoke and final-review once more and freeze V1.",
-    "owner_action_required": "Visually review the new full-width hero and sitewide Verify-inspired accent system.",
+    "action": "Deploy the nine-service visual update and review Services plus homepage service teasers on desktop and iPhone. If accepted, run the final release checks and freeze V1.",
+    "owner_action_required": "Review /services.php and the homepage service icon row.",
     "blocker": "Final visual confirmation only."
   },
   "evidence": [
@@ -666,6 +667,31 @@
       "type": "owner_statement",
       "date": "2026-08-30",
       "summary": "Owner approved final light-layout polish with white surfaces, blue/orange/green accents and a subtle full-width hero visual."
+    },
+    {
+      "type": "commit",
+      "id": "14c6f31e7057b47251dd2420a632ffb476313d9a",
+      "summary": "ninth custom audit and pilot service in DE/EN/NL"
+    },
+    {
+      "type": "commit",
+      "id": "b3a3d9fc37478d52185aa98af7b27271bd34173f",
+      "summary": "reusable nine-category service icon set"
+    },
+    {
+      "type": "commit",
+      "id": "0478d5dc1bd6f0f3978be7961c771bfad087939d",
+      "summary": "nine icon-led service cards"
+    },
+    {
+      "type": "commit",
+      "id": "bd5431250989a858d3e0673b51cea62d433b2b7e",
+      "summary": "homepage service teaser icons"
+    },
+    {
+      "type": "commit",
+      "id": "030b4e9eed37972f55ef1216da51a5ba3dcd3db9",
+      "summary": "service-card and homepage icon styling"
     }
   ]
 }
