@@ -101,6 +101,50 @@ function vrPersonalIntegrityErrors(array $row): array
         $errors[] = 'print card not enabled';
     }
 
+    $allowedScopes = ['vodafone_skopos_2026','hp_bare_retail_2025_2026'];
+    $scopeKey = trim((string)($row['scope_key'] ?? ''));
+    if ($scopeKey !== '' && !in_array($scopeKey, $allowedScopes, true)) {
+        $errors[] = 'unknown scope_key';
+    }
+
+    $assetDir = rtrim((string)(mmConfig()['security']['verify_asset_dir'] ?? ''), '/');
+    $assetBase = $assetDir !== '' ? realpath($assetDir) : false;
+
+    if ($assetBase === false || !is_dir($assetBase) || !is_readable($assetBase)) {
+        $errors[] = 'verify asset directory unavailable';
+        return $errors;
+    }
+
+    $assetRules = [
+        'photo_asset' => ['image/png','image/jpeg','image/webp'],
+        'brand_logo_asset' => ['image/png','image/jpeg','image/webp'],
+        'agency_logo_asset' => ['image/png','image/jpeg','image/webp'],
+        'document_asset' => ['application/pdf'],
+    ];
+
+    foreach ($assetRules as $column => $allowedMime) {
+        $filename = trim((string)($row[$column] ?? ''));
+        if ($filename === '') {
+            continue;
+        }
+        if (basename($filename) !== $filename) {
+            $errors[] = $column . ' invalid basename';
+            continue;
+        }
+
+        $file = realpath($assetBase . DIRECTORY_SEPARATOR . $filename);
+        if ($file === false || !is_file($file) || !is_readable($file)
+            || !str_starts_with($file, $assetBase . DIRECTORY_SEPARATOR)) {
+            $errors[] = $column . ' file unavailable';
+            continue;
+        }
+
+        $mime = (new finfo(FILEINFO_MIME_TYPE))->file($file) ?: '';
+        if (!in_array($mime, $allowedMime, true)) {
+            $errors[] = $column . ' invalid MIME ' . ($mime !== '' ? $mime : 'unknown');
+        }
+    }
+
     return $errors;
 }
 
