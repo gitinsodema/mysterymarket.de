@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T13:54:00+02:00",
+  "report_generated_at": "2026-08-30T14:10:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "release_candidate_security_hardening",
+    "lifecycle_phase": "release_candidate_integrity_hardening",
     "active_branch": "website-v1",
     "default_branch": "main",
     "pull_request": 1,
@@ -43,9 +43,9 @@
     ]
   },
   "release_progress": {
-    "lifecycle_phase": "release_candidate_security_hardening",
-    "release_readiness_percent": 94,
-    "operational_readiness_percent": 95,
+    "lifecycle_phase": "release_candidate_integrity_hardening",
+    "release_readiness_percent": 95,
+    "operational_readiness_percent": 96,
     "bootstrap_readiness_percent": 100,
     "publication_readiness_percent": 95,
     "basis": {
@@ -130,21 +130,27 @@
     }
   ],
   "completed_since_last_report": [
-    "Completed first V1 security hardening pass.",
-    "Blocked docs/, AI_START_HERE.md, VERSION, .git-style development directories and common backup/archive/source metadata from public HTTP access.",
-    "Added same-origin Content-Security-Policy baseline, Cross-Origin-Opener-Policy and X-Permitted-Cross-Domain-Policies.",
-    "Hardened session transport with dedicated MMSESSID name and trans-SID disabled.",
-    "Pruned expired Verify session grants and regenerate session ID after successful verification.",
-    "Restricted Contact/Verify/Verify-Asset/Verify-Card endpoints to necessary HTTP methods and added HEAD handling for protected assets.",
-    "Added docs/SECURITY_REVIEW_V1.md and new security preflight gates."
+    "Owner confirmed security hardening round 1 passed in production.",
+    "Established source/control-plane rule that docs/ and coordination files must not be part of the production web artifact.",
+    "Added export-ignore metadata for docs/, AGENTS.md, AI_START_HERE.md, README.md, VERSION and source metadata.",
+    "Added credential integrity audit mode.",
+    "Personal credential activation now fails closed when required identity/project/validity/scope/document/card fields are incomplete.",
+    "Activation now verifies that bound photo/logo/document files exist inside the private Verify asset directory and match allowed MIME types."
   ],
   "blockers": [
     {
+      "id": "MM-BLOCK-DEPLOY-BOUNDARY",
+      "type": "deployment_architecture",
+      "status": "open_non_release_gate",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "summary": "Current release-candidate deployment still uses a Git checkout in httpdocs. Target deployment must separate source/control-plane checkout from the public web artifact so docs/ are not synchronized at all."
+    },
+    {
       "id": "MM-BLOCK-SECURITY-PROD-VERIFY",
       "type": "production_verification",
-      "status": "open",
+      "status": "resolved",
       "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
-      "summary": "New Apache deny rules and browser security headers are committed but require production deploy and HTTP verification."
+      "summary": "Round 1 production HTTP/security-header verification reported successful by Owner."
     },
     {
       "id": "MM-BLOCK-HP-CREDENTIAL",
@@ -222,6 +228,14 @@
       "id": "MM-DEC-ASSET-SECURITY",
       "classification": "CURRENT_AUTHORITY",
       "summary": "Credential photos, logos and evidence documents live outside the public webroot and are served only through authenticated/verified asset delivery."
+    },
+    {
+      "id": "MM-DEC-DOCS-NOT-WEB",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "confirmed",
+      "summary": "docs/ and source coordination material must not be synchronized into the public production web artifact. HTTP deny rules are defence in depth only."
     }
   ],
   "dependencies": [
@@ -287,9 +301,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the security-hardening commits, run preflight, verify internal files return 403/404 and confirm CSP/camera headers before continuing the remaining V1 functional review.",
-    "owner_action_required": "Deploy website-v1 to production and return the provided HTTP check output.",
-    "blocker": "Production verification of new .htaccess/browser policy."
+    "action": "Deploy round 2 integrity hardening and run audit-personal. Complete HP/BARE bindings if still incomplete, then activate only through the new integrity guard.",
+    "owner_action_required": "Run production pull, preflight and verify-record.php audit-personal and return output.",
+    "blocker": "Any active personal credential failing integrity audit."
   },
   "evidence": [
     {
@@ -382,6 +396,26 @@
       "type": "commit",
       "id": "a0ded59de381807c82048a475a09534757ede76b",
       "summary": "security hardening preflight gates"
+    },
+    {
+      "type": "commit",
+      "id": "edc58097de702ab55414c782ce8f1834692d6120",
+      "summary": "credential integrity guard before activation"
+    },
+    {
+      "type": "commit",
+      "id": "5bb15f548033d58dc34f20b3ddf0a9276e03d28b",
+      "summary": "bound asset existence/MIME validation"
+    },
+    {
+      "type": "commit",
+      "id": "e721bd96450b1f029ae3d51f26dd5ab9a36f5351",
+      "summary": "export-ignore production artifact boundary"
+    },
+    {
+      "type": "owner_statement",
+      "date": "2026-08-30",
+      "summary": "docs/ should not be synchronized to the web; round 1 reported successful."
     }
   ]
 }
