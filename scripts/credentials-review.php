@@ -84,7 +84,28 @@ if ($failures === 0) {
 
     echo "[INFO] personal_verify_credentials={$personal}\n";
     echo "[INFO] active_personal_verify_credentials={$activePersonal}\n";
+    $invalidShipped = (int)$pdo->query(
+        "SELECT COUNT(*)
+         FROM verify_credential_outputs
+         WHERE output_status = 'shipped'
+           AND (shipping_reference IS NULL OR TRIM(shipping_reference) = '')"
+    )->fetchColumn();
+
+    $invalidShipped === 0
+        ? passCredential('all shipped physical outputs have a shipping reference')
+        : failCredential("{$invalidShipped} shipped output(s) missing shipping reference");
+
     echo "[INFO] credential_output_requests=" . (int)$pdo->query('SELECT COUNT(*) FROM verify_credential_outputs')->fetchColumn() . "\n";
+
+    $wallet = mmAppleWalletReadiness();
+    if (!empty($wallet['ready'])) {
+        passCredential('Apple Wallet signing configuration is ready');
+    } else {
+        echo "[INFO] apple_wallet_ready=no\n";
+        foreach ($wallet['issues'] as $issue) {
+            echo "[INFO] apple_wallet_setup: {$issue}\n";
+        }
+    }
 }
 
 if ($failures === 0) {
