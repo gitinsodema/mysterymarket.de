@@ -43,3 +43,42 @@ function mmCredentialProjectLabel(array $row): string
     ]);
     return $parts ? implode(' / ', $parts) : (string)($row['public_title'] ?? $row['reference_code'] ?? '');
 }
+
+
+function mmCredentialGenerateVerifyReference(): string
+{
+    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+    for ($attempt = 0; $attempt < 30; $attempt++) {
+        $reference = 'MM-';
+        for ($i = 0; $i < 8; $i++) {
+            $reference .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+        }
+
+        $stmt = mmDb()->prepare('SELECT 1 FROM audit_verifications WHERE reference_code = :reference LIMIT 1');
+        $stmt->execute(['reference'=>$reference]);
+        if (!$stmt->fetchColumn()) {
+            return $reference;
+        }
+    }
+
+    throw new RuntimeException('Keine eindeutige Verify-Referenz konnte erzeugt werden.');
+}
+
+function mmCredentialDateOrNull(string $value): ?string
+{
+    $value = trim($value);
+    if ($value === '') {
+        return null;
+    }
+
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+    $errors = DateTimeImmutable::getLastErrors();
+    if (!$date
+        || ($errors !== false && (($errors['warning_count'] ?? 0) > 0 || ($errors['error_count'] ?? 0) > 0))
+        || $date->format('Y-m-d') !== $value) {
+        throw new InvalidArgumentException('Ungültiges Datum.');
+    }
+
+    return $value;
+}
