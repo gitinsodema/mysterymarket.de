@@ -144,7 +144,8 @@
     "Added secure session/CSRF/role/login-throttling authentication foundation.",
     "Added private backoffice login, logout and role-aware shell; not linked from the public website.",
     "Added safe CLI bootstrap for admin/elite accounts using an environment-provided password.",
-    "Extended preflight to cover the R1.1 foundation."
+    "Extended preflight to cover the R1.1 foundation.",
+    "Added an idempotent PDO-based R1.1 migration runner so production DB credentials do not need to be exposed in shell commands."
   ],
   "blockers": [
     {
@@ -795,6 +796,11 @@
       "type": "web_research",
       "date": "2026-08-30",
       "summary": "Apple official Wallet documentation confirms signed passes can be distributed from a website and optionally updated through a web service."
+    },
+    {
+      "type": "commit",
+      "id": "50d8189a9a189f68954d06168c3e73ac1caec11d",
+      "summary": "idempotent R1.1 backoffice migration runner"
     }
   ]
 }
