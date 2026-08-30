@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T13:36:13+02:00",
+  "report_generated_at": "2026-08-30T13:54:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "release_candidate_hardening",
+    "lifecycle_phase": "release_candidate_security_hardening",
     "active_branch": "website-v1",
     "default_branch": "main",
     "pull_request": 1,
@@ -43,11 +43,11 @@
     ]
   },
   "release_progress": {
-    "lifecycle_phase": "release_candidate_hardening",
-    "release_readiness_percent": 92,
+    "lifecycle_phase": "release_candidate_security_hardening",
+    "release_readiness_percent": 94,
     "operational_readiness_percent": 95,
     "bootstrap_readiness_percent": 100,
-    "publication_readiness_percent": 94,
+    "publication_readiness_percent": 95,
     "basis": {
       "milestones": [
         {
@@ -130,17 +130,22 @@
     }
   ],
   "completed_since_last_report": [
-    "Created VERSION 1.0.0 and V1 release checklist.",
-    "Hardened Permissions-Policy while preserving first-party camera scanning.",
-    "Added no-store/noindex handling for personal Verify results.",
-    "Added persistent contact throttling and Post/Redirect/Get.",
-    "Added mobile/iPhone PDF byte-range delivery.",
-    "Changed printed card QR to direct #credential anchor.",
-    "Added Verify record CLI for validity, activation, scope and personal credential cloning.",
-    "Added HP/BARE project-specific scope from the supplied HP authorisation letter.",
-    "Added DOS coordination baseline and historical handoff."
+    "Completed first V1 security hardening pass.",
+    "Blocked docs/, AI_START_HERE.md, VERSION, .git-style development directories and common backup/archive/source metadata from public HTTP access.",
+    "Added same-origin Content-Security-Policy baseline, Cross-Origin-Opener-Policy and X-Permitted-Cross-Domain-Policies.",
+    "Hardened session transport with dedicated MMSESSID name and trans-SID disabled.",
+    "Pruned expired Verify session grants and regenerate session ID after successful verification.",
+    "Restricted Contact/Verify/Verify-Asset/Verify-Card endpoints to necessary HTTP methods and added HEAD handling for protected assets.",
+    "Added docs/SECURITY_REVIEW_V1.md and new security preflight gates."
   ],
   "blockers": [
+    {
+      "id": "MM-BLOCK-SECURITY-PROD-VERIFY",
+      "type": "production_verification",
+      "status": "open",
+      "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
+      "summary": "New Apache deny rules and browser security headers are committed but require production deploy and HTTP verification."
+    },
     {
       "id": "MM-BLOCK-HP-CREDENTIAL",
       "type": "technical_and_owner_test",
@@ -282,9 +287,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Complete HP/BARE credential bindings and activation, perform real iPhone QR/PDF/card test, then update this handoff before final V1 QA.",
-    "owner_action_required": "Run/confirm production commands and mobile test.",
-    "blocker": "none after assets are correctly bound."
+    "action": "Deploy the security-hardening commits, run preflight, verify internal files return 403/404 and confirm CSP/camera headers before continuing the remaining V1 functional review.",
+    "owner_action_required": "Deploy website-v1 to production and return the provided HTTP check output.",
+    "blocker": "Production verification of new .htaccess/browser policy."
   },
   "evidence": [
     {
@@ -348,6 +353,35 @@
       "type": "owner_runtime_test",
       "date": "2026-08-28",
       "summary": "Real iPhone scan of the printed/direct QR flow reported as working very well."
+    },
+    {
+      "type": "repository",
+      "path": "docs/SECURITY_REVIEW_V1.md"
+    },
+    {
+      "type": "commit",
+      "id": "b8f03460548bb8ff0d311d4b299686adc254e969",
+      "summary": "block internal coordination files and tighten browser policy"
+    },
+    {
+      "type": "commit",
+      "id": "3fc0b40ba138dbc2476cc41afcbb589b1bc1a969",
+      "summary": "harden session transport"
+    },
+    {
+      "type": "commit",
+      "id": "605ab940c09347b981be5aa36e1fc141b0626491",
+      "summary": "harden Verify session lifecycle"
+    },
+    {
+      "type": "commit",
+      "id": "ab10b99afc678c23b7b21721ce044894fba2e9db",
+      "summary": "restrict Verify asset methods and support HEAD"
+    },
+    {
+      "type": "commit",
+      "id": "a0ded59de381807c82048a475a09534757ede76b",
+      "summary": "security hardening preflight gates"
     }
   ]
 }
