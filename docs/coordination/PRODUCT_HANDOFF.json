@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T18:35:00+02:00",
+  "report_generated_at": "2026-08-30T18:42:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,12 +134,13 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner proposed reusing the existing ATLAS postal/city/region dataset and API instead of duplicating global location data in MysteryMarket.",
-    "Architecture decision recorded: MysteryMarket will use a normalized country_iso/postal_code/city/region contract and wait for the real ATLAS API specification before implementation.",
-    "Owner defined semantic status colors: green=OK, amber/yellow=open/new/parked, red=problem/negative, blue/grey=informational/neutral.",
-    "Added reusable semantic backoffice status helper and applied it to memberships, agency approvals, contacts, membership requests and related detail views.",
-    "Agency approval draft/requested are no longer shown green; approved is green, draft/requested amber, rejected/expired red.",
-    "Credential ownership decision recorded for R1.2: credentials belong to a person/identity, not to a role, so an admin account can also view and own personal credentials."
+    "Owner provided the expected ATLAS API shape: countries, country subdivisions, subdivision postal areas, postal-area lookup, street autocomplete and geo containment.",
+    "Added minimal agency master-data table with name, short name, website and active flag.",
+    "Added admin agency overview, creation and editing pages.",
+    "Elite Feed editor now offers active agencies from master data as a select and preserves a free-text fallback for unregistered agencies.",
+    "Agency approval creation now offers the same agency master-data select with free-text fallback.",
+    "Dashboard now links directly to Agency master data.",
+    "Backoffice migration runner and preflight now cover the agency master-data module."
   ],
   "blockers": [
     {
@@ -384,9 +385,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Obtain the ATLAS API contract for country/postal/city/region lookup. Meanwhile deploy and visually verify semantic status colors, then continue R1.1 hardening. R1.2 credentials will use a role-independent identity/subject model.",
-    "owner_action_required": "Share or approve the ATLAS API contract when available.",
-    "blocker": "ATLAS integration intentionally waits for the actual API contract."
+    "action": "Deploy the agency master-data migration, add the first real agencies, then verify Feed and Approval forms select them correctly. ATLAS integration remains pending the final API contract files.",
+    "owner_action_required": "Add/confirm the initial agency names and provide the final ATLAS API contract files when available.",
+    "blocker": "ATLAS integration waits for final contract files; agency master data has no blocker."
   },
   "evidence": [
     {
@@ -1009,6 +1010,51 @@
       "type": "commit",
       "id": "99740a41e58c898d88443d918e3c2ae8e870ac18",
       "summary": "Elite self-service preflight coverage"
+    },
+    {
+      "type": "owner_api_preview",
+      "date": "2026-08-30",
+      "summary": "ATLAS preview includes GET countries, subdivisions, postal areas, postal-area lookup, streets autocomplete and POST geo containment."
+    },
+    {
+      "type": "commit",
+      "id": "94e32609351ee312be6a0d3a3a3d1b5e94f98b78",
+      "summary": "agency master-data schema"
+    },
+    {
+      "type": "commit",
+      "id": "367b88d82350d1feeb50d997413f11c63ebd6a8e",
+      "summary": "agency overview"
+    },
+    {
+      "type": "commit",
+      "id": "6f3fa58f63236b1240e2824f65f131d2486d48df",
+      "summary": "agency creation"
+    },
+    {
+      "type": "commit",
+      "id": "7972c6fc16ca70734bcaa51fa7c7eec18e4589d8",
+      "summary": "agency editing"
+    },
+    {
+      "type": "commit",
+      "id": "d5cfcbb6ca5a57e8f8f7b27cca0579db2a8b2fe6",
+      "summary": "Elite Feed agency selector"
+    },
+    {
+      "type": "commit",
+      "id": "1d017d0653eaf4280c62ef0296a5bdcbcf311f4d",
+      "summary": "agency approval selector binding fix"
+    },
+    {
+      "type": "commit",
+      "id": "1abb1b491e2446d3801f7e3e2a2605a2a72b158a",
+      "summary": "dashboard agency link"
+    },
+    {
+      "type": "commit",
+      "id": "e9952db1e3d3c9f7e2d62499814a7eb1ae10efe4",
+      "summary": "agency module preflight coverage"
     }
   ]
 }
