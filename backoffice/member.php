@@ -113,7 +113,7 @@ mmHeader('Elite Shopper', 'Interne Mitgliedsverwaltung.', 'noindex,nofollow');
       </label>
       <button type="submit">Status speichern</button>
     </form>
-    <p class="partner-note">Ein aktiver Mitgliedsstatus schaltet den Account grundsätzlich frei. Ein Login ist trotzdem erst möglich, sobald ein echtes Passwort über den späteren Einladungs-/Aktivierungsprozess gesetzt wurde.</p>
+    <p class="partner-note">Ein aktiver Mitgliedsstatus schaltet den Account grundsätzlich frei. Eingeladene Mitglieder aktivieren ihren Zugang über den einmaligen Aktivierungslink und setzen dabei ihr persönliches Passwort.</p>
   </div>
 </section>
 <?php mmFooter(); ?>
