@@ -26,6 +26,15 @@ function mmConfig(): array
                 'product' => 'MYSTERYMARKET',
                 'timeout_seconds' => 8,
             ],
+            'apple_wallet' => [
+                'enabled' => false,
+                'pass_type_identifier' => '',
+                'team_identifier' => '',
+                'organization_name' => 'MysteryMarket',
+                'certificate_path' => '',
+                'certificate_password' => '',
+                'wwdr_certificate_path' => '',
+            ],
             'legal' => [
                 'brand' => 'MysteryMarket',
                 'legal_form' => 'Einzelunternehmen',
