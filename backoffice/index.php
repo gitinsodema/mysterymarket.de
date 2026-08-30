@@ -10,6 +10,20 @@ header('X-Robots-Tag: noindex, noarchive');
 $user = mmBackofficeRequireLogin();
 $role = (string)$user['role'];
 
+$dashboard = [
+    'active_members' => 0,
+    'feed_posts' => 0,
+    'new_contacts' => 0,
+    'open_approvals' => 0,
+];
+
+if ($role === 'admin') {
+    $dashboard['active_members'] = (int)mmDb()->query("SELECT COUNT(*) FROM elite_members WHERE membership_status = 'active'")->fetchColumn();
+    $dashboard['feed_posts'] = (int)mmDb()->query("SELECT COUNT(*) FROM elite_feed_posts WHERE is_active = 1")->fetchColumn();
+    $dashboard['new_contacts'] = (int)mmDb()->query("SELECT COUNT(*) FROM contact_requests WHERE status = 'new'")->fetchColumn();
+    $dashboard['open_approvals'] = (int)mmDb()->query("SELECT COUNT(*) FROM agency_approvals WHERE approval_status IN ('draft','requested')")->fetchColumn();
+}
+
 mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noindex,nofollow');
 ?>
 <section class="hero backoffice-dashboard-hero">
@@ -30,19 +44,30 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
   </div>
 </section>
 
+<?php if ($role === 'admin'): ?>
+<section class="section backoffice-stat-section">
+  <div class="backoffice-stat-grid">
+    <article><span><?= $dashboard['active_members'] ?></span><strong>Aktive Elite Shopper</strong></article>
+    <article><span><?= $dashboard['feed_posts'] ?></span><strong>Feed-Posts</strong></article>
+    <article><span><?= $dashboard['new_contacts'] ?></span><strong>Neue Kontakte</strong></article>
+    <article><span><?= $dashboard['open_approvals'] ?></span><strong>Offene Freigaben</strong></article>
+  </div>
+</section>
+<?php endif; ?>
+
 <section class="section">
   <div class="backoffice-module-grid">
     <?php if ($role === 'admin'): ?>
-      <article class="backoffice-module"><span>01</span><strong>Elite Shopper</strong><small>Mitglieder & Status</small></article>
+      <a class="backoffice-module" href="/backoffice/members.php"><span>01</span><strong>Elite Shopper</strong><small>Mitglieder & Status</small></a>
       <article class="backoffice-module"><span>02</span><strong>Credentials</strong><small>Ausweise & QR · R1.2</small></article>
       <article class="backoffice-module"><span>03</span><strong>Kommunikation</strong><small>Agentur-Freigaben</small></article>
       <article class="backoffice-module"><span>04</span><strong>Kontakte</strong><small>Read-only Anfragen</small></article>
-      <article class="backoffice-module"><span>05</span><strong>Elite Feed</strong><small>Interne Hinweise</small></article>
+      <a class="backoffice-module" href="/backoffice/feed.php"><span>05</span><strong>Elite Feed</strong><small>Interne Hinweise</small></a>
       <article class="backoffice-module"><span>06</span><strong>Einstellungen</strong><small>Backoffice-Konfiguration</small></article>
     <?php else: ?>
       <article class="backoffice-module"><span>01</span><strong>Mitgliedschaft</strong><small>Status & Profil</small></article>
       <article class="backoffice-module"><span>02</span><strong>Mein Ausweis</strong><small>QR · Wallet · Karte folgt</small></article>
-      <article class="backoffice-module"><span>03</span><strong>Elite Feed</strong><small>Interne Projekt- und Partnerinfos</small></article>
+      <a class="backoffice-module" href="/backoffice/feed.php"><span>03</span><strong>Elite Feed</strong><small>Interne Projekt- und Partnerinfos</small></a>
       <article class="backoffice-module"><span>04</span><strong>ShopperMatch</strong><small>Eigenständige Job-/Matching-Plattform</small></article>
     <?php endif; ?>
   </div>
