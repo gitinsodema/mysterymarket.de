@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T17:47:00+02:00",
+  "report_generated_at": "2026-08-30T17:55:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,15 +134,17 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner successfully logged into the backoffice and validated Dashboard and Elite Feed.",
-    "Clarified that the dashboard's new-contact count comes from existing public contact_requests rows with status=new.",
-    "Backoffice routes now use a compact private footer instead of the full public website footer/product strip.",
-    "Added admin-only read-only contact inbox with filtering by all/new/seen/done.",
-    "Added contact detail view showing submitted contact data, message, timestamps and notification/confirmation status.",
-    "Added internal contact status management new/seen/done with CSRF protection and audit logging.",
-    "No reply/send capability exists in the contact inbox by design.",
-    "Dashboard Contacts module now links to the operational contact inbox.",
-    "Extended preflight to cover contact inbox pages."
+    "Owner confirmed all six stored contact requests are test data.",
+    "Added admin-only agency approval overview with status filters.",
+    "Added creation of approval records for logo usage, usage rights, project references and similar agency communication.",
+    "Approval records store agency, contact person, contact email, purpose and internal note.",
+    "Added approval detail view with status workflow draft/requested/approved/rejected/expired.",
+    "Changing a record to requested records requested_at; approved/rejected records responded_at.",
+    "Added evidence/reference field for documenting mail dates, file references or internal evidence.",
+    "All approval changes are CSRF-protected and written to the backoffice audit log.",
+    "No email sending is implemented in R1.1; the module remains tracking-only.",
+    "Dashboard Communication module now links to the operational approval tracker.",
+    "Extended preflight to require the agency approval pages."
   ],
   "blockers": [
     {
@@ -363,8 +365,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy current R1.1 branch and verify compact footer plus the six existing contact requests. Then implement Agency Approval tracking as the next admin module.",
-    "owner_action_required": "Review the contact inbox and confirm the existing records/status behavior.",
+    "action": "Deploy and test Agency Approval tracking. After confirmation, implement the first lightweight Settings/administration utilities and then the Elite invitation/password activation flow.",
+    "owner_action_required": "Create one test approval record and move it through requested to approved/rejected.",
     "blocker": "none"
   },
   "evidence": [
@@ -863,6 +865,36 @@
       "type": "commit",
       "id": "3e082e67c934dfb43742a4b801fd245789d3305d",
       "summary": "contact inbox preflight coverage"
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "Owner confirmed all six stored contacts are test submissions."
+    },
+    {
+      "type": "commit",
+      "id": "56b1aca219e1ca2a3ff24aa76f331451a438417e",
+      "summary": "agency approval overview"
+    },
+    {
+      "type": "commit",
+      "id": "2c44f3569dd4525bc5c6c7dc33cf1cb82bffe96b",
+      "summary": "agency approval creation"
+    },
+    {
+      "type": "commit",
+      "id": "25863408907e83e315707fb94470d30ceb723337",
+      "summary": "agency approval detail and status tracking"
+    },
+    {
+      "type": "commit",
+      "id": "fd25d61642e60855c09abaac4d5b917f60d7a92f",
+      "summary": "dashboard link to agency approvals"
+    },
+    {
+      "type": "commit",
+      "id": "e658b7bcde64332c0b49b5e44a5c75b25475b687",
+      "summary": "agency approval preflight coverage"
     }
   ]
 }
