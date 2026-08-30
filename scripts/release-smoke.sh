@@ -30,6 +30,32 @@ check_header() {
   fi
 }
 
+check_body() {
+  local url="$1"
+  local pattern="$2"
+  local body
+  body="$(curl -sS "$url" || true)"
+  if grep -qE "$pattern" <<<"$body"; then
+    echo "[PASS] content $url"
+  else
+    echo "[FAIL] expected content not found on $url" >&2
+    fail=1
+  fi
+}
+
+check_absent() {
+  local url="$1"
+  local pattern="$2"
+  local body
+  body="$(curl -sS "$url" || true)"
+  if grep -qE "$pattern" <<<"$body"; then
+    echo "[FAIL] unwanted content found on $url" >&2
+    fail=1
+  else
+    echo "[PASS] unwanted content absent on $url"
+  fi
+}
+
 for path in   /   /services.php   /audits.php   /verify.php   /tools.php   /elite-shopper.php   /about.php   /contact.php   /legal-notice.php   /privacy.php
 do
   check_status 200 "$BASE$path"
@@ -48,6 +74,8 @@ else
 fi
 
 check_status 200 "$BASE/verify"
+check_body "$BASE/elite-shopper.php" 'Elite Shopper Login'
+check_absent "$BASE/elite-shopper.php" '@mysterymarket\.de'
 check_status 405 "$BASE/contact.php" PUT
 check_status 405 "$BASE/verify.php" DELETE
 check_status 403 "$BASE/verify-asset.php?code=MM-K4AD8HQR&type=document" GET
