@@ -242,13 +242,6 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
             <option value="">Wird nach Möglichkeit automatisch erkannt</option>
           </select>
         </label>
-        <label>Ort manuell
-          <input name="city_manual" maxlength="120" data-atlas-locality-manual placeholder="Nur verwenden, wenn der Ort in ATLAS fehlt">
-          <small class="field-hint">Freitext-Fallback ohne erfundene ATLAS-ID.</small>
-        </label>
-        <label>Adresszusatz
-          <input name="address_line2" maxlength="200" value="<?= mmEscape((string)($member['address_line2'] ?? '')) ?>">
-        </label>
         <label>Straße
           <input name="street_name" maxlength="200" data-atlas-street list="atlas-street-options" autocomplete="address-line1"
                  value="<?= mmEscape((string)($member['street_name'] ?? '')) ?>"
@@ -259,11 +252,30 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
         <label>Hausnummer
           <input name="house_number" maxlength="40" data-atlas-house-number value="<?= mmEscape((string)($member['house_number'] ?? '')) ?>">
         </label>
-        <label class="wide">Straße / Adresse manuell
-          <input name="address_line1_fallback" maxlength="200" placeholder="Nur falls keine strukturierte Straße verfügbar ist"
-                 value="<?= empty($member['street_name']) ? mmEscape((string)($member['address_line1'] ?? '')) : '' ?>">
-          <small class="field-hint">Fallback ohne erfundene ATLAS-ID.</small>
-        </label>
+        <div class="wide atlas-manual-toggle-wrap">
+          <button type="button" class="button secondary" data-atlas-manual-toggle aria-expanded="<?= (!empty($member['address_line2']) || empty($member['street_name']) && !empty($member['address_line1'])) ? 'true' : 'false' ?>">
+            Meine Adresse wird nicht erkannt
+          </button>
+        </div>
+        <div class="wide atlas-manual-fields" data-atlas-manual-fields<?= (!empty($member['address_line2']) || empty($member['street_name']) && !empty($member['address_line1'])) ? '' : ' hidden' ?>>
+          <div class="form-grid">
+            <label>Ort manuell
+              <input name="city_manual" maxlength="120" data-atlas-locality-manual placeholder="Nur verwenden, wenn der Ort in ATLAS fehlt">
+              <small class="field-hint">Freitext-Fallback ohne erfundene ATLAS-ID.</small>
+            </label>
+            <label>Adresszusatz
+              <input name="address_line2" maxlength="200" value="<?= mmEscape((string)($member['address_line2'] ?? '')) ?>">
+            </label>
+            <label class="wide">Straße / Adresse manuell
+              <input name="address_line1_fallback" maxlength="200" placeholder="Nur falls keine strukturierte Straße verfügbar ist"
+                     value="<?= empty($member['street_name']) ? mmEscape((string)($member['address_line1'] ?? '')) : '' ?>">
+              <small class="field-hint">Fallback ohne erfundene ATLAS-ID.</small>
+            </label>
+            <label class="wide">Hinweis
+              <small class="field-hint">Manuelle Werte werden gespeichert, aber niemals mit erfundenen ATLAS-IDs verknüpft.</small>
+            </label>
+          </div>
+        </div>
         <label>Mobilitätsprofil
           <select name="mobility_profile">
             <?php
