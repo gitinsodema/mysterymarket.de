@@ -340,10 +340,10 @@ function mmBackofficeActivateElite(string $plainToken, string $password): bool
 function mmBackofficeStatusTone(string $status): string
 {
     return match (strtolower(trim($status))) {
-        'active', 'approved', 'done', 'success', 'valid', 'completed' => 'ok',
-        'new', 'draft', 'requested', 'pending', 'pending_review', 'invited', 'paused', 'open' => 'warn',
-        'rejected', 'suspended', 'ended', 'expired', 'failed', 'disabled' => 'danger',
-        'seen', 'cancelled' => 'info',
+        'active', 'approved', 'done', 'success', 'valid', 'completed', 'ready', 'shipped' => 'ok',
+        'new', 'draft', 'requested', 'pending', 'pending_review', 'invited', 'paused', 'open', 'processing' => 'warn',
+        'rejected', 'suspended', 'ended', 'expired', 'failed', 'disabled', 'revoked', 'replaced' => 'danger',
+        'seen', 'cancelled', 'inactive' => 'info',
         default => 'neutral',
     };
 }
