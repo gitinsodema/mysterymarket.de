@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T17:55:00+02:00",
+  "report_generated_at": "2026-08-30T18:10:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,17 +134,17 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed all six stored contact requests are test data.",
-    "Added admin-only agency approval overview with status filters.",
-    "Added creation of approval records for logo usage, usage rights, project references and similar agency communication.",
-    "Approval records store agency, contact person, contact email, purpose and internal note.",
-    "Added approval detail view with status workflow draft/requested/approved/rejected/expired.",
-    "Changing a record to requested records requested_at; approved/rejected records responded_at.",
-    "Added evidence/reference field for documenting mail dates, file references or internal evidence.",
-    "All approval changes are CSRF-protected and written to the backoffice audit log.",
-    "No email sending is implemented in R1.1; the module remains tracking-only.",
-    "Dashboard Communication module now links to the operational approval tracker.",
-    "Extended preflight to require the agency approval pages."
+    "Owner approved continuing without bundling the pending minor cross-file corrections yet.",
+    "Added one-time Elite invitation tokens stored only as SHA-256 hashes.",
+    "Activation links expire after 48 hours and older unused tokens are invalidated when a new token is generated.",
+    "Added admin-only manual activation-link generation from an Elite member record.",
+    "Added self-service Elite password activation with minimum 12-character password and confirmation.",
+    "Successful activation sets the Elite account and membership active, records joined_at, and consumes the token exactly once.",
+    "Activation and invitation events are written to the backoffice audit log.",
+    "No automatic invitation email is sent yet; the activation URL is shown once to the admin for manual confidential delivery.",
+    "Backoffice authenticated requests now revalidate account_status against the database so paused/suspended/disabled users lose access on the next request.",
+    "Activation link generation is restricted to invited/pending_review members.",
+    "Migration runner and preflight now cover the activation-token schema and pages."
   ],
   "blockers": [
     {
@@ -365,8 +365,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and test Agency Approval tracking. After confirmation, implement the first lightweight Settings/administration utilities and then the Elite invitation/password activation flow.",
-    "owner_action_required": "Create one test approval record and move it through requested to approved/rejected.",
+    "action": "Deploy the current R1.1 branch, rerun backoffice migration, generate an activation link for a test Elite member, activate the account with a new password and confirm Elite login/feed access. Then continue with Elite profile/member self-service.",
+    "owner_action_required": "Run the activation flow once with a test Elite member.",
     "blocker": "none"
   },
   "evidence": [
@@ -895,6 +895,46 @@
       "type": "commit",
       "id": "e658b7bcde64332c0b49b5e44a5c75b25475b687",
       "summary": "agency approval preflight coverage"
+    },
+    {
+      "type": "commit",
+      "id": "afe4d07e8b8386ae449a8dfc8c24bf7f56d02024",
+      "summary": "Elite activation token table"
+    },
+    {
+      "type": "commit",
+      "id": "b77d2ca1f913fdfb91eafe2503daff7dab6e84e7",
+      "summary": "migration runner applies activation schema"
+    },
+    {
+      "type": "commit",
+      "id": "aa8e35acedf593b4fa450f0c2be8969cb960eb13",
+      "summary": "secure activation-token helpers"
+    },
+    {
+      "type": "commit",
+      "id": "6b55bab3ee3e10aa336dbb16d3da4f9d6cd6a9f5",
+      "summary": "admin manual activation-link generation"
+    },
+    {
+      "type": "commit",
+      "id": "8c82f6f1bac707f283bcbcc1e3a20c7e39850c5a",
+      "summary": "Elite password activation page"
+    },
+    {
+      "type": "commit",
+      "id": "1de75a1301772a128a384f415c861882170a72ed",
+      "summary": "per-request account-state revalidation"
+    },
+    {
+      "type": "commit",
+      "id": "5a9ee560fa9c0184999361b783ffbb5d5506ff31",
+      "summary": "restrict activation link generation to pre-active members"
+    },
+    {
+      "type": "commit",
+      "id": "93f88e36389e45b9eeb5b998d3cbf27943b445cb",
+      "summary": "activation-flow preflight coverage"
     }
   ]
 }
