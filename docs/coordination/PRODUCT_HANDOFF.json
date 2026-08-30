@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T15:03:00+02:00",
+  "report_generated_at": "2026-08-30T15:24:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "release_candidate_visual_owner_review",
+    "lifecycle_phase": "release_candidate_visual_polish",
     "active_branch": "website-v1",
     "default_branch": "main",
     "pull_request": 1,
@@ -43,7 +43,7 @@
     ]
   },
   "release_progress": {
-    "lifecycle_phase": "release_candidate_visual_owner_review",
+    "lifecycle_phase": "release_candidate_visual_polish",
     "release_readiness_percent": 99,
     "operational_readiness_percent": 98,
     "bootstrap_readiness_percent": 100,
@@ -130,10 +130,15 @@
     }
   ],
   "completed_since_last_report": [
-    "Automated final review corrected for curl/grep broken-pipe false negatives.",
-    "Owner moved into manual visual V1 review.",
-    "Protected Verify asset and ID-card routes are now excluded in robots.txt.",
-    "Verify asset/card responses now emit noindex/noarchive and no-store headers before session or database checks."
+    "Owner approved final visual polish before release.",
+    "Header brand mark redesigned using MysteryMarket navy, teal and red with brighter contrast and clearer MysteryMarket wordmark.",
+    "Removed Current Audits from primary navigation while retaining it in the footer.",
+    "Added clean /verify route, clean canonical/language URLs and clean Verify URLs on credential cards and internal links.",
+    "Public MysteryMarket email links are reconstructed client-side; plain addresses were removed from public rendered copy where applicable.",
+    "Footer OPS label changed to OPS Operational Suite.",
+    "Footer INSODEMA attribution corrected to Systems & Decision Research Lab and linked to insodema.com.",
+    "OPS page gained a visual intelligent-planning section covering planning, optimal routing, mobility profile and next-best-action recommendation in DE/EN/NL.",
+    "Final review now checks that selected public HTML surfaces contain no plain @mysterymarket.de address."
   ],
   "blockers": [
     {
@@ -241,6 +246,30 @@
       "source_authority": "Owner",
       "verification_status": "confirmed",
       "summary": "docs/ and source coordination material must not be synchronized into the public production web artifact. HTTP deny rules are defence in depth only."
+    },
+    {
+      "id": "MM-DEC-NAV-AUDITS-FOOTER",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DECISION",
+      "source_authority": "Owner",
+      "verification_status": "implemented",
+      "summary": "Current Audits is removed from primary navigation and retained only as a supporting footer destination; it is not positioned as a public reference showcase."
+    },
+    {
+      "id": "MM-DEC-CLEAN-VERIFY-URL",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DECISION",
+      "source_authority": "Owner",
+      "verification_status": "implemented",
+      "summary": "The public Verify entry point is mysterymarket.de/verify without a .php suffix; legacy /verify.php remains internally compatible."
+    },
+    {
+      "id": "MM-DEC-PUBLIC-EMAIL-OBFUSCATION",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DECISION",
+      "source_authority": "Owner",
+      "verification_status": "implemented",
+      "summary": "Public contact email addresses should not be present as directly readable mailto/plain addresses in initial HTML; they are reconstructed client-side as a pragmatic anti-scraping measure."
     }
   ],
   "dependencies": [
@@ -306,9 +335,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Owner completes visual/manual V1 review. Product chat performs only release-safe hardening until visual findings are returned; no merge to main without explicit Owner approval.",
-    "owner_action_required": "Complete visual review and report any issues or explicitly approve V1 when satisfied.",
-    "blocker": "Manual visual release review."
+    "action": "Deploy visual-polish commits, run lint/preflight/final-review, then Owner visually reviews header logo, footer, clean /verify route, contact links and OPS planning visual on iPhone.",
+    "owner_action_required": "Deploy website-v1 and report visual findings or explicit V1 approval.",
+    "blocker": "Manual visual confirmation of the final polish."
   },
   "evidence": [
     {
@@ -491,6 +520,41 @@
       "type": "commit",
       "id": "c64887c8389b4d204aae8ba79cdcafdab189e85c",
       "summary": "early non-index/no-store headers on Verify cards"
+    },
+    {
+      "type": "commit",
+      "id": "4bf4edd364d1d6a1e46330c9122c1276b0db2131",
+      "summary": "brand/navigation/footer/email handling"
+    },
+    {
+      "type": "commit",
+      "id": "e2242add0b66c92d6b24f280a3459e9e321259a4",
+      "summary": "clean /verify route"
+    },
+    {
+      "type": "commit",
+      "id": "b780337d1aa0c2c98695e47d6edb1142144bc5b9",
+      "summary": "OPS intelligent planning/route/mobility visual"
+    },
+    {
+      "type": "commit",
+      "id": "a54331050b388f19b34baba6043fd5512cb412b4",
+      "summary": "brightened three-colour brand styling"
+    },
+    {
+      "type": "commit",
+      "id": "98f5c178cae11bf218ecfb93ceb514c2b61b5e7a",
+      "summary": "clean Verify URL in sitemap"
+    },
+    {
+      "type": "commit",
+      "id": "657aa6b919b5619918b9059d26d9f6f9d13ff1ba",
+      "summary": "public HTML plain-email release assertion"
+    },
+    {
+      "type": "owner_statement",
+      "date": "2026-08-30",
+      "summary": "Owner approved the final brand/footer/Verify/navigation/OPS visual polish before release."
     }
   ]
 }
