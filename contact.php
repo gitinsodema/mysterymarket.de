@@ -11,6 +11,17 @@ if (!in_array($method, ['GET','POST'], true)) {
     exit;
 }
 
+header('Cache-Control: private, no-store, max-age=0');
+header('Pragma: no-cache');
+
+if ($method === 'POST') {
+    $contentLength = (int)($_SERVER['CONTENT_LENGTH'] ?? 0);
+    if ($contentLength > 32768) {
+        http_response_code(413);
+        exit('Content-Length exceeds contact form limit.');
+    }
+}
+
 $c = mmPageCopy('contact');
 $lang = mmLanguage();
 
