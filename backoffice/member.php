@@ -73,7 +73,12 @@ mmHeader('Elite Shopper', 'Interne Mitgliedsverwaltung.', 'noindex,nofollow');
     <p class="eyebrow">Admin · <?= mmEscape((string)$member['member_code']) ?></p>
     <h1><?= mmEscape((string)$member['display_name']) ?></h1>
     <p class="lead"><?= mmEscape((string)$member['email']) ?></p>
-    <div class="actions"><a class="button secondary" href="/backoffice/members.php">Zurück zur Liste</a></div>
+    <div class="actions">
+      <?php if (in_array($member['membership_status'], ['invited','pending_review'], true)): ?>
+        <a class="button" href="/backoffice/invite.php?id=<?= (int)$member['id'] ?>">Aktivierungslink</a>
+      <?php endif; ?>
+      <a class="button secondary" href="/backoffice/members.php">Zurück zur Liste</a>
+    </div>
   </div>
 </section>
 <section class="section">
