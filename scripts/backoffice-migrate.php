@@ -14,6 +14,7 @@ $files = [
     dirname(__DIR__) . '/database/20260830_backoffice_activation_tokens.sql',
     dirname(__DIR__) . '/database/20260830_elite_membership_requests.sql',
     dirname(__DIR__) . '/database/20260830_agencies.sql',
+    dirname(__DIR__) . '/database/20260830_elite_atlas_geography.sql',
 ];
 
 $pdo = mmDb();
