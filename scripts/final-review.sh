@@ -61,15 +61,16 @@ for lang in de en nl; do
     suffix="?lang=$lang"
   fi
 
-  for path in     /     /services.php     /audits.php     /about.php     /contact.php     /legal-notice.php     /privacy.php
+  for path in     /     /services.php     /audits.php     /tools.php     /elite-shopper.php     /about.php     /contact.php     /legal-notice.php     /privacy.php
   do
     check_status 200 "$BASE$path$suffix"
   done
 done
 
 check_status 200 "$BASE/verify"
+check_body "$BASE/elite-shopper.php" 'Elite Shopper Login'
 
-for path in / /about.php /contact.php /legal-notice.php /privacy.php; do
+for path in / /services.php /elite-shopper.php /about.php /contact.php /legal-notice.php /privacy.php; do
   check_absent "$BASE$path" '@mysterymarket\.de'
 done
 
@@ -85,7 +86,7 @@ check_body "$BASE/sitemap.xml" 'hreflang="de"'
 check_body "$BASE/sitemap.xml" 'hreflang="en"'
 check_body "$BASE/sitemap.xml" 'hreflang="nl"'
 
-for path in / /services.php /audits.php /about.php /contact.php /legal-notice.php /privacy.php; do
+for path in / /services.php /audits.php /tools.php /elite-shopper.php /about.php /contact.php /legal-notice.php /privacy.php; do
   check_body "$BASE$path?lang=en" '<html lang="en"'
   check_body "$BASE$path?lang=nl" '<html lang="nl"'
 done
