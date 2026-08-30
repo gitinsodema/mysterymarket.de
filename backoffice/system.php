@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/includes/backoffice-auth.php';
+require_once dirname(__DIR__) . '/includes/atlas.php';
 
 header('Cache-Control: private, no-store, max-age=0');
 header('X-Robots-Tag: noindex, noarchive');
@@ -47,6 +48,11 @@ mmHeader('System', 'MysteryMarket Backoffice-Systemübersicht.', 'noindex,nofoll
       <span class="badge">Release</span>
       <h2><?= mmEscape($version !== '' ? $version : 'unbekannt') ?></h2>
       <p>Öffentliche Website-Version. R1.1 Backoffice wird weiterhin auf dem Entwicklungsbranch vorbereitet.</p>
+    </article>
+    <article class="card">
+      <span class="badge">ATLAS</span>
+      <h3><?= mmBackofficeStatusBadge(mmAtlasIsConfigured() ? 'active' : 'pending', mmAtlasIsConfigured() ? 'Configured' : 'Token ausstehend') ?></h3>
+      <p>Geography Reference API · MYSTERYMARKET · server-to-server.</p>
     </article>
     <article class="card">
       <span class="badge">Runtime</span>
