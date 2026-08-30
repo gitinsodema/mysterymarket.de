@@ -54,6 +54,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $localityAtlasId = trim((string)($_POST['locality_atlas_id'] ?? ''));
             $localityName = trim((string)($_POST['locality_name'] ?? $city));
             $streetAtlasId = trim((string)($_POST['street_atlas_id'] ?? ''));
+            if ($streetName !== trim((string)($member['street_name'] ?? ''))) {
+                $streetAtlasId = '';
+            }
+            if (trim((string)($_POST['city_manual'] ?? '')) !== '') {
+                $localityAtlasId = '';
+            }
             $regions = trim((string)($_POST['preferred_regions'] ?? ''));
             $mobility = trim((string)($_POST['mobility_profile'] ?? ''));
             $shopperMatch = trim((string)($_POST['shoppermatch_profile_url'] ?? ''));
@@ -206,7 +212,7 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
       <input type="hidden" name="postal_area_atlas_id" data-atlas-postal-id value="<?= mmEscape((string)($member['postal_area_atlas_id'] ?? '')) ?>">
       <input type="hidden" name="locality_atlas_id" data-atlas-locality-id value="<?= mmEscape((string)($member['locality_atlas_id'] ?? '')) ?>">
       <input type="hidden" name="locality_name" data-atlas-locality-name value="<?= mmEscape((string)($member['locality_name'] ?? $member['city'] ?? '')) ?>">
-      <input type="hidden" name="street_atlas_id" value="<?= mmEscape((string)($member['street_atlas_id'] ?? '')) ?>">
+      <input type="hidden" name="street_atlas_id" data-atlas-street-id value="<?= mmEscape((string)($member['street_atlas_id'] ?? '')) ?>">
 
       <label>Name<input name="display_name" maxlength="150" required value="<?= mmEscape((string)$member['display_name']) ?>"></label>
       <label>Organisation<input name="organisation" maxlength="200" value="<?= mmEscape((string)($member['organisation'] ?? '')) ?>"></label>
