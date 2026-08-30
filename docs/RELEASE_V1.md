@@ -61,3 +61,27 @@ Before merging V1 to `main`:
 ## Known follow-up
 
 Email confirmation delivery depends on the production mail transport. A successful PHP `mail()` handoff does not by itself prove final inbox delivery. This is a mail-deliverability follow-up and is not part of the core website rendering/Verify release gate.
+
+
+## Production artifact boundary
+
+Repository documentation and coordination files belong to the source/control-plane checkout,
+not to the public production web artifact.
+
+The production web artifact must exclude at least:
+
+```text
+docs/
+AGENTS.md
+AI_START_HERE.md
+README.md
+VERSION
+.gitignore
+.gitattributes
+```
+
+`.htaccess` deny rules remain a defence-in-depth fallback for the current release-candidate
+checkout, but are not a substitute for excluding these files from the production web sync.
+
+The repository marks these paths with `export-ignore` so an archive-based production artifact
+can omit them by construction.
