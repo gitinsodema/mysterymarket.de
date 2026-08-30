@@ -706,3 +706,121 @@ nav a[aria-current=page],
   .service-grid{grid-template-columns:1fr}
   .service-card-visual{min-height:auto}
 }
+
+
+/* Elite Shopper V1 visual */
+.elite-hero{align-items:center}
+.elite-hero-copy{max-width:760px}
+.elite-hero-graphic{
+  position:relative;
+  min-height:360px;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 28% 22%,#ffffff 0 7%,transparent 8%),
+    linear-gradient(145deg,#f7fbff,#eef5fb);
+  border:1px solid #d7e4ef;
+  box-shadow:0 18px 48px #00195012;
+  overflow:hidden;
+}
+.elite-hero-graphic:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg,transparent 0 48%,#176fd10b 48% 49%,transparent 49% 100%),
+    linear-gradient(0deg,transparent 0 48%,#176fd10b 48% 49%,transparent 49% 100%);
+}
+.elite-orbit{
+  position:absolute;
+  border:1px solid #bfd6eb;
+  border-radius:50%;
+}
+.elite-orbit-a{width:260px;height:260px;left:50%;top:50%;transform:translate(-50%,-50%)}
+.elite-orbit-b{width:190px;height:190px;left:50%;top:50%;transform:translate(-50%,-50%);border-color:#dce8f3}
+.elite-graphic-core{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  width:145px;height:145px;
+  border-radius:50%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background:#fff;
+  border:2px solid #176fd1;
+  box-shadow:0 16px 36px #00195018;
+  z-index:2;
+}
+.elite-core-mark{
+  width:44px;height:44px;border-radius:50%;
+  display:grid;place-items:center;
+  color:#001950;font-weight:900;
+  border:3px solid #176fd1;
+  box-shadow:inset 0 0 0 2px #ff8b1f55;
+  margin-bottom:8px;
+}
+.elite-graphic-core strong{font-size:16px;color:#001950}
+.elite-graphic-core small{font-size:10px;color:#52617a}
+.elite-graphic-card{
+  position:absolute;
+  min-width:132px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 12px 30px #00195012;
+  border:1px solid #d8e5ef;
+  z-index:3;
+}
+.elite-graphic-card span{
+  display:block;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.08em;
+  margin-bottom:4px;
+}
+.elite-graphic-card strong{font-size:13px;color:#001950}
+.elite-graphic-blue{left:7%;top:18%;border-left:5px solid #176fd1}
+.elite-graphic-blue span{color:#176fd1}
+.elite-graphic-orange{right:6%;top:28%;border-left:5px solid #ff8b1f}
+.elite-graphic-orange span{color:#ff8b1f}
+.elite-graphic-green{left:20%;bottom:10%;border-left:5px solid #0b9b69}
+.elite-graphic-green span{color:#0b9b69}
+
+.elite-login-section{padding-top:28px}
+.elite-login-card{
+  display:flex;
+  justify-content:space-between;
+  gap:28px;
+  align-items:center;
+  padding:28px 30px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#ffffff,#f6faff);
+  border:1px solid #cddfed;
+  border-left:5px solid #176fd1;
+  box-shadow:0 14px 34px #0019500d;
+}
+.elite-login-card h2{font-size:30px;margin:.25em 0 .35em}
+.elite-login-card p{margin:0;color:var(--muted);max-width:680px}
+.elite-login-card button[disabled]{
+  opacity:.72;
+  cursor:not-allowed;
+  flex:0 0 auto;
+}
+.elite-grid .elite-card:nth-child(1){border-top:4px solid #176fd1}
+.elite-grid .elite-card:nth-child(2){border-top:4px solid #ff8b1f}
+.elite-grid .elite-card:nth-child(3){border-top:4px solid #0b9b69}
+.elite-grid .elite-card:nth-child(4){border-top:4px solid #001950}
+@media(max-width:850px){
+  .elite-hero-graphic{min-height:330px}
+  .elite-login-card{display:block}
+  .elite-login-card button{margin-top:18px}
+}
+@media(max-width:520px){
+  .elite-hero-graphic{min-height:300px}
+  .elite-graphic-card{min-width:110px;padding:10px}
+  .elite-graphic-blue{left:3%;top:14%}
+  .elite-graphic-orange{right:3%;top:31%}
+  .elite-graphic-green{left:10%;bottom:8%}
+}
