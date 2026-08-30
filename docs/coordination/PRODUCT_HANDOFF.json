@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T19:52:00+02:00",
+  "report_generated_at": "2026-08-30T20:02:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,10 +134,12 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner requested the manual ATLAS fallback fields be hidden by default behind a 'Meine Adresse wird nicht erkannt' disclosure.",
-    "Manual locality, address fallback, address addition and fallback notice are now grouped in a hidden panel.",
-    "The panel opens with an explicit button and can be closed again.",
-    "If an existing profile already contains manual-address data, the fallback panel remains visible automatically so stored values are not hidden from the user."
+    "Owner requested the Elite profile to look less like a large form and more like a compact profile.",
+    "Profile is now split into compact Personal, Address and Assignment Profile cards with tighter spacing and smaller controls.",
+    "The manual-address disclosure is visually de-emphasized in grey rather than presented like a primary action.",
+    "Organisation was re-framed: added a structured work_profile classification for private/occasional, side job, self-employed, own agency/company, employed and other.",
+    "Existing organisation data is preserved and the UI now labels it 'Firma / Agentur (optional)' instead of making organisation the primary concept.",
+    "Added migration and preflight coverage for work_profile."
   ],
   "blockers": [
     {
@@ -398,8 +400,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and visually verify the compact ATLAS address form with the manual fallback disclosure. If successful, keep this as the reusable address UX pattern for future MysteryMarket forms.",
-    "owner_action_required": "Quick visual test of the disclosure button and fallback panel.",
+    "action": "Deploy the compact profile layout and work-profile migration, then visually review spacing/field density on iPhone. Continue small profile polish based on that visual pass.",
+    "owner_action_required": "Visual test of the new compact profile character and work-profile field.",
     "blocker": "none"
   },
   "evidence": [
