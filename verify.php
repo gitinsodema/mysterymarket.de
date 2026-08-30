@@ -419,6 +419,44 @@ if ($isPersonalResult) {
     header('X-Robots-Tag: noindex, noarchive');
 }
 
+$verifyVisualCopy = [
+    'de' => [
+        'kicker' => 'MysteryMarket Verify',
+        'title' => 'Audit & Autorisierung verifizieren',
+        'lead' => 'Referenz prüfen · Identität bestätigen · Projektnachweise geschützt öffnen',
+        'status' => 'Verifikation bereit',
+        'qr' => 'QR oder Referenz',
+    ],
+    'en' => [
+        'kicker' => 'MysteryMarket Verify',
+        'title' => 'Verify an audit or authorisation',
+        'lead' => 'Check reference · confirm identity · open protected project evidence',
+        'status' => 'Verification ready',
+        'qr' => 'QR or reference',
+    ],
+    'nl' => [
+        'kicker' => 'MysteryMarket Verify',
+        'title' => 'Audit of legitimatie verifiëren',
+        'lead' => 'Referentie controleren · identiteit bevestigen · beveiligd projectbewijs openen',
+        'status' => 'Verificatie gereed',
+        'qr' => 'QR of referentie',
+    ],
+    'tr' => [
+        'kicker' => 'MysteryMarket Verify',
+        'title' => 'Denetimi veya yetkilendirmeyi doğrulayın',
+        'lead' => 'Referansı kontrol edin · kimliği doğrulayın · korumalı proje kanıtını açın',
+        'status' => 'Doğrulama hazır',
+        'qr' => 'QR veya referans',
+    ],
+    'ar' => [
+        'kicker' => 'MysteryMarket Verify',
+        'title' => 'تحقق من التدقيق أو التفويض',
+        'lead' => 'تحقق من المرجع · أكد الهوية · افتح أدلة المشروع المحمية',
+        'status' => 'التحقق جاهز',
+        'qr' => 'QR أو مرجع',
+    ],
+][$verifyLang] ?? [];
+
 mmHeader($c['title'], $c['lead'], $verifyRobots, $verifyLang);
 $rtl = $verifyLang === 'ar';
 ?>
@@ -428,13 +466,37 @@ $rtl = $verifyLang === 'ar';
     <h1><?= mmEscape($c['hero']) ?></h1>
     <p class="lead"><?= mmEscape($c['lead']) ?></p>
   </div>
-  <div class="verify-language" aria-label="Verification language">
-    <span>Verify language</span>
-    <?php foreach (['de'=>'DE','en'=>'EN','nl'=>'NL','tr'=>'TR','ar'=>'AR'] as $key => $label): ?>
-      <?php $globalLang = in_array($key, ['de','en','nl'], true) ? $key : mmLanguage(); ?>
-      <?php $langHref = '/verify.php?lang=' . rawurlencode($globalLang) . '&verify_lang=' . rawurlencode($key) . ($code !== '' ? '&code=' . rawurlencode($code) : ''); ?>
-      <a href="<?= mmEscape($langHref) ?>"<?= $verifyLang === $key ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
-    <?php endforeach; ?>
+  <div class="verify-hero-side">
+    <div class="verify-visual-card" aria-label="<?= mmEscape($verifyVisualCopy['title']) ?>">
+      <div class="verify-visual-head">
+        <span class="verify-visual-mm">MM</span>
+        <span>
+          <strong>Mystery<span>Market</span></strong>
+          <small><?= mmEscape($verifyVisualCopy['kicker']) ?></small>
+        </span>
+      </div>
+      <div class="verify-visual-body">
+        <div>
+          <span class="verify-visual-kicker"><?= mmEscape($verifyVisualCopy['status']) ?></span>
+          <h2><?= mmEscape($verifyVisualCopy['title']) ?></h2>
+          <p><?= mmEscape($verifyVisualCopy['lead']) ?></p>
+          <div class="verify-visual-status"><i></i><?= mmEscape($verifyVisualCopy['qr']) ?></div>
+        </div>
+        <div class="verify-visual-qr" aria-hidden="true">
+          <div></div>
+          <strong>VERIFY</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="verify-language" aria-label="Verification language">
+      <span>Verify language</span>
+      <?php foreach (['de'=>'DE','en'=>'EN','nl'=>'NL','tr'=>'TR','ar'=>'AR'] as $key => $label): ?>
+        <?php $globalLang = in_array($key, ['de','en','nl'], true) ? $key : mmLanguage(); ?>
+        <?php $langHref = '/verify?lang=' . rawurlencode($globalLang) . '&verify_lang=' . rawurlencode($key) . ($code !== '' ? '&code=' . rawurlencode($code) : ''); ?>
+        <a href="<?= mmEscape($langHref) ?>"<?= $verifyLang === $key ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
+      <?php endforeach; ?>
+    </div>
   </div>
 </section>
 <section class="section"<?= $rtl ? ' dir="rtl"' : '' ?>>
