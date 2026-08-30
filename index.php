@@ -4,7 +4,13 @@ require_once __DIR__ . '/includes/site.php';
 $c = mmPageCopy('home');
 mmHeader($c['title'], $c['description']);
 ?>
-<section class="hero">
+<section class="hero home-hero">
+  <div class="concept-only concept-hero-room" aria-hidden="true"></div>
+  <div class="concept-only concept-hero-stats" aria-hidden="true">
+    <div class="concept-kpi concept-kpi-a"><span>Field Quality</span><strong>98.4%</strong><small>Structured execution</small></div>
+    <div class="concept-kpi concept-kpi-b"><span>Route Efficiency</span><strong>+27%</strong><small>Planning potential</small></div>
+    <div class="concept-kpi concept-kpi-c"><span>Verification</span><strong>LIVE</strong><small>Identity · project · evidence</small></div>
+  </div>
   <div>
     <p class="eyebrow">Independent Audit & Field Services</p>
     <h1><?= mmEscape($c['hero']) ?></h1>
@@ -14,9 +20,31 @@ mmHeader($c['title'], $c['description']);
       <a class="button secondary" href="<?= mmEscape(mmLangUrl('/contact.php')) ?>"><?= mmEscape($c['cta_project']) ?></a>
     </div>
   </div>
-  <div class="notice">
+  <div class="notice hero-standard-notice">
     <strong><?= mmEscape($c['agency']) ?></strong>
     <p><?= mmEscape($c['agency_text']) ?></p>
+  </div>
+
+  <div class="concept-only concept-credential">
+    <div class="concept-credential-head">
+      <span class="concept-mm">MM</span>
+      <span><strong>Mystery<span>Market</span></strong><small>FIELDWORK · AUDITS · VERIFY</small></span>
+    </div>
+    <div class="concept-credential-body">
+      <div>
+        <span class="concept-card-kicker">Official Field Auditor</span>
+        <h3>Verified authorisation</h3>
+        <p>Independent. Legitimated. Verifiable.</p>
+        <div class="concept-card-status"><i></i> Identity & project evidence available</div>
+      </div>
+      <div class="concept-qr-box" aria-hidden="true">
+        <div class="concept-qr"></div>
+        <strong>VERIFY</strong>
+      </div>
+    </div>
+    <div class="concept-credential-foot">
+      <span>Reference protected</span><strong>mysterymarket.de/verify</strong>
+    </div>
   </div>
 </section>
 
