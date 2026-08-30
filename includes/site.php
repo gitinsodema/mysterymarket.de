@@ -169,6 +169,7 @@ function mmFooter(): void
             <div class="footer-links">
                 <a href="<?= mmEscape(mmLangUrl('/services.php')) ?>"><?= mmEscape(mmT('nav.services', 'Leistungen')) ?></a>
                 <a href="<?= mmEscape(mmLangUrl('/audits.php')) ?>"><?= mmEscape(mmT('nav.audits', 'Aktuelle Audits')) ?></a>
+                <a href="<?= mmEscape(mmLangUrl('/verify')) ?>"><?= mmEscape(mmT('nav.verify', 'Verify')) ?></a>
                 <a href="<?= mmEscape(mmLangUrl('/elite-shopper.php')) ?>"><?= mmEscape(mmT('nav.elite', 'Elite Shopper')) ?></a>
                 <a href="<?= mmEscape(mmLangUrl('/tools.php')) ?>">OPS Operational Suite</a>
             </div>
