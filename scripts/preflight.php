@@ -14,10 +14,10 @@ $required = [
 $failures = 0;
 
 $version = trim((string)@file_get_contents($root . '/VERSION'));
-if ($version === '1.0.0') {
-    echo "[PASS] MysteryMarket release version 1.0.0\n";
+if ($version === '1.1.0') {
+    echo "[PASS] MysteryMarket release version 1.1.0\n";
 } else {
-    fwrite(STDERR, "[FAIL] VERSION must be 1.0.0 for the V1 release candidate\n");
+    fwrite(STDERR, "[FAIL] VERSION must be 1.1.0 for the R1.1 release\n");
     $failures++;
 }
 
