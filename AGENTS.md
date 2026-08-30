@@ -34,3 +34,11 @@ Prefer tracked-file linting with `git ls-files '*.php'`.
 - Public customer/partner names require an approved public context.
 - Partner/company logos require explicit written approval before publication.
 - Files under `internal/` must remain inaccessible from the public web.
+
+
+## DOS coordination
+- Follow `gitinsodema/DOS/docs/DOS_PRODUCT_CHAT_HANDOFF_OWNER_APPROVAL_AND_PROGRESS_PROTOCOL_V1.md`.
+- Read `AI_START_HERE.md`, `docs/coordination/README.md` and `docs/coordination/PRODUCT_HANDOFF.json` before meaningful product work.
+- Update `docs/coordination/PRODUCT_HANDOFF.json` whenever product version, release state, blocker, Owner action, deployment/migration state, architecture, public state, major capability or approval state materially changes.
+- Keep current state and historical context explicitly separated.
+- Preserve the Verify system as a reusable capability unless the Owner explicitly replaces or cancels it.
