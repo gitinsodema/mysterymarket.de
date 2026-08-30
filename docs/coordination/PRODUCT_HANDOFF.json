@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T21:18:00+02:00",
+  "report_generated_at": "2026-08-30T21:38:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,13 +134,14 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner runtime-confirmed creation of inactive Verify credential draft MM-AHBW85JB.",
-    "Draft completeness correctly reported missing photo, brand logo, agency logo, document, scope and document activation.",
-    "Added secure Backoffice upload/binding for photo, brand logo, agency logo and PDF into the existing private Verify asset directory outside webroot.",
-    "Added protected Admin-only preview endpoint for credential assets, including inactive drafts.",
-    "Added controlled unbind actions that remove database bindings without deleting private files automatically.",
-    "Added project scope selection limited to the two already defined production scopes; no speculative new scope is introduced.",
-    "Active production Verify credentials remain read-only for asset/scope changes."
+    "Owner confirmed guarded activation behaved as expected and requested continuation.",
+    "Added controlled deactivation for active personal Verify credentials.",
+    "Added revision lineage fields supersedes_verification_id and revision_no.",
+    "An active Verify credential can create a new inactive revision draft with a fresh MM reference while preserving the existing project/asset baseline for review.",
+    "Active credentials remain read-only; edits happen only on the inactive revision draft.",
+    "Activating a revision atomically activates the new credential and deactivates the superseded active credential.",
+    "Credential review now detects invalid active revision chains where both a revision and its superseded credential remain active.",
+    "Validity expiry continues to be authoritative through valid_until in Verify and credential-state rendering."
   ],
   "blockers": [
     {
@@ -417,8 +418,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and test protected asset upload/binding on the inactive MM-AHBW85JB draft. Once photo/logos/document and an appropriate existing scope are bound, add a guarded Backoffice activation action that reuses the Verify integrity requirements before changing is_active.",
-    "owner_action_required": "Upload one test asset to the inactive draft and confirm the protected Admin preview works.",
+    "action": "Deploy the revision migration and lifecycle UI, run backoffice migration, preflight and credential review, then test creating a revision from one active credential without activating it. After owner confirmation, continue with print/fulfilment workflow and Apple Wallet generation prerequisites.",
+    "owner_action_required": "Create one revision draft from an active credential and confirm the original remains active while the new revision remains inactive.",
     "blocker": "none"
   },
   "evidence": [
