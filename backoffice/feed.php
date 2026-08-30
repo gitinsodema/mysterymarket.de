@@ -39,7 +39,7 @@ mmHeader('Elite Feed', 'Interne MysteryMarket Elite Informationen.', 'noindex,no
       <article class="elite-feed-post<?= (int)$post['is_pinned'] === 1 ? ' is-pinned' : '' ?>">
         <div class="elite-feed-meta">
           <span class="badge"><?= mmEscape((string)$post['category']) ?></span>
-          <?php if ((int)$post['is_pinned'] === 1): ?><span class="status">Pinned</span><?php endif; ?>
+          <?php if ((int)$post['is_pinned'] === 1): ?><?= mmBackofficeStatusBadge('info', 'Pinned') ?><?php endif; ?>
         </div>
         <h2><?= mmEscape((string)$post['title']) ?></h2>
         <p><?= nl2br(mmEscape((string)$post['body'])) ?></p>
