@@ -4,6 +4,13 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/site.php';
 require_once __DIR__ . '/includes/db.php';
 
+$method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
+if (!in_array($method, ['GET','HEAD'], true)) {
+    header('Allow: GET, HEAD');
+    http_response_code(405);
+    exit;
+}
+
 mmStartSecureSession();
 
 $code = strtoupper(trim((string)($_GET['code'] ?? '')));
@@ -151,6 +158,10 @@ if ($type === 'document') {
     }
     header('Content-Length: ' . $length);
 
+    if ($method === 'HEAD') {
+        exit;
+    }
+
     $handle = fopen($file, 'rb');
     if ($handle === false) {
         http_response_code(500);
@@ -176,4 +187,7 @@ if ($type === 'document') {
 }
 
 header('Content-Length: ' . (string)$fileSize);
+if ($method === 'HEAD') {
+    exit;
+}
 readfile($file);
