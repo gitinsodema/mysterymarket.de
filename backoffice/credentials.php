@@ -103,10 +103,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     }
 
                     $duplicate = $pdo->prepare(
-                        'SELECT COUNT(*) FROM credential_orders
+                        "SELECT COUNT(*) FROM credential_orders
                          WHERE credential_id = :credential_id
                            AND order_channel = :channel
-                           AND order_status IN ('requested','approved','processing','ready')'
+                           AND order_status IN ('requested','approved','processing','ready')"
                     );
                     $duplicate->execute(['credential_id'=>$credentialId,'channel'=>$channel]);
 
