@@ -941,3 +941,29 @@ nav a[aria-current=page],
   line-height:1.5;
   background:#f8fbfd;
 }
+
+
+/* Elite profile + activation feedback */
+.field-hint{display:block;margin-top:6px;color:var(--muted);font-size:12px;font-weight:500}
+.field-error{
+  margin:-2px 0 16px;
+  padding:10px 12px;
+  border-radius:8px;
+  background:var(--signal-soft);
+  border-left:4px solid var(--signal);
+  color:var(--signal);
+  font-weight:700;
+}
+.backoffice-request-history{margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
+.backoffice-request-history>div{
+  display:grid;
+  grid-template-columns:120px 120px 1fr;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid #edf2f6;
+}
+.backoffice-request-history span{color:var(--muted)}
+.backoffice-request-history small{color:#8a98a8}
+@media(max-width:620px){
+  .backoffice-request-history>div{grid-template-columns:1fr}
+}
