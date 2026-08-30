@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T17:05:00+02:00",
+  "report_generated_at": "2026-08-30T17:12:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,11 +20,11 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "final_release_verification",
-    "active_branch": "website-v1",
+    "lifecycle_phase": "released",
+    "active_branch": "main",
     "default_branch": "main",
     "pull_request": 1,
-    "pull_request_state": "open_draft",
+    "pull_request_state": "merged",
     "production_domain": "mysterymarket.de",
     "runtime": "PHP 8.5 + MariaDB 12.3.3 + Plesk",
     "positioning": "Operational audit and fieldwork partner for agencies and direct clients; not positioned as a competing full-service evaluation/reporting agency.",
@@ -43,11 +43,11 @@
     ]
   },
   "release_progress": {
-    "lifecycle_phase": "final_release_verification",
-    "release_readiness_percent": 99,
-    "operational_readiness_percent": 99,
+    "lifecycle_phase": "released",
+    "release_readiness_percent": 100,
+    "operational_readiness_percent": 100,
     "bootstrap_readiness_percent": 100,
-    "publication_readiness_percent": 99,
+    "publication_readiness_percent": 100,
     "basis": {
       "milestones": [
         {
@@ -124,20 +124,17 @@
     },
     {
       "id": "MM-V1-RELEASE",
-      "status": "in_progress",
+      "status": "complete",
       "classification": "CURRENT_AUTHORITY",
-      "summary": "V1.0.0 release candidate established; PR #1 remains draft until release gates and explicit Owner approval."
+      "summary": "V1.0.0 released to main after successful final verification and explicit Owner approval."
     }
   ],
   "completed_since_last_report": [
-    "Owner requested final Elite Shopper V1 polish and initiation of the release process.",
-    "Elite Shopper page received a CSS-only partner-network visual using the final white/blue/orange/green brand language.",
-    "Added a clearly disabled Elite Shopper Login placeholder; no authentication or account functionality is implied or implemented in V1.",
-    "Elite Shopper and agency contact links now use the shared anti-scraping email helper.",
-    "Elite Shopper login placeholder is localized in DE/EN/NL.",
-    "Release smoke now checks the Elite Shopper page, placeholder presence and absence of plain public MysteryMarket email addresses.",
-    "Final multilingual review now covers OPS and Elite Shopper in DE/EN/NL.",
-    "V1 code/content scope is frozen pending one final production deploy and automated verification."
+    "Owner explicitly approved V1 release/merge.",
+    "PR #1 release candidate head 2c27de4 was promoted to main.",
+    "GitHub now records PR #1 as merged at commit 2c27de4d72cf9a745775c0c012e29c01c4a39a51.",
+    "MysteryMarket V1.0.0 is released on main.",
+    "Known non-release follow-ups remain mail deliverability, contact retention policy and future deployment artifact separation."
   ],
   "blockers": [
     {
@@ -176,8 +173,8 @@
     {
       "id": "MM-BLOCK-RELEASE-APPROVAL",
       "type": "owner_approval",
-      "status": "open",
-      "summary": "Final production verification must pass on the current V1 head; PR #1 must not be merged to main without explicit Owner release approval."
+      "status": "resolved",
+      "summary": "Owner explicitly approved V1 release; PR #1 is merged to main."
     },
     {
       "id": "MM-BLOCK-CONTACT-RETENTION",
@@ -209,8 +206,8 @@
     },
     {
       "category": "product_publication",
-      "status": "pending",
-      "summary": "Merge/release of Website V1.0.0 from website-v1 to main."
+      "status": "approved_and_completed",
+      "summary": "Website V1.0.0 released to main."
     }
   ],
   "decisions": [
@@ -342,9 +339,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the current website-v1 head, run PHP lint, preflight, release-smoke, final-review, credential integrity audit and data-maintenance status. If all pass, mark PR #1 ready for review and request explicit Owner V1 merge/release approval.",
-    "owner_action_required": "Deploy and run the final release verification block; report the results.",
-    "blocker": "Final production verification on the current head, then explicit Owner approval before merge."
+    "action": "Treat main as the released V1.0.0 baseline. Start all new functionality in a new post-release branch and preserve Verify as reusable infrastructure.",
+    "owner_action_required": "none",
+    "blocker": "none"
   },
   "evidence": [
     {
@@ -722,6 +719,16 @@
       "type": "owner_statement",
       "date": "2026-08-30",
       "summary": "Owner requested technical re-verification after Elite Shopper polish and initiation of the V1 release process."
+    },
+    {
+      "type": "owner_approval",
+      "date": "2026-08-30",
+      "summary": "Owner explicitly approved V1 release."
+    },
+    {
+      "type": "merge",
+      "id": "2c27de4d72cf9a745775c0c012e29c01c4a39a51",
+      "summary": "PR #1 merged/promoted to main as V1.0.0"
     }
   ]
 }
