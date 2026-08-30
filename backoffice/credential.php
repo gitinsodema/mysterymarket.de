@@ -220,21 +220,46 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     );
                 }
 
-                $stmt = mmDb()->prepare(
-                    'UPDATE audit_verifications
-                     SET is_active = 1, updated_at = NOW()
-                     WHERE id = :id
-                       AND is_personal_verification = 1
-                       AND is_active = 0'
-                );
-                $stmt->execute(['id'=>$id]);
+                $pdo = mmDb();
+                $pdo->beginTransaction();
 
-                if ($stmt->rowCount() !== 1) {
-                    throw new RuntimeException('Aktivierung konnte nicht eindeutig gespeichert werden.');
+                try {
+                    $stmt = $pdo->prepare(
+                        'UPDATE audit_verifications
+                         SET is_active = 1, updated_at = NOW()
+                         WHERE id = :id
+                           AND is_personal_verification = 1
+                           AND is_active = 0'
+                    );
+                    $stmt->execute(['id'=>$id]);
+
+                    if ($stmt->rowCount() !== 1) {
+                        throw new RuntimeException('Aktivierung konnte nicht eindeutig gespeichert werden.');
+                    }
+
+                    $supersedesId = (int)($fresh['supersedes_verification_id'] ?? 0);
+                    if ($supersedesId > 0) {
+                        $deactivatePrevious = $pdo->prepare(
+                            'UPDATE audit_verifications
+                             SET is_active = 0, updated_at = NOW()
+                             WHERE id = :id
+                               AND is_personal_verification = 1
+                               AND is_active = 1'
+                        );
+                        $deactivatePrevious->execute(['id'=>$supersedesId]);
+                    }
+
+                    $pdo->commit();
+                } catch (Throwable $e) {
+                    if ($pdo->inTransaction()) {
+                        $pdo->rollBack();
+                    }
+                    throw $e;
                 }
 
                 mmBackofficeAudit((int)$user['id'], 'verify_credential.activated', 'audit_verification', $id, [
-                    'reference_code'=>(string)$fresh['reference_code']
+                    'reference_code'=>(string)$fresh['reference_code'],
+                    'supersedes_verification_id'=>(int)($fresh['supersedes_verification_id'] ?? 0) ?: null
                 ]);
 
                 header('Location: /backoffice/credential.php?id=' . $id . '&activated=1', true, 303);
