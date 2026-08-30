@@ -34,6 +34,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         if ($action === 'profile') {
             $displayName = trim((string)($_POST['display_name'] ?? ''));
             $organisation = trim((string)($_POST['organisation'] ?? ''));
+            $workProfile = trim((string)($_POST['work_profile'] ?? ''));
             $phone = trim((string)($_POST['phone'] ?? ''));
             $streetName = trim((string)($_POST['street_name'] ?? ''));
             $houseNumber = trim((string)($_POST['house_number'] ?? ''));
@@ -64,8 +65,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $mobility = trim((string)($_POST['mobility_profile'] ?? ''));
             $shopperMatch = trim((string)($_POST['shoppermatch_profile_url'] ?? ''));
 
+            $allowedWorkProfiles = ['private','side_job','self_employed','own_agency','employed','other'];
+
             if ($displayName === '') {
                 $error = 'Name ist erforderlich.';
+            } elseif ($workProfile !== '' && !in_array($workProfile, $allowedWorkProfiles, true)) {
+                $error = 'Ungültiges Tätigkeitsprofil.';
             } elseif ($country !== '' && !preg_match('/^[A-Z]{2}$/', $country)) {
                 $error = 'Ländercode bitte zweistellig angeben, z. B. DE.';
             } elseif ($shopperMatch !== '' && !filter_var($shopperMatch, FILTER_VALIDATE_URL)) {
@@ -75,6 +80,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'UPDATE elite_members
                      SET display_name = :display_name,
                          organisation = :organisation,
+                         work_profile = :work_profile,
                          phone = :phone,
                          address_line1 = :address1,
                          address_line2 = :address2,
@@ -98,6 +104,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $update->execute([
                     'display_name'=>$displayName,
                     'organisation'=>$organisation !== '' ? $organisation : null,
+                    'work_profile'=>$workProfile !== '' ? $workProfile : null,
                     'phone'=>$phone !== '' ? $phone : null,
                     'address1'=>$address1 !== '' ? $address1 : null,
                     'address2'=>$address2 !== '' ? $address2 : null,
@@ -203,8 +210,14 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
     <?php if (isset($_GET['saved'])): ?><div class="alert success"><strong>Profil gespeichert.</strong></div><?php endif; ?>
     <?php if (isset($_GET['requested'])): ?><div class="alert success"><strong>Mitgliedschaftsanfrage gespeichert.</strong></div><?php endif; ?>
     <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
-    <h2>Profil & Einsatz</h2>
-    <form method="post" action="/backoffice/profile.php" data-atlas-address-form>
+    <div class="elite-profile-heading">
+      <div>
+        <p class="eyebrow">Persönliches Profil</p>
+        <h2>Profil & Einsatz</h2>
+      </div>
+      <?= mmBackofficeStatusBadge((string)$member['membership_status']) ?>
+    </div>
+    <form method="post" action="/backoffice/profile.php" data-atlas-address-form class="elite-profile-form">
       <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
       <input type="hidden" name="action" value="profile">
       <input type="hidden" name="administrative_unit_atlas_id" data-atlas-admin-id value="<?= mmEscape((string)($member['administrative_unit_atlas_id'] ?? '')) ?>">
@@ -214,10 +227,44 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
       <input type="hidden" name="locality_name" data-atlas-locality-name value="<?= mmEscape((string)($member['locality_name'] ?? $member['city'] ?? '')) ?>">
       <input type="hidden" name="street_atlas_id" data-atlas-street-id value="<?= mmEscape((string)($member['street_atlas_id'] ?? '')) ?>">
 
-      <label>Name<input name="display_name" maxlength="150" required value="<?= mmEscape((string)$member['display_name']) ?>"></label>
-      <label>Organisation<input name="organisation" maxlength="200" value="<?= mmEscape((string)($member['organisation'] ?? '')) ?>"></label>
-      <label>Telefon<input name="phone" maxlength="60" value="<?= mmEscape((string)($member['phone'] ?? '')) ?>"></label>
-      <div class="form-grid">
+      <section class="elite-profile-block">
+        <div class="elite-profile-block-head">
+          <span>01</span>
+          <div><strong>Persönlich</strong><small>Kontakt & Arbeitsform</small></div>
+        </div>
+        <div class="elite-profile-grid">
+          <label>Name<input name="display_name" maxlength="150" required value="<?= mmEscape((string)$member['display_name']) ?>"></label>
+          <label>Telefon<input name="phone" maxlength="60" value="<?= mmEscape((string)($member['phone'] ?? '')) ?>"></label>
+          <label>Tätigkeitsprofil
+            <select name="work_profile">
+              <?php
+              $workProfiles = [
+                '' => 'Bitte wählen',
+                'private' => 'Privat / gelegentlich',
+                'side_job' => 'Nebenberuflich',
+                'self_employed' => 'Selbstständig',
+                'own_agency' => 'Eigene Agentur / eigenes Unternehmen',
+                'employed' => 'Angestellt',
+                'other' => 'Sonstiges',
+              ];
+              foreach ($workProfiles as $value => $label):
+              ?>
+                <option value="<?= mmEscape($value) ?>"<?= ($member['work_profile'] ?? '') === $value ? ' selected' : '' ?>><?= mmEscape($label) ?></option>
+              <?php endforeach; ?>
+            </select>
+          </label>
+          <label>Firma / Agentur <small class="field-inline-note">optional</small>
+            <input name="organisation" maxlength="200" value="<?= mmEscape((string)($member['organisation'] ?? '')) ?>" placeholder="Nur falls relevant">
+          </label>
+        </div>
+      </section>
+
+      <section class="elite-profile-block">
+        <div class="elite-profile-block-head">
+          <span>02</span>
+          <div><strong>Adresse</strong><small>ATLAS-gestützte Referenz</small></div>
+        </div>
+        <div class="form-grid elite-address-grid">
         <label>Land
           <select name="country_code" data-atlas-country data-current-country="<?= mmEscape((string)($member['country_code'] ?? '')) ?>">
             <?php if (!empty($member['country_code'])): ?>
@@ -276,6 +323,15 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
             </label>
           </div>
         </div>
+        </div>
+      </section>
+
+      <section class="elite-profile-block">
+        <div class="elite-profile-block-head">
+          <span>03</span>
+          <div><strong>Einsatzprofil</strong><small>Mobilität & Regionen</small></div>
+        </div>
+        <div class="elite-profile-grid">
         <label>Mobilitätsprofil
           <select name="mobility_profile">
             <?php
@@ -286,10 +342,15 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
             <?php endforeach; ?>
           </select>
         </label>
-      </div>
-      <label>Bevorzugte Regionen<textarea name="preferred_regions" placeholder="z. B. Düsseldorf, Ruhrgebiet, NRW"><?= mmEscape((string)($member['preferred_regions'] ?? '')) ?></textarea></label>
-      <label>ShopperMatch-Profillink<input type="url" name="shoppermatch_profile_url" maxlength="500" value="<?= mmEscape((string)($member['shoppermatch_profile_url'] ?? '')) ?>"></label>
-      <button type="submit">Profil speichern</button>
+        <label>Bevorzugte Regionen
+          <textarea name="preferred_regions" class="elite-compact-textarea" placeholder="z. B. Düsseldorf, Ruhrgebiet, NRW"><?= mmEscape((string)($member['preferred_regions'] ?? '')) ?></textarea>
+        </label>
+        <label>ShopperMatch-Profillink
+          <input type="url" name="shoppermatch_profile_url" maxlength="500" value="<?= mmEscape((string)($member['shoppermatch_profile_url'] ?? '')) ?>">
+        </label>
+        </div>
+      </section>
+      <div class="elite-profile-actions"><button type="submit">Profil speichern</button></div>
     </form>
   </div>
 </section>
