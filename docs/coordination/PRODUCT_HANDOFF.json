@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T19:38:00+02:00",
+  "report_generated_at": "2026-08-30T19:46:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,13 +134,12 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner provided the exact live ATLAS street payload for Köln/50667/Hohe Straße with HTTP 200.",
-    "Street payload fields confirmed: atlas_id, country_code, postal_code, locality_id, city, name, postal_area_id, source_address_count and revision.",
-    "Enabled ATLAS street autocomplete in the Elite profile using the authenticated MysteryMarket backend proxy.",
-    "Street name and house number are stored separately while address_line1 remains a readable compatibility snapshot.",
-    "Street free-text fallback remains supported without fabricating an ATLAS ID.",
-    "Added safe invalidation of stale street/locality ATLAS IDs when users manually change street or locality values.",
-    "Fixed hidden street ATLAS-ID binding so a selected ATLAS street persists its canonical identity correctly."
+    "Owner confirmed the complete ATLAS address flow works 100% even for a difficult private address.",
+    "Owner requested a more natural entry order so users start with country and postal code rather than working upward from street fields.",
+    "Elite profile address UX reordered to country -> postal code -> locality -> subdivision -> street -> house number.",
+    "Locality is automatically selected when ATLAS returns a single match.",
+    "Administrative subdivision is automatically selected when the chosen ATLAS locality provides an administrative_unit_id.",
+    "Manual locality/address fallbacks remain available for incomplete international coverage."
   ],
   "blockers": [
     {
@@ -401,8 +400,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and test the complete Elite ATLAS address flow including street autocomplete and profile save. If successful, extract the ATLAS address controls into a reusable component for other MysteryMarket forms where structured location is needed.",
-    "owner_action_required": "Test country -> subdivision -> postal code -> locality -> street -> house number in the Elite profile and save/reload the profile.",
+    "action": "Deploy and verify the reordered ATLAS address flow. If successful, extract the flow into a reusable MysteryMarket address component for future onboarding/contact/admin forms.",
+    "owner_action_required": "Quick visual test of the new top-down country/postal/locality/street order.",
     "blocker": "none"
   },
   "evidence": [
@@ -1081,6 +1080,11 @@
       "type": "owner_runtime_test",
       "date": "2026-08-30",
       "summary": "ATLAS street lookup returned status=200 and first street Hohe Straße with stable street/locality/postal ATLAS IDs."
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "Owner reported the full ATLAS address flow 100% successful, including a difficult real-world address."
     }
   ]
 }
