@@ -110,3 +110,41 @@ Protected asset delivery handles HEAD without streaming the asset body.
 
 No merge to `main` is authorised by this review. The release remains subject to the
 Owner's explicit approval after production verification.
+
+
+### MM-SEC-006 — Sensitive form/verification responses were cacheable by default
+
+Severity: Low
+Status: fixed in repository
+
+Contact and Verify now explicitly send private no-store cache directives. This reduces the
+chance that CSRF/session state, verification references or personal credential responses
+are retained by intermediary/browser caches.
+
+### MM-SEC-007 — Contact endpoint accepted unnecessarily large request bodies
+
+Severity: Low
+Status: fixed in repository
+
+The contact endpoint now rejects POST bodies larger than 32 KiB with HTTP 413 before
+normal form processing. Existing field-level limits remain unchanged.
+
+### MM-SEC-008 — Release verification was manual-only
+
+Severity: Medium operational risk
+Status: fixed in repository
+
+Added `scripts/release-smoke.sh` to validate:
+- public 200 responses
+- internal/source path denial
+- disallowed HTTP methods
+- protected Verify asset/card denial without session
+- required security headers
+- no-store on Contact and Verify
+- oversized contact POST rejection
+
+## Current release hardening position
+
+Repository-level V1 security hardening is substantially complete. Remaining release work
+is production execution of the external smoke test, final visual/legal/contact QA, and
+explicit Owner merge/release approval.
