@@ -48,6 +48,7 @@ for lang in de en nl; do
   done
 done
 
+check_status 200 "$BASE/verify"
 check_status 404 "$BASE/this-page-must-not-exist-v1"
 check_body "$BASE/this-page-must-not-exist-v1" '404'
 
