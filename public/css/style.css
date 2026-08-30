@@ -339,3 +339,7 @@ button,.button,input,select,textarea{touch-action:manipulation}
 .ops-next-arrow{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--accent);font-size:22px;font-weight:900}
 @media(max-width:850px){.ops-decision-grid{grid-template-columns:1fr}.ops-next-action{grid-template-columns:1fr auto}.ops-next-action .badge{grid-column:1/-1}}
 @media(max-width:520px){.ops-decision-visual{padding:16px}.ops-next-action{display:block}.ops-next-arrow{margin-top:14px}}
+
+
+/* Preview-only concept hooks: hidden in the production/default theme. */
+.concept-only{display:none!important}
