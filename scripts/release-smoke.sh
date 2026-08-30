@@ -22,7 +22,7 @@ check_status() {
 check_header() {
   local url="$1"
   local pattern="$2"
-  if curl -sSI "$url" | grep -qiE "$pattern"; then
+  if curl -sS -D - -o /dev/null "$url" | grep -qiE "$pattern"; then
     echo "[PASS] header $pattern"
   else
     echo "[FAIL] missing header $pattern on $url" >&2
