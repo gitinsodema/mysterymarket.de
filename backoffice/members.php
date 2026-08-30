@@ -42,7 +42,7 @@ mmHeader('Elite Shopper verwalten', 'Interne Elite-Shopper-Verwaltung.', 'noinde
             <td><a href="/backoffice/member.php?id=<?= (int)$member['id'] ?>"><strong><?= mmEscape((string)$member['member_code']) ?></strong></a></td>
             <td><a href="/backoffice/member.php?id=<?= (int)$member['id'] ?>"><?= mmEscape((string)$member['display_name']) ?></a></td>
             <td><?= mmEscape((string)$member['email']) ?></td>
-            <td><span class="status"><?= mmEscape((string)$member['membership_status']) ?></span></td>
+            <td><?= mmBackofficeStatusBadge((string)$member['membership_status']) ?></td>
             <td><?= mmEscape((string)$member['account_status']) ?></td>
             <td><?= mmEscape((string)($member['preferred_regions'] ?: $member['city'] ?: '—')) ?></td>
             <td><?= mmEscape((string)($member['last_login_at'] ?: '—')) ?></td>
