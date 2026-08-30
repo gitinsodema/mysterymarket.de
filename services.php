@@ -12,9 +12,12 @@ mmHeader($c['title'], $c['lead']);
   <div class="section-head"><p class="eyebrow">Audit & Field Services</p><h2><?= mmEscape($c['section']) ?></h2></div>
   <div class="service-grid">
   <?php foreach (mmServiceItems() as $i => $service): ?>
-    <article class="service-card">
+    <article class="service-card service-card-visual service-tone-<?= ($i % 4) + 1 ?>">
       <span class="service-number"><?= str_pad((string)($i+1),2,'0',STR_PAD_LEFT) ?></span>
-      <p class="eyebrow"><?= mmEscape($service[0]) ?></p><h3><?= mmEscape($service[1]) ?></h3><p><?= mmEscape($service[2]) ?></p>
+      <div class="service-icon" aria-hidden="true"><?= mmServiceIconSvg((string)$service[0]) ?></div>
+      <p class="eyebrow"><?= mmEscape($service[0]) ?></p>
+      <h3><?= mmEscape($service[1]) ?></h3>
+      <p><?= mmEscape($service[2]) ?></p>
       <ul><?php foreach ($service[3] as $item): ?><li><?= mmEscape($item) ?></li><?php endforeach; ?></ul>
     </article>
   <?php endforeach; ?>
@@ -26,6 +29,6 @@ mmHeader($c['title'], $c['lead']);
     <article class="card"><h3><?= mmEscape($c['agency1']) ?></h3><p><?= mmEscape($c['agency1_text']) ?></p></article>
     <article class="card"><h3><?= mmEscape($c['agency2']) ?></h3><p><?= mmEscape($c['agency2_text']) ?></p></article>
   </div>
-  <div class="actions"><a class="button" href="mailto:agency@mysterymarket.de"><?= mmEscape($c['cta']) ?></a></div>
+  <div class="actions"><?= mmEmailLink('agency', mmEscape($c['cta'])) ?></div>
 </section>
 <?php mmFooter(); ?>
