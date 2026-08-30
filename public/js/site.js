@@ -57,6 +57,9 @@
     const postal = atlasForm.querySelector('[data-atlas-postal]');
     const locality = atlasForm.querySelector('[data-atlas-locality]');
     const localityManual = atlasForm.querySelector('[data-atlas-locality-manual]');
+    const street = atlasForm.querySelector('[data-atlas-street]');
+    const streetOptions = atlasForm.querySelector('[data-atlas-street-options]');
+    const streetStatus = atlasForm.querySelector('[data-atlas-street-status]');
     const postalStatus = atlasForm.querySelector('[data-atlas-postal-status]');
     const adminId = atlasForm.querySelector('[data-atlas-admin-id]');
     const adminName = atlasForm.querySelector('[data-atlas-admin-name]');
@@ -223,6 +226,74 @@
       }
     };
 
+
+    const loadStreets = async () => {
+      if (!country || !postal || !street || !streetOptions || !localityId) return;
+
+      const code = String(country.value || '').toUpperCase();
+      const postalCode = String(postal.value || '').trim();
+      const locId = String(localityId.value || '').trim();
+      const query = String(street.value || '').trim();
+
+      if (!code || !postalCode || !locId || query.length < 2) {
+        streetOptions.replaceChildren();
+        if (streetStatus) {
+          streetStatus.textContent = locId
+            ? 'ATLAS-Suche ab 2 Zeichen; Freitext bleibt möglich.'
+            : 'Für ATLAS-Straßensuche zuerst einen ATLAS-Ort wählen.';
+        }
+        return;
+      }
+
+      if (streetStatus) streetStatus.textContent = 'Straßen werden über ATLAS gesucht …';
+
+      try {
+        const items = await atlasGet({
+          action:'streets',
+          country_code:code,
+          postal_code:postalCode,
+          locality_id:locId,
+          q:query,
+          limit:'20'
+        });
+
+        const list = Array.isArray(items) ? items : [];
+        streetOptions.replaceChildren();
+
+        list.forEach((item) => {
+          const option = document.createElement('option');
+          option.value = String(item.name || '');
+          option.dataset.atlasId = String(item.atlas_id || '');
+          option.dataset.localityId = String(item.locality_id || '');
+          option.dataset.postalId = String(item.postal_area_id || '');
+          streetOptions.appendChild(option);
+        });
+
+        if (streetStatus) {
+          streetStatus.textContent = list.length
+            ? list.length + ' ATLAS-Treffer.'
+            : 'Keine ATLAS-Straße gefunden – Freitext bleibt möglich.';
+        }
+      } catch (_) {
+        streetOptions.replaceChildren();
+        if (streetStatus) streetStatus.textContent = 'Straßenreferenz nicht verfügbar – Freitext bleibt möglich.';
+      }
+    };
+
+    const syncStreet = () => {
+      if (!street || !streetOptions || !streetAtlasId) return;
+      const value = String(street.value || '').trim();
+      const option = Array.from(streetOptions.options).find((candidate) => candidate.value === value);
+      streetAtlasId.value = option?.dataset?.atlasId || '';
+      if (option?.dataset?.postalId && postalId) postalId.value = option.dataset.postalId;
+      if (streetStatus && value !== '') {
+        streetStatus.textContent = option?.dataset?.atlasId
+          ? 'Straße durch ATLAS referenziert.'
+          : 'Straße wird als Freitext gespeichert.';
+      }
+    };
+
+
     const syncSubdivision = () => {
       if (!subdivision) return;
       const option = subdivision.options[subdivision.selectedIndex];
@@ -240,6 +311,7 @@
     };
 
     let postalTimer = 0;
+    let streetTimer = 0;
     country?.addEventListener('change', async () => {
       if (adminId) adminId.value = '';
       if (adminName) adminName.value = '';
@@ -256,10 +328,21 @@
     localityManual?.addEventListener('input', () => {
       if (localityId) localityId.value = '';
       if (localityName) localityName.value = localityManual.value.trim();
+      if (streetAtlasId) streetAtlasId.value = '';
+      if (streetOptions) streetOptions.replaceChildren();
     });
+    street?.addEventListener('input', () => {
+      if (streetAtlasId) streetAtlasId.value = '';
+      window.clearTimeout(streetTimer);
+      streetTimer = window.setTimeout(loadStreets, 300);
+    });
+    street?.addEventListener('change', syncStreet);
+    street?.addEventListener('blur', syncStreet);
     postal?.addEventListener('input', () => {
       if (postalId) postalId.value = '';
       if (localityId) localityId.value = '';
+      if (streetAtlasId) streetAtlasId.value = '';
+      if (streetOptions) streetOptions.replaceChildren();
       window.clearTimeout(postalTimer);
       postalTimer = window.setTimeout(resolvePostal, 450);
     });
