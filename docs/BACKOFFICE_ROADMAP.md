@@ -287,3 +287,27 @@ Reason:
 - admin vs Elite is an access role, not credential ownership
 
 R1.2 will therefore introduce a credential subject/identity relationship that can be linked to a backoffice account independently of whether that account is `admin` or `elite`.
+
+
+## R1.2 Credential ordering and Apple Wallet
+
+Owner-confirmed direction:
+- "Ausweis bestellen" is the single credential issuance/order area.
+- Apple Wallet is a first-class issuance channel in the same area as physical card options.
+- The UI should offer an action such as "Zu Apple Wallet hinzufügen" alongside physical ordering choices.
+- Physical and digital outputs represent the same underlying credential/subject identity.
+- A credential has an authoritative lifecycle including issue date, expiry date, status, replacement/revocation and verification state.
+- Apple Wallet passes should use the pass-level `expirationDate` where appropriate.
+- Expiry handling in Wallet does not replace MysteryMarket Verify or server-side revocation/suspension logic.
+- Later Wallet update-service support should allow changed/revoked credentials to be reflected without issuing an unrelated new identity.
+
+Planned order/issuance choices:
+- Digital credential / Apple Wallet
+- physical card
+- transparent holder
+- MysteryMarket lanyard
+- Elite Shopper lanyard
+- full set
+- replacement card
+
+The order UI is not a merchandise shop; it is credential/equipment issuance for field operations.
