@@ -1292,3 +1292,17 @@ nav a[aria-current=page],
 .credential-integrity-block ul{margin:0;padding-left:20px}
 .credential-integrity-block li{margin:3px 0;font-size:13px}
 .credential-activate-form{margin-top:14px}
+
+
+/* R1.2 credential lifecycle */
+.credential-lifecycle-actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.credential-lifecycle-actions form{margin:0}
+@media(max-width:760px){
+  .credential-lifecycle-actions{display:grid;grid-template-columns:1fr}
+  .credential-lifecycle-actions button{width:100%}
+}
