@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T15:59:00+02:00",
+  "report_generated_at": "2026-08-30T16:08:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -26,7 +26,7 @@
     "pull_request": 1,
     "pull_request_state": "open_draft",
     "production_domain": "mysterymarket.de",
-    "runtime": "PHP 8.5 + MariaDB + Plesk",
+    "runtime": "PHP 8.5 + MariaDB 12.3.3 + Plesk",
     "positioning": "Operational audit and fieldwork partner for agencies and direct clients; not positioned as a competing full-service evaluation/reporting agency.",
     "major_capabilities": [
       "DE/EN/NL public website",
@@ -130,11 +130,11 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner requested the concept preview include the actual high-energy visual elements rather than only a dark recolor.",
-    "Homepage now contains concept-only room-depth layer, three floating KPI/stat cards and a bright Verify credential visual.",
-    "OPS preview now contains concept-only floating action chips.",
-    "Default V1 theme hides all concept-only hooks; no default layout/content change.",
-    "Concept stylesheet now renders blurred room lighting, floating glass statistics, a white high-contrast credential card and blue/orange/green action accents."
+    "Owner reported MariaDB upgraded successfully to 12.3.3; recorded as current runtime state.",
+    "Removed invented concept KPI/statistics from the homepage experiment.",
+    "Moved the bright Verify credential visual out of the hero into its own lower showcase section.",
+    "Concept hero now uses real modern interior photography with blur, crop, white highlights and blue overlay to reproduce the spatial depth from the preferred visual concept.",
+    "Hero copy remains the dominant foreground element; photography supplies atmosphere rather than fabricated operational metrics."
   ],
   "blockers": [
     {
@@ -331,9 +331,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and inspect the new concept preview on desktop first, then iPhone. Decide whether this expressive direction should remain preview-only or become the V1 presentation.",
-    "owner_action_required": "Review https://mysterymarket.de/?theme=concept and report whether the room depth, KPI action and Verify visual now match the desired direction.",
-    "blocker": "none; default V1 remains isolated."
+    "action": "Deploy the latest concept iteration and visually verify the real photographic background, foreground readability and lower Verify showcase. Then run preflight/smoke after the MariaDB 12.3.3 upgrade.",
+    "owner_action_required": "Review ?theme=concept and confirm whether the photographic direction now matches the desired first mockup.",
+    "blocker": "none; concept remains isolated from default theme."
   },
   "evidence": [
     {
@@ -591,6 +591,21 @@
       "type": "commit",
       "id": "600baca2d8d4bfe7a5876031bb2608fafa8c12a8",
       "summary": "experiential hero room, floating KPIs and Verify card styling"
+    },
+    {
+      "type": "runtime_report",
+      "date": "2026-08-30",
+      "summary": "Owner reported successful MariaDB upgrade to 12.3.3."
+    },
+    {
+      "type": "commit",
+      "id": "3cd339004dff1e34625620aeb22f99e279775dec",
+      "summary": "remove invented KPIs and relocate Verify concept visual"
+    },
+    {
+      "type": "commit",
+      "id": "6769a8215bb015ee31f5e86f609b7fb67a9d56fc",
+      "summary": "real blurred interior photography in concept hero"
     }
   ]
 }
