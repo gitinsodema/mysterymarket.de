@@ -56,6 +56,7 @@
     const subdivision = atlasForm.querySelector('[data-atlas-subdivision]');
     const postal = atlasForm.querySelector('[data-atlas-postal]');
     const locality = atlasForm.querySelector('[data-atlas-locality]');
+    const localityManual = atlasForm.querySelector('[data-atlas-locality-manual]');
     const postalStatus = atlasForm.querySelector('[data-atlas-postal-status]');
     const adminId = atlasForm.querySelector('[data-atlas-admin-id]');
     const adminName = atlasForm.querySelector('[data-atlas-admin-name]');
@@ -248,7 +249,14 @@
       if (postal?.value) await resolvePostal();
     });
     subdivision?.addEventListener('change', syncSubdivision);
-    locality?.addEventListener('change', syncLocality);
+    locality?.addEventListener('change', () => {
+      if (localityManual) localityManual.value = '';
+      syncLocality();
+    });
+    localityManual?.addEventListener('input', () => {
+      if (localityId) localityId.value = '';
+      if (localityName) localityName.value = localityManual.value.trim();
+    });
     postal?.addEventListener('input', () => {
       if (postalId) postalId.value = '';
       if (localityId) localityId.value = '';
