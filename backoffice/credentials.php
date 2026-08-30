@@ -118,10 +118,13 @@ mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Creden
   <?php if (isset($_GET['requested'])): ?><div class="alert success"><strong>Ausgabeanfrage gespeichert.</strong></div><?php endif; ?>
   <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
 
-  <div class="section-head">
-    <p class="eyebrow">Bestehende Credentials</p>
-    <h2>Verify ist die Quelle.</h2>
-    <p>Jeder Eintrag entspricht einem realen projektbezogenen Verify-Ausweis. Keine zusätzliche MysteryMarket-Identität wird erzeugt.</p>
+  <div class="section-head credential-service-heading">
+    <div>
+      <p class="eyebrow">Bestehende Credentials</p>
+      <h2>Verify ist die Quelle.</h2>
+      <p>Jeder Eintrag entspricht einem realen projektbezogenen Verify-Ausweis. Keine zusätzliche MysteryMarket-Identität wird erzeugt.</p>
+    </div>
+    <a class="button" href="/backoffice/credential-new.php">Neuen Ausweis anlegen</a>
   </div>
 
   <?php if (!$credentials): ?>
@@ -161,6 +164,7 @@ mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Creden
                 <h4><?= mmEscape((string)$credential['reference_code']) ?></h4>
               </div>
               <div class="credential-service-actions">
+                <a class="button" href="/backoffice/credential.php?id=<?= (int)$credential['id'] ?>">Ausweis verwalten</a>
                 <a class="button secondary" href="/verify?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Verify öffnen</a>
                 <?php if ((int)$credential['print_card_enabled'] === 1): ?>
                   <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Druckkarte anzeigen</a>
