@@ -187,8 +187,22 @@
           locality.appendChild(option);
         });
 
-        if (locality.selectedIndex < 0 && locality.options.length) locality.selectedIndex = 0;
+        if (list.length === 1) {
+          locality.selectedIndex = 0;
+        } else if (locality.selectedIndex < 0 && locality.options.length) {
+          locality.selectedIndex = 0;
+        }
         syncLocality();
+
+        const selectedLocality = locality.options[locality.selectedIndex];
+        const selectedAdminId = selectedLocality?.dataset?.adminId || '';
+        if (selectedAdminId && subdivision) {
+          const matchingSubdivision = Array.from(subdivision.options).find((option) => option.value === selectedAdminId);
+          if (matchingSubdivision) {
+            subdivision.value = selectedAdminId;
+            syncSubdivision();
+          }
+        }
       } catch (_) {
         if (postalStatus) postalStatus.textContent = 'PLZ gefunden, Ortsliste momentan nicht verfügbar.';
       }
@@ -308,7 +322,16 @@
       if (localityId) localityId.value = option?.dataset?.atlasId || '';
       if (localityName) localityName.value = option?.value || '';
       if (postalId && option?.dataset?.postalId) postalId.value = option.dataset.postalId;
-      if (adminId && !adminId.value && option?.dataset?.adminId) adminId.value = option.dataset.adminId;
+      if (option?.dataset?.adminId && adminId) {
+        adminId.value = option.dataset.adminId;
+        if (subdivision) {
+          const matchingSubdivision = Array.from(subdivision.options).find((candidate) => candidate.value === option.dataset.adminId);
+          if (matchingSubdivision) {
+            subdivision.value = option.dataset.adminId;
+            if (adminName) adminName.value = matchingSubdivision.textContent.trim();
+          }
+        }
+      }
     };
 
     let postalTimer = 0;
