@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T19:08:00+02:00",
+  "report_generated_at": "2026-08-30T19:26:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,15 +134,10 @@
     }
   ],
   "completed_since_last_report": [
-    "Copied the approved ATLAS Geography Reference API v1 contract from main onto r1.1-little-backoffice.",
-    "Prepared dedicated server-side ATLAS configuration for MYSTERYMARKET without committing credentials.",
-    "Added secure server-side ATLAS client with Bearer authentication, MYSTERYMARKET product identity, unique request IDs, TLS verification and response tracing.",
-    "Added authenticated Backoffice-only ATLAS reference proxy for countries, subdivisions, postal areas, localities and streets; the Bearer token is never returned to browser code.",
-    "Added CLI ATLAS smoke test for authentication and country lookup.",
-    "Extended Elite profile storage with canonical ATLAS reference IDs for administrative unit, postal area, locality and street, with readable snapshots/fallback fields retained.",
-    "Prepared Elite profile persistence for future ATLAS-selected reference IDs while keeping current manual address entry operational.",
-    "System overview now reports whether ATLAS is configured.",
-    "Preflight now verifies the approved contract, ATLAS integration files and warns until the production token is configured."
+    "Owner confirmed live ATLAS authentication and country lookup succeeded in production with HTTP 200 and 249 countries.",
+    "Added a safe CLI contract inspector that prints only ATLAS reference payload shapes/sample reference data and never the Bearer token.",
+    "Inspector covers countries, DE subdivisions, DE 50667 postal-area lookup and DE 50667 locality lookup for Köln.",
+    "Preflight now requires the contract inspector."
   ],
   "blockers": [
     {
@@ -403,9 +398,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the prepared ATLAS integration and migration, add the dedicated MYSTERYMARKET token to production config/local.php, then run scripts/atlas-smoke.php. After a successful live response, inspect actual response item shapes and enable the final address autocomplete UX.",
-    "owner_action_required": "Install the dedicated MYSTERYMARKET ATLAS token in production config/local.php when instructed.",
-    "blocker": "ATLAS live UX activation waits only for the production MYSTERYMARKET token and first successful smoke response."
+    "action": "Deploy the contract inspector and run it once in production. Use its output to bind the final address UI to exact ATLAS payload field names, then enable country/subdivision/postal/locality/street interactions.",
+    "owner_action_required": "Run scripts/atlas-contract-inspect.php and provide the output.",
+    "blocker": "Final browser UX binding intentionally waits for exact live payload field names."
   },
   "evidence": [
     {
@@ -1073,6 +1068,11 @@
       "type": "commit",
       "id": "e9952db1e3d3c9f7e2d62499814a7eb1ae10efe4",
       "summary": "agency module preflight coverage"
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "ATLAS smoke returned status=200, [PASS] authentication and country lookup, countries=249, MYSTERYMARKET_ATLAS_SMOKE_OK."
     }
   ]
 }
