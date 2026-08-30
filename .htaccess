@@ -3,6 +3,7 @@ ErrorDocument 404 /404.php
 Options -Indexes
 
 RewriteEngine On
+RewriteRule ^verify/?$ verify.php [L,QSA,NC]
 RewriteRule ^(?:config|database|docs|includes|internal|lang|scripts)(?:/|$) - [F,L,NC]
 RewriteRule ^(?:\.git|\.github|\.idea)(?:/|$) - [F,L,NC]
 
