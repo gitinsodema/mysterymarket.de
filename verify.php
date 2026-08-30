@@ -10,6 +10,9 @@ if (!in_array($method, ['GET','POST'], true)) {
     exit;
 }
 
+header('Cache-Control: private, no-store, max-age=0');
+header('Pragma: no-cache');
+
 $base = mmPageCopy('verify');
 $verifyLang = strtolower(trim((string)($_GET['verify_lang'] ?? mmLanguage())));
 if (!in_array($verifyLang, ['de','en','nl','tr','ar'], true)) {
