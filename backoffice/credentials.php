@@ -115,9 +115,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     }
 
                     $order = $pdo->prepare(
-                        'INSERT INTO credential_orders
+                        "INSERT INTO credential_orders
                          (credential_id, requested_by_user_id, order_channel, order_status, requested_at, created_at, updated_at)
-                         VALUES (:credential_id, :requested_by, :channel, 'requested', NOW(), NOW(), NOW())'
+                         VALUES (:credential_id, :requested_by, :channel, 'requested', NOW(), NOW(), NOW())"
                     );
                     $order->execute([
                         'credential_id'=>$credentialId,
