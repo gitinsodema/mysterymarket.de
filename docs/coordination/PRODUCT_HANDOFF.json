@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T14:39:00+02:00",
+  "report_generated_at": "2026-08-30T14:55:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "release_candidate_final_smoke",
+    "lifecycle_phase": "release_candidate_final_review",
     "active_branch": "website-v1",
     "default_branch": "main",
     "pull_request": 1,
@@ -43,11 +43,11 @@
     ]
   },
   "release_progress": {
-    "lifecycle_phase": "release_candidate_final_smoke",
-    "release_readiness_percent": 97,
+    "lifecycle_phase": "release_candidate_final_review",
+    "release_readiness_percent": 98,
     "operational_readiness_percent": 98,
     "bootstrap_readiness_percent": 100,
-    "publication_readiness_percent": 97,
+    "publication_readiness_percent": 98,
     "basis": {
       "milestones": [
         {
@@ -130,12 +130,10 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed round 3 credential/data/artifact checks successful.",
-    "Contact POST bodies above 32 KiB now fail early with HTTP 413.",
-    "Contact and Verify surfaces now explicitly use private no-store caching.",
-    "Verify card completed HEAD and no-cache handling.",
-    "Added automated external release smoke test for public routes, internal-source denial, method restrictions, protected Verify endpoints, required headers and oversized form rejection.",
-    "Updated V1 security review and release gates."
+    "Owner confirmed external release-smoke test passed.",
+    "Final release review found no new critical security issue.",
+    "Privacy wording for pseudonymous rate-limit retention was aligned with actual cleanup behavior.",
+    "Added final multilingual release review for DE/EN/NL, 404, robots.txt, sitemap and language document markers."
   ],
   "blockers": [
     {
@@ -308,9 +306,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy round 4 and run scripts/release-smoke.sh against production. If it passes, proceed to final visual/legal/contact QA and Owner release approval.",
-    "owner_action_required": "Deploy website-v1 and return release smoke output.",
-    "blocker": "Any failing production smoke-test assertion."
+    "action": "Deploy final-review commits and run scripts/final-review.sh. If it passes, perform the last real-device/manual checks and prepare Owner release approval decision.",
+    "owner_action_required": "Deploy website-v1 and return final-review output.",
+    "blocker": "Any failing multilingual/404/robots/sitemap assertion."
   },
   "evidence": [
     {
@@ -463,6 +461,21 @@
       "type": "commit",
       "id": "8c44f0510837c6a4c2a57e9991ad2231e328f2d3",
       "summary": "external V1 release smoke test"
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "MYSTERYMARKET_RELEASE_SMOKE_OK reported by Owner."
+    },
+    {
+      "type": "commit",
+      "id": "ba1a9c60758a9048ae0919cc23c291285873e678",
+      "summary": "privacy rate-limit retention wording aligned with implementation"
+    },
+    {
+      "type": "commit",
+      "id": "48c106a6b9ea63103dccb0948bc6d04be46b8b0e",
+      "summary": "final multilingual V1 release review"
     }
   ]
 }
