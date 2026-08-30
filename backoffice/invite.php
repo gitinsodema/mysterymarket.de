@@ -36,8 +36,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
         http_response_code(400);
         $error = 'Ungültige Sitzung.';
-    } elseif (($member['membership_status'] ?? '') === 'ended') {
-        $error = 'Für beendete Mitgliedschaften kann keine Einladung erzeugt werden.';
+    } elseif (!in_array(($member['membership_status'] ?? ''), ['invited','pending_review'], true)) {
+        $error = 'Ein Aktivierungslink kann nur für eingeladene oder noch zu prüfende Mitglieder erzeugt werden.';
     } else {
         try {
             $token = mmBackofficeCreateActivationToken((int)$member['user_id'], (int)$user['id']);
