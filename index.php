@@ -40,7 +40,7 @@ mmHeader($c['title'], $c['description']);
     <p class="lead"><?= mmEscape($c['collab_lead']) ?></p>
   </div>
   <div class="grid">
-    <article class="card"><h3><?= mmEscape($c['agency']) ?></h3><p><?= mmEscape($c['agency_text']) ?></p><a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a></article>
+    <article class="card"><h3><?= mmEscape($c['agency']) ?></h3><p><?= mmEscape($c['agency_text']) ?></p><?= mmEmailLink('agency', 'Agentur-Kontakt') ?></article>
     <article class="card"><h3><?= mmEscape($c['direct']) ?></h3><p><?= mmEscape($c['direct_text']) ?></p><a href="<?= mmEscape(mmLangUrl('/contact.php')) ?>"><?= mmEscape($c['cta_project']) ?> →</a></article>
     <article class="card"><h3><?= mmEscape($c['elite']) ?></h3><p><?= mmEscape($c['elite_text']) ?></p><a href="<?= mmEscape(mmLangUrl('/elite-shopper.php')) ?>"><?= mmEscape($c['elite']) ?> →</a></article>
   </div>
@@ -99,7 +99,7 @@ mmHeader($c['title'], $c['description']);
 
 <section class="section">
   <div class="grid two">
-    <article class="card"><span class="badge">Verification</span><h3><?= mmEscape($c['verify_title']) ?></h3><p><?= mmEscape($c['verify_text']) ?></p><a href="<?= mmEscape(mmLangUrl('/verify.php')) ?>"><?= mmEscape($c['cta_verify']) ?> →</a></article>
+    <article class="card"><span class="badge">Verification</span><h3><?= mmEscape($c['verify_title']) ?></h3><p><?= mmEscape($c['verify_text']) ?></p><a href="<?= mmEscape(mmLangUrl('/verify')) ?>"><?= mmEscape($c['cta_verify']) ?> →</a></article>
     <article class="card"><span class="badge">INSODEMA Tool</span><h3>OPS · Operations Suite</h3><p><?= mmEscape($c['ops_text']) ?></p><a href="<?= mmEscape(mmLangUrl('/tools.php')) ?>"><?= mmEscape($c['cta_ops']) ?> →</a></article>
   </div>
 </section>
