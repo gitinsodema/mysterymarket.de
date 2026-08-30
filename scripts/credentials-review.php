@@ -67,6 +67,21 @@ if ($failures === 0) {
         passCredential('all active Verify credentials pass activation integrity');
     }
 
+    $activeSuperseded = (int)$pdo->query(
+        'SELECT COUNT(*)
+         FROM audit_verifications current
+         JOIN audit_verifications previous
+           ON previous.id = current.supersedes_verification_id
+         WHERE current.is_personal_verification = 1
+           AND previous.is_personal_verification = 1
+           AND current.is_active = 1
+           AND previous.is_active = 1'
+    )->fetchColumn();
+
+    $activeSuperseded === 0
+        ? passCredential('no active revision leaves its superseded credential active')
+        : failCredential("{$activeSuperseded} active revision(s) still have an active superseded credential");
+
     echo "[INFO] personal_verify_credentials={$personal}\n";
     echo "[INFO] active_personal_verify_credentials={$activePersonal}\n";
     echo "[INFO] credential_output_requests=" . (int)$pdo->query('SELECT COUNT(*) FROM verify_credential_outputs')->fetchColumn() . "\n";
