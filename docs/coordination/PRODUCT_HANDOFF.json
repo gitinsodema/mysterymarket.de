@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T18:10:00+02:00",
+  "report_generated_at": "2026-08-30T18:24:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,17 +134,16 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner approved continuing without bundling the pending minor cross-file corrections yet.",
-    "Added one-time Elite invitation tokens stored only as SHA-256 hashes.",
-    "Activation links expire after 48 hours and older unused tokens are invalidated when a new token is generated.",
-    "Added admin-only manual activation-link generation from an Elite member record.",
-    "Added self-service Elite password activation with minimum 12-character password and confirmation.",
-    "Successful activation sets the Elite account and membership active, records joined_at, and consumes the token exactly once.",
-    "Activation and invitation events are written to the backoffice audit log.",
-    "No automatic invitation email is sent yet; the activation URL is shown once to the admin for manual confidential delivery.",
-    "Backoffice authenticated requests now revalidate account_status against the database so paused/suspended/disabled users lose access on the next request.",
-    "Activation link generation is restricted to invited/pending_review members.",
-    "Migration runner and preflight now cover the activation-token schema and pages."
+    "Owner confirmed the Elite activation flow works successfully.",
+    "Owner confirmed no invitation email was sent; the activation link was used manually as designed.",
+    "Owner reported the password minimum-length error was not immediately obvious during activation.",
+    "Activation UI now shows the 12-character requirement visibly and provides immediate client-side feedback for too-short or mismatched passwords.",
+    "Added Elite profile self-service for name, organisation, phone, address, country, preferred regions, mobility profile and ShopperMatch profile link.",
+    "Added Elite membership pause/end request workflow instead of allowing members to directly change privileged membership state.",
+    "Added admin membership-request queue with approve/reject handling.",
+    "Approved pause/end requests update membership state and disable the Elite account; active-session revalidation then removes access on the next request.",
+    "Dashboard now links Elite users to their profile and admins to membership requests, including an open-request count.",
+    "Added migration and preflight coverage for Elite membership requests."
   ],
   "blockers": [
     {
@@ -365,8 +364,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the current R1.1 branch, rerun backoffice migration, generate an activation link for a test Elite member, activate the account with a new password and confirm Elite login/feed access. Then continue with Elite profile/member self-service.",
-    "owner_action_required": "Run the activation flow once with a test Elite member.",
+    "action": "Deploy the current R1.1 branch, rerun backoffice migrations, verify the improved activation feedback, update an Elite profile, submit a pause request and approve/reject it from admin. Then continue with remaining R1.1 admin/settings polish and prepare R1.1 release verification.",
+    "owner_action_required": "Test Elite profile and membership-request flow with the existing test Elite account.",
     "blocker": "none"
   },
   "evidence": [
@@ -935,6 +934,61 @@
       "type": "commit",
       "id": "93f88e36389e45b9eeb5b998d3cbf27943b445cb",
       "summary": "activation-flow preflight coverage"
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "Owner confirmed successful Elite activation; no email was sent, consistent with the manual-link R1.1 design."
+    },
+    {
+      "type": "owner_ux_feedback",
+      "date": "2026-08-30",
+      "summary": "Password minimum-length feedback was initially too subtle during activation."
+    },
+    {
+      "type": "commit",
+      "id": "f4f46073dd769506a3701f3e48dedd86eac4c5f5",
+      "summary": "visible Elite password requirement"
+    },
+    {
+      "type": "commit",
+      "id": "0b850b004476f07cad832449f2001ab003ce5ccd",
+      "summary": "immediate activation password validation feedback"
+    },
+    {
+      "type": "commit",
+      "id": "8ac67f55c65d3a75d871df31ae2adeacf4e1340e",
+      "summary": "Elite membership request schema"
+    },
+    {
+      "type": "commit",
+      "id": "0846dd2dcf426606c4d51da99932a38aa6063392",
+      "summary": "membership request migration runner"
+    },
+    {
+      "type": "commit",
+      "id": "f343a84e90f3c5d4814d113c7bc48de32d75226b",
+      "summary": "Elite profile and membership self-service"
+    },
+    {
+      "type": "commit",
+      "id": "3c8b18880c087e42e34d7964ccd3c7fe109f9ab4",
+      "summary": "admin membership request workflow"
+    },
+    {
+      "type": "commit",
+      "id": "cbc3dd0dbf53291abff5582125ce083afc7fef4e",
+      "summary": "dashboard links and open request count"
+    },
+    {
+      "type": "commit",
+      "id": "b006c445ac9acd4cea1e779826ab497050b23475",
+      "summary": "Elite profile and validation styling"
+    },
+    {
+      "type": "commit",
+      "id": "99740a41e58c898d88443d918e3c2ae8e870ac18",
+      "summary": "Elite self-service preflight coverage"
     }
   ]
 }
