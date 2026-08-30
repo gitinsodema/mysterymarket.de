@@ -40,6 +40,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $postal = trim((string)($_POST['postal_code'] ?? ''));
             $city = trim((string)($_POST['city'] ?? ''));
             $country = strtoupper(trim((string)($_POST['country_code'] ?? '')));
+            $adminAtlasId = trim((string)($_POST['administrative_unit_atlas_id'] ?? ''));
+            $postalAtlasId = trim((string)($_POST['postal_area_atlas_id'] ?? ''));
+            $localityAtlasId = trim((string)($_POST['locality_atlas_id'] ?? ''));
+            $localityName = trim((string)($_POST['locality_name'] ?? $city));
+            $streetAtlasId = trim((string)($_POST['street_atlas_id'] ?? ''));
+            $streetName = trim((string)($_POST['street_name'] ?? ''));
+            $houseNumber = trim((string)($_POST['house_number'] ?? ''));
             $regions = trim((string)($_POST['preferred_regions'] ?? ''));
             $mobility = trim((string)($_POST['mobility_profile'] ?? ''));
             $shopperMatch = trim((string)($_POST['shoppermatch_profile_url'] ?? ''));
@@ -61,6 +68,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                          postal_code = :postal,
                          city = :city,
                          country_code = :country,
+                         administrative_unit_atlas_id = :admin_atlas_id,
+                         postal_area_atlas_id = :postal_atlas_id,
+                         locality_atlas_id = :locality_atlas_id,
+                         locality_name = :locality_name,
+                         street_atlas_id = :street_atlas_id,
+                         street_name = :street_name,
+                         house_number = :house_number,
                          preferred_regions = :regions,
                          mobility_profile = :mobility,
                          shoppermatch_profile_url = :shoppermatch,
@@ -76,6 +90,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'postal'=>$postal !== '' ? $postal : null,
                     'city'=>$city !== '' ? $city : null,
                     'country'=>$country !== '' ? $country : null,
+                    'admin_atlas_id'=>$adminAtlasId !== '' ? $adminAtlasId : null,
+                    'postal_atlas_id'=>$postalAtlasId !== '' ? $postalAtlasId : null,
+                    'locality_atlas_id'=>$localityAtlasId !== '' ? $localityAtlasId : null,
+                    'locality_name'=>$localityName !== '' ? $localityName : null,
+                    'street_atlas_id'=>$streetAtlasId !== '' ? $streetAtlasId : null,
+                    'street_name'=>$streetName !== '' ? $streetName : null,
+                    'house_number'=>$houseNumber !== '' ? $houseNumber : null,
                     'regions'=>$regions !== '' ? $regions : null,
                     'mobility'=>$mobility !== '' ? $mobility : null,
                     'shoppermatch'=>$shopperMatch !== '' ? $shopperMatch : null,
@@ -171,6 +192,13 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
     <form method="post" action="/backoffice/profile.php">
       <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
       <input type="hidden" name="action" value="profile">
+      <input type="hidden" name="administrative_unit_atlas_id" value="<?= mmEscape((string)($member['administrative_unit_atlas_id'] ?? '')) ?>">
+      <input type="hidden" name="postal_area_atlas_id" value="<?= mmEscape((string)($member['postal_area_atlas_id'] ?? '')) ?>">
+      <input type="hidden" name="locality_atlas_id" value="<?= mmEscape((string)($member['locality_atlas_id'] ?? '')) ?>">
+      <input type="hidden" name="locality_name" value="<?= mmEscape((string)($member['locality_name'] ?? $member['city'] ?? '')) ?>">
+      <input type="hidden" name="street_atlas_id" value="<?= mmEscape((string)($member['street_atlas_id'] ?? '')) ?>">
+      <input type="hidden" name="street_name" value="<?= mmEscape((string)($member['street_name'] ?? '')) ?>">
+      <input type="hidden" name="house_number" value="<?= mmEscape((string)($member['house_number'] ?? '')) ?>">
       <label>Name<input name="display_name" maxlength="150" required value="<?= mmEscape((string)$member['display_name']) ?>"></label>
       <label>Organisation<input name="organisation" maxlength="200" value="<?= mmEscape((string)($member['organisation'] ?? '')) ?>"></label>
       <label>Telefon<input name="phone" maxlength="60" value="<?= mmEscape((string)($member['phone'] ?? '')) ?>"></label>
