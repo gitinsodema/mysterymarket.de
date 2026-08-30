@@ -621,3 +621,88 @@ nav a[aria-current=page],
     margin-top:10px;
   }
 }
+
+
+/* Service visual system */
+.service-grid{grid-template-columns:repeat(3,1fr)}
+.service-card-visual{
+  min-height:390px;
+  display:flex;
+  flex-direction:column;
+  padding:30px;
+  border-top:4px solid var(--brand-blue);
+}
+.service-card-visual .service-icon{
+  width:76px;
+  height:76px;
+  border-radius:22px;
+  display:grid;
+  place-items:center;
+  margin-bottom:22px;
+  background:#eaf3ff;
+  color:var(--brand-blue);
+}
+.service-card-visual .service-icon svg{
+  width:42px;
+  height:42px;
+}
+.service-card-visual .eyebrow{margin-bottom:4px}
+.service-card-visual h3{
+  font-size:24px;
+  line-height:1.14;
+  max-width:100%;
+  margin-bottom:12px;
+}
+.service-card-visual>p:not(.eyebrow){margin-top:0}
+.service-card-visual ul{
+  margin-top:auto;
+  padding-top:20px;
+}
+.service-card-visual li::marker{color:var(--brand-blue)}
+
+.service-card-visual.service-tone-2{border-top-color:var(--brand-orange)}
+.service-card-visual.service-tone-2 .service-icon{background:#fff1e5;color:var(--brand-orange)}
+.service-card-visual.service-tone-2 li::marker{color:var(--brand-orange)}
+
+.service-card-visual.service-tone-3{border-top-color:var(--brand-green)}
+.service-card-visual.service-tone-3 .service-icon{background:#e9f8f2;color:var(--brand-green)}
+.service-card-visual.service-tone-3 li::marker{color:var(--brand-green)}
+
+.service-card-visual.service-tone-4{border-top-color:#001950}
+.service-card-visual.service-tone-4 .service-icon{background:#edf2f7;color:#001950}
+.service-card-visual.service-tone-4 li::marker{color:#001950}
+
+.service-card-visual:last-child{
+  background:
+    linear-gradient(145deg,#fff 0,#f8fbff 68%,#eef6ff 100%);
+  border:2px solid #b9d7f3;
+  border-top:4px solid var(--brand-blue);
+}
+.service-card-visual:last-child .service-number{color:#c9dcee}
+
+/* Home gets only the icon addition, not the full service-card treatment */
+.service-teaser{
+  gap:12px;
+}
+.service-teaser-icon{
+  width:48px;
+  height:48px;
+  border-radius:15px;
+  display:grid!important;
+  place-items:center;
+  background:#eaf3ff;
+  color:var(--brand-blue)!important;
+  align-self:flex-start;
+}
+.service-teaser-icon svg{width:27px;height:27px}
+.service-teaser.service-tone-2 .service-teaser-icon{background:#fff1e5;color:var(--brand-orange)!important}
+.service-teaser.service-tone-3 .service-teaser-icon{background:#e9f8f2;color:var(--brand-green)!important}
+.service-teaser.service-tone-4 .service-teaser-icon{background:#edf2f7;color:#001950!important}
+
+@media(max-width:1050px){
+  .service-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+  .service-grid{grid-template-columns:1fr}
+  .service-card-visual{min-height:auto}
+}
