@@ -3,6 +3,13 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/site.php';
 require_once __DIR__ . '/includes/db.php';
 
+$method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
+if (!in_array($method, ['GET','POST'], true)) {
+    header('Allow: GET, POST');
+    http_response_code(405);
+    exit;
+}
+
 $base = mmPageCopy('verify');
 $verifyLang = strtolower(trim((string)($_GET['verify_lang'] ?? mmLanguage())));
 if (!in_array($verifyLang, ['de','en','nl','tr','ar'], true)) {
@@ -301,6 +308,12 @@ if ($getCode !== '' && preg_match('/^[A-Z0-9-]{4,64}$/', $getCode)) {
 }
 
 mmStartSecureSession();
+$_SESSION['mm_verified_records'] ??= [];
+$_SESSION['mm_verified_records'] = array_filter(
+    (array)$_SESSION['mm_verified_records'],
+    static fn($verifiedAt): bool => is_int($verifiedAt) && $verifiedAt >= time() - 900
+);
+
 $_SESSION['mm_verify_attempts'] ??= [];
 $now = time();
 $_SESSION['mm_verify_attempts'] = array_values(array_filter(
@@ -380,8 +393,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || $autoVerify) {
                 $row = $stmt->fetch();
                 if ($row) {
                     $result = $row;
-                    $_SESSION['mm_verified_records'] ??= [];
                     $_SESSION['mm_verified_records'][(string)$row['reference_code']] = time();
+                    session_regenerate_id(true);
                 } else {
                     $error = $c['missing'];
                 }
