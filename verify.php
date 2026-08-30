@@ -204,6 +204,93 @@ $detailCopy = [
     ],
 ][$verifyLang] ?? [];
 
+$scopeCopy = [
+    'vodafone_skopos_2026' => [
+        'de' => [
+            'items' => [
+                'Durchführung von Vor-Ort-Kontrollen und Prüfgesprächen im Umfeld der Vodafone-Vermarktung.',
+                'Einsichtnahme in für Vodafone relevante Prozesse, Nachweise und Dokumentationen.',
+                'Prüfung der weitergegebenen Datenschutz- und Compliance-Vorgaben sowie der Prozess- und Qualitätsanforderungen von Vodafone.',
+            ],
+            'restriction' => 'Die Berechtigung ist auf Vodafone-relevante Prozesse und Datenverarbeitungen beschränkt. Eine Prüfung sonstiger Geschäftstätigkeiten des Untervertriebspartners ist nicht umfasst.',
+        ],
+        'en' => [
+            'items' => [
+                'On-site checks and audit discussions in the context of Vodafone marketing.',
+                'Inspection of Vodafone-relevant processes, evidence and documentation.',
+                'Verification of applicable data-protection and compliance requirements as well as Vodafone process and quality requirements.',
+            ],
+            'restriction' => 'The authorisation is limited to Vodafone-related processes and data processing. It does not include an audit of other business activities of the subcontracting sales partner.',
+        ],
+        'nl' => [
+            'items' => [
+                'Controles op locatie en auditgesprekken in de context van Vodafone-verkoop.',
+                'Inzage in voor Vodafone relevante processen, bewijsstukken en documentatie.',
+                'Controle van toepasselijke privacy- en compliancevereisten en van proces- en kwaliteitseisen van Vodafone.',
+            ],
+            'restriction' => 'De bevoegdheid is beperkt tot Vodafone-gerelateerde processen en gegevensverwerking. Controle van andere bedrijfsactiviteiten van de onderverkooppartner valt hier niet onder.',
+        ],
+        'tr' => [
+            'items' => [
+                'Vodafone pazarlama ortamında yerinde kontroller ve denetim görüşmeleri.',
+                'Vodafone açısından ilgili süreç, kanıt ve belgelerin incelenmesi.',
+                'İlgili veri koruma ve uyum gereklilikleri ile Vodafone süreç ve kalite gerekliliklerinin kontrolü.',
+            ],
+            'restriction' => 'Yetki yalnızca Vodafone ile ilgili süreçler ve veri işleme faaliyetleriyle sınırlıdır. Alt satış ortağının diğer ticari faaliyetlerinin denetimini kapsamaz.',
+        ],
+        'ar' => [
+            'items' => [
+                'إجراء عمليات تفتيش ميدانية ومحادثات تدقيق في سياق تسويق Vodafone.',
+                'الاطلاع على العمليات والأدلة والوثائق ذات الصلة بـ Vodafone.',
+                'فحص متطلبات حماية البيانات والامتثال المعمول بها ومتطلبات العمليات والجودة الخاصة بـ Vodafone.',
+            ],
+            'restriction' => 'يقتصر التفويض على العمليات ومعالجة البيانات ذات الصلة بـ Vodafone، ولا يشمل فحص الأنشطة التجارية الأخرى لشريك التوزيع الفرعي.',
+        ],
+    ],
+    'hp_bare_retail_2025_2026' => [
+        'de' => [
+            'items' => [
+                'Durchführung von Instore-Audits im Rahmen des HP Amplify for Retail – Instore Customer Experience Programms.',
+                'Messung projektbezogener Leistungskennzahlen und Prüfung der Partner-Compliance im Verkaufsraum.',
+                'Audits in den im Legitimationsschreiben genannten HP-Produktkategorien sowie Aufnahme zugehöriger Bilder in Bereichen mit ausgestellten HP- und Konkurrenzprodukten.',
+            ],
+            'restriction' => 'Die Legitimation gilt ausschließlich für die im HP-Schreiben beschriebenen Instore-Audits und den dort genannten Prüf- und Bildumfang. Sie begründet keine allgemeine Weisungs- oder Zutrittsbefugnis außerhalb dieses Projektkontexts.',
+        ],
+        'en' => [
+            'items' => [
+                'In-store audits under the HP Amplify for Retail – Instore Customer Experience programme.',
+                'Measurement of project performance indicators and review of partner compliance in the retail environment.',
+                'Audits across the HP product categories named in the authorisation letter and related photographs of areas displaying HP and competing products.',
+            ],
+            'restriction' => 'The authorisation applies only to the in-store audits and audit/photo scope described in the HP letter. It does not create a general authority to direct staff or access areas outside this project context.',
+        ],
+        'nl' => [
+            'items' => [
+                'Instore-audits binnen het HP Amplify for Retail – Instore Customer Experience-programma.',
+                'Meten van projectgerelateerde prestatie-indicatoren en controle van partnercompliance in de winkel.',
+                'Audits in de in de legitimatiebrief genoemde HP-productcategorieën en bijbehorende foto’s van zones met HP- en concurrerende producten.',
+            ],
+            'restriction' => 'De legitimatie geldt uitsluitend voor de in de HP-brief beschreven instore-audits en het daarin genoemde controle- en fotobereik. Zij geeft geen algemene instructie- of toegangsbevoegdheid buiten deze projectcontext.',
+        ],
+        'tr' => [
+            'items' => [
+                'HP Amplify for Retail – Instore Customer Experience programı kapsamında mağaza içi denetimler.',
+                'Proje performans göstergelerinin ölçülmesi ve mağaza ortamında iş ortağı uyumluluğunun kontrolü.',
+                'Yetkilendirme mektubunda belirtilen HP ürün kategorilerinde denetimler ve HP ile rakip ürünlerin sergilendiği alanlara ilişkin fotoğraflar.',
+            ],
+            'restriction' => 'Yetki yalnızca HP mektubunda açıklanan mağaza içi denetimler ile belirtilen kontrol ve fotoğraf kapsamı için geçerlidir. Bu proje bağlamı dışında genel talimat verme veya erişim yetkisi sağlamaz.',
+        ],
+        'ar' => [
+            'items' => [
+                'عمليات تدقيق داخل المتجر ضمن برنامج HP Amplify for Retail – Instore Customer Experience.',
+                'قياس مؤشرات الأداء الخاصة بالمشروع والتحقق من امتثال الشركاء في بيئة البيع بالتجزئة.',
+                'عمليات تدقيق لفئات منتجات HP المذكورة في خطاب التفويض والتقاط الصور ذات الصلة للمناطق التي تعرض منتجات HP ومنتجات المنافسين.',
+            ],
+            'restriction' => 'يقتصر التفويض على عمليات التدقيق داخل المتجر ونطاق الفحص والتصوير الموضح في خطاب HP، ولا يمنح صلاحية عامة لإصدار التعليمات أو الوصول خارج سياق هذا المشروع.',
+        ],
+    ],
+];
+
 $result = null;
 $error = null;
 $code = '';
@@ -375,11 +462,15 @@ $rtl = $verifyLang === 'ar';
             <div><small><?= mmEscape($detailCopy['project']) ?></small><strong><?= mmEscape((string)($result['project_name'] ?: $result['public_title'])) ?></strong></div>
           </div>
 
-          <?php if (($result['scope_key'] ?? '') === 'vodafone_skopos_2026'): ?>
+          <?php
+          $scopeKey = trim((string)($result['scope_key'] ?? ''));
+          $activeScope = $scopeCopy[$scopeKey][$verifyLang] ?? $scopeCopy[$scopeKey]['de'] ?? null;
+          ?>
+          <?php if ($activeScope): ?>
             <div class="verify-scope">
               <h3><?= mmEscape($detailCopy['scope']) ?></h3>
-              <ul><?php foreach ($detailCopy['scope_items'] as $item): ?><li><?= mmEscape($item) ?></li><?php endforeach; ?></ul>
-              <div class="notice"><strong><?= mmEscape($detailCopy['restriction']) ?></strong><p><?= mmEscape($detailCopy['restriction_text']) ?></p></div>
+              <ul><?php foreach ($activeScope['items'] as $item): ?><li><?= mmEscape($item) ?></li><?php endforeach; ?></ul>
+              <div class="notice"><strong><?= mmEscape($detailCopy['restriction']) ?></strong><p><?= mmEscape($activeScope['restriction']) ?></p></div>
             </div>
           <?php endif; ?>
 
