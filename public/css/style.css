@@ -987,3 +987,90 @@ nav a[aria-current=page],
   background:#fafbfd;
 }
 .atlas-manual-fields[hidden]{display:none}
+
+
+/* Elite profile — compact profile character */
+.elite-profile-heading{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:flex-start;
+  margin-bottom:18px;
+}
+.elite-profile-heading h2{margin:.05em 0 0;font-size:30px}
+.elite-profile-heading .eyebrow{margin:0}
+.elite-profile-form{display:grid;gap:14px}
+.elite-profile-block{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  padding:16px 18px 18px;
+}
+.elite-profile-block-head{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom:12px;
+}
+.elite-profile-block-head>span{
+  width:30px;height:30px;border-radius:9px;
+  display:grid;place-items:center;
+  background:var(--ink);color:white;
+  font-size:11px;font-weight:900;
+}
+.elite-profile-block-head strong{display:block;font-size:15px;color:var(--ink)}
+.elite-profile-block-head small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+.elite-profile-grid,
+.elite-address-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px 12px;
+}
+.elite-profile-form label{
+  margin:0;
+  font-size:13px;
+  color:var(--ink);
+}
+.elite-profile-form input,
+.elite-profile-form select,
+.elite-profile-form textarea{
+  margin-top:5px;
+  padding:9px 10px;
+  min-height:40px;
+  font-size:14px;
+  border-radius:8px;
+}
+.elite-profile-form textarea{min-height:74px}
+.elite-compact-textarea{min-height:74px!important}
+.field-inline-note{font-size:11px;color:var(--muted);font-weight:500}
+.elite-profile-form .field-hint{font-size:11px;line-height:1.35;margin-top:4px}
+.elite-profile-actions{
+  display:flex;
+  justify-content:flex-end;
+  padding-top:2px;
+}
+.elite-profile-actions button{padding:10px 16px}
+.atlas-manual-toggle-wrap{margin-top:2px}
+.atlas-manual-toggle-wrap .button{
+  background:#eef1f4;
+  border:1px solid #d2d8df;
+  color:#445064;
+  padding:8px 11px;
+  font-size:12px;
+  box-shadow:none;
+}
+.atlas-manual-toggle-wrap .button:hover{
+  background:#e4e8ed;
+  border-color:#c5ccd4;
+  color:var(--ink);
+}
+.atlas-manual-fields{
+  margin-top:2px;
+  padding:13px;
+  background:#f3f5f7;
+  border:1px dashed #cbd2da;
+}
+@media(max-width:700px){
+  .elite-profile-grid,.elite-address-grid{grid-template-columns:1fr}
+  .elite-profile-heading{align-items:center}
+}
