@@ -38,8 +38,8 @@ function mmCredentialSubjectForUser(array $user, bool $create = true): ?array
     }
 
     $insert = mmDb()->prepare(
-        'INSERT INTO credential_subjects (backoffice_user_id, display_name, subject_status, created_at, updated_at)
-         VALUES (:user_id, :display_name, 'active', NOW(), NOW())'
+        "INSERT INTO credential_subjects (backoffice_user_id, display_name, subject_status, created_at, updated_at)
+         VALUES (:user_id, :display_name, 'active', NOW(), NOW())"
     );
     $insert->execute(['user_id'=>$userId,'display_name'=>$displayName]);
 
