@@ -1074,3 +1074,25 @@ nav a[aria-current=page],
   .elite-profile-grid,.elite-address-grid{grid-template-columns:1fr}
   .elite-profile-heading{align-items:center}
 }
+
+
+/* R1.2 credential issuance */
+.credential-order-card{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  text-align:left;
+  gap:6px;
+  min-height:190px;
+}
+.credential-order-card>span{
+  align-self:flex-start;
+}
+.credential-order-card .credential-order-action{
+  margin-top:auto;
+  width:100%;
+  padding:9px 11px;
+  font-size:12px;
+  border-radius:8px;
+}
+.credential-admin-orders-head{margin-top:28px}
