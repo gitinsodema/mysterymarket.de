@@ -4,6 +4,13 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/site.php';
 require_once __DIR__ . '/includes/db.php';
 
+$method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
+if (!in_array($method, ['GET','POST'], true)) {
+    header('Allow: GET, POST');
+    http_response_code(405);
+    exit;
+}
+
 $c = mmPageCopy('contact');
 $lang = mmLanguage();
 
