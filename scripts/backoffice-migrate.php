@@ -17,6 +17,7 @@ $files = [
     dirname(__DIR__) . '/database/20260830_elite_atlas_geography.sql',
     dirname(__DIR__) . '/database/20260830_elite_work_profile.sql',
     dirname(__DIR__) . '/database/20260830_credentials_foundation.sql',
+    dirname(__DIR__) . '/database/20260830_verify_credential_revision.sql',
 ];
 
 $pdo = mmDb();
