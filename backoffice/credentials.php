@@ -127,44 +127,78 @@ mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Creden
   <?php if (!$credentials): ?>
     <div class="notice">Noch keine persönlichen Verify-Ausweise vorhanden.</div>
   <?php else: ?>
-    <div class="grid two">
+    <div class="credential-certificate-list">
       <?php foreach ($credentials as $credential): ?>
         <?php $state = mmCredentialVerifyState($credential); ?>
-        <article class="card credential-service-card">
-          <span class="badge"><?= mmEscape(mmCredentialProjectLabel($credential)) ?></span>
-          <h3><?= mmEscape((string)$credential['reference_code']) ?></h3>
-          <p><strong><?= mmEscape((string)($credential['person_name'] ?: '—')) ?></strong></p>
-          <p><?= mmEscape((string)($credential['project_name'] ?: $credential['public_title'] ?: '—')) ?></p>
-          <p><?= mmBackofficeStatusBadge($state) ?></p>
-          <p><strong>Gültig:</strong> <?= mmEscape((string)($credential['valid_from'] ?: '—')) ?> – <?= mmEscape((string)($credential['valid_until'] ?: '—')) ?></p>
-
-          <div class="credential-service-actions">
-            <a class="button secondary" href="/verify?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Verify öffnen</a>
-            <?php if ((int)$credential['print_card_enabled'] === 1): ?>
-              <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Druckkarte</a>
-            <?php endif; ?>
+        <article class="credential-certificate" data-credential-certificate>
+          <div class="credential-certificate-summary">
+            <div class="credential-certificate-mark">ID</div>
+            <div class="credential-certificate-main">
+              <div class="credential-certificate-topline">
+                <span class="badge"><?= mmEscape(mmCredentialProjectLabel($credential)) ?></span>
+                <?= mmBackofficeStatusBadge($state) ?>
+              </div>
+              <h3><?= mmEscape((string)($credential['project_name'] ?: $credential['public_title'] ?: 'Projekt-Ausweis')) ?></h3>
+              <div class="credential-certificate-meta">
+                <span><strong><?= mmEscape((string)($credential['person_name'] ?: '—')) ?></strong><small>Person</small></span>
+                <span><strong><?= mmEscape((string)($credential['agency_name'] ?: '—')) ?></strong><small>Agentur</small></span>
+                <span><strong><?= mmEscape((string)$credential['reference_code']) ?></strong><small>Verify-Referenz</small></span>
+                <span><strong><?= mmEscape((string)($credential['valid_until'] ?: 'offen')) ?></strong><small>Gültig bis</small></span>
+              </div>
+            </div>
+            <button type="button"
+                    class="button secondary credential-certificate-toggle"
+                    data-credential-toggle
+                    aria-expanded="false">
+              Ausweis öffnen
+            </button>
           </div>
 
-          <div class="credential-output-grid">
-            <?php
-            $options = [
-                'apple_wallet' => 'Apple Wallet',
-                'physical_card' => 'Physische Karte',
-                'transparent_holder' => 'Halter',
-                'mysterymarket_lanyard' => 'MM Lanyard',
-                'elite_shopper_lanyard' => 'Elite Lanyard',
-                'full_set' => 'Komplettset',
-                'replacement_card' => 'Ersatzkarte',
-            ];
-            foreach ($options as $type=>$label):
-            ?>
-              <form method="post" action="/backoffice/credentials.php">
-                <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
-                <input type="hidden" name="audit_verification_id" value="<?= (int)$credential['id'] ?>">
-                <input type="hidden" name="output_type" value="<?= mmEscape($type) ?>">
-                <button type="submit" class="button secondary"><?= mmEscape($label) ?></button>
-              </form>
-            <?php endforeach; ?>
+          <div class="credential-certificate-details" data-credential-details hidden>
+            <div class="credential-certificate-detail-head">
+              <div>
+                <span class="eyebrow">Ausweisfunktionen</span>
+                <h4><?= mmEscape((string)$credential['reference_code']) ?></h4>
+              </div>
+              <div class="credential-service-actions">
+                <a class="button secondary" href="/verify?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Verify öffnen</a>
+                <?php if ((int)$credential['print_card_enabled'] === 1): ?>
+                  <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Druckkarte anzeigen</a>
+                <?php endif; ?>
+              </div>
+            </div>
+
+            <div class="credential-output-section">
+              <div class="credential-output-section-head">
+                <strong>Ausgabe & Ausstattung</strong>
+                <small>Alle Ausgabewege beziehen sich auf genau diesen Verify-Ausweis.</small>
+              </div>
+              <div class="credential-output-grid">
+                <?php
+                $options = [
+                    'apple_wallet' => ['Apple Wallet','Digitaler Pass'],
+                    'physical_card' => ['Physische Karte','CR80-Karte'],
+                    'transparent_holder' => ['Halter','Transparenter Halter'],
+                    'mysterymarket_lanyard' => ['MM Lanyard','MysteryMarket'],
+                    'elite_shopper_lanyard' => ['Elite Lanyard','Elite Shopper'],
+                    'full_set' => ['Komplettset','Karte + Halter + Lanyard'],
+                    'replacement_card' => ['Ersatzkarte','Verlust / Beschädigung'],
+                ];
+                foreach ($options as $type=>[$label,$copy]):
+                ?>
+                  <form method="post" action="/backoffice/credentials.php" class="credential-output-option">
+                    <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+                    <input type="hidden" name="audit_verification_id" value="<?= (int)$credential['id'] ?>">
+                    <input type="hidden" name="output_type" value="<?= mmEscape($type) ?>">
+                    <div>
+                      <strong><?= mmEscape($label) ?></strong>
+                      <small><?= mmEscape($copy) ?></small>
+                    </div>
+                    <button type="submit" class="button secondary">Auswählen</button>
+                  </form>
+                <?php endforeach; ?>
+              </div>
+            </div>
           </div>
         </article>
       <?php endforeach; ?>
