@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T14:55:00+02:00",
+  "report_generated_at": "2026-08-30T15:03:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "release_candidate_final_review",
+    "lifecycle_phase": "release_candidate_visual_owner_review",
     "active_branch": "website-v1",
     "default_branch": "main",
     "pull_request": 1,
@@ -43,11 +43,11 @@
     ]
   },
   "release_progress": {
-    "lifecycle_phase": "release_candidate_final_review",
-    "release_readiness_percent": 98,
+    "lifecycle_phase": "release_candidate_visual_owner_review",
+    "release_readiness_percent": 99,
     "operational_readiness_percent": 98,
     "bootstrap_readiness_percent": 100,
-    "publication_readiness_percent": 98,
+    "publication_readiness_percent": 99,
     "basis": {
       "milestones": [
         {
@@ -130,10 +130,10 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed external release-smoke test passed.",
-    "Final release review found no new critical security issue.",
-    "Privacy wording for pseudonymous rate-limit retention was aligned with actual cleanup behavior.",
-    "Added final multilingual release review for DE/EN/NL, 404, robots.txt, sitemap and language document markers."
+    "Automated final review corrected for curl/grep broken-pipe false negatives.",
+    "Owner moved into manual visual V1 review.",
+    "Protected Verify asset and ID-card routes are now excluded in robots.txt.",
+    "Verify asset/card responses now emit noindex/noarchive and no-store headers before session or database checks."
   ],
   "blockers": [
     {
@@ -306,9 +306,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy final-review commits and run scripts/final-review.sh. If it passes, perform the last real-device/manual checks and prepare Owner release approval decision.",
-    "owner_action_required": "Deploy website-v1 and return final-review output.",
-    "blocker": "Any failing multilingual/404/robots/sitemap assertion."
+    "action": "Owner completes visual/manual V1 review. Product chat performs only release-safe hardening until visual findings are returned; no merge to main without explicit Owner approval.",
+    "owner_action_required": "Complete visual review and report any issues or explicitly approve V1 when satisfied.",
+    "blocker": "Manual visual release review."
   },
   "evidence": [
     {
@@ -476,6 +476,21 @@
       "type": "commit",
       "id": "48c106a6b9ea63103dccb0948bc6d04be46b8b0e",
       "summary": "final multilingual V1 release review"
+    },
+    {
+      "type": "commit",
+      "id": "492b4ea9cc604e546ffd8f3f1fb6f7023016c20f",
+      "summary": "exclude protected Verify routes from crawlers"
+    },
+    {
+      "type": "commit",
+      "id": "fd2af0e708643147b6ef262a58c17b20ef071e0b",
+      "summary": "early non-index/no-store headers on Verify assets"
+    },
+    {
+      "type": "commit",
+      "id": "c64887c8389b4d204aae8ba79cdcafdab189e85c",
+      "summary": "early non-index/no-store headers on Verify cards"
     }
   ]
 }
