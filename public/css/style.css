@@ -1306,3 +1306,37 @@ nav a[aria-current=page],
   .credential-lifecycle-actions{display:grid;grid-template-columns:1fr}
   .credential-lifecycle-actions button{width:100%}
 }
+
+
+/* R1.2 credential fulfilment */
+.credential-wallet-readiness{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.credential-output-list-actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.credential-output-transition{
+  display:grid;
+  grid-template-columns:minmax(180px,1fr) minmax(220px,1fr) auto;
+  gap:10px;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid #e7ebf0;
+}
+.credential-output-transition:last-child{border-bottom:0}
+.credential-output-transition strong{display:block;color:var(--ink)}
+.credential-output-transition small{display:block;color:var(--muted);margin-top:2px}
+.credential-output-transition input{margin:0}
+.credential-wallet-issues{margin:10px 0 0;padding-left:20px}
+.credential-wallet-issues li{margin:4px 0}
+@media(max-width:760px){
+  .credential-output-list-actions{width:100%;justify-content:flex-start}
+  .credential-output-transition{grid-template-columns:1fr}
+  .credential-output-transition button{width:100%}
+}
