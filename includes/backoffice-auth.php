@@ -335,3 +335,22 @@ function mmBackofficeActivateElite(string $plainToken, string $password): bool
     mmBackofficeAudit((int)$record['user_id'], 'elite_invitation.activated', 'elite_member', (int)$record['member_id']);
     return true;
 }
+
+
+function mmBackofficeStatusTone(string $status): string
+{
+    return match (strtolower(trim($status))) {
+        'active', 'approved', 'done', 'success', 'valid', 'completed' => 'ok',
+        'new', 'draft', 'requested', 'pending', 'pending_review', 'invited', 'paused', 'open' => 'warn',
+        'rejected', 'suspended', 'ended', 'expired', 'failed', 'disabled' => 'danger',
+        'seen', 'cancelled' => 'info',
+        default => 'neutral',
+    };
+}
+
+function mmBackofficeStatusBadge(string $status, ?string $label = null): string
+{
+    $text = $label ?? $status;
+    return '<span class="status status--' . mmEscape(mmBackofficeStatusTone($status)) . '">'
+        . mmEscape($text) . '</span>';
+}
