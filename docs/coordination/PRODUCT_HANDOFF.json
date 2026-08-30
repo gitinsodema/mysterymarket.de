@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T16:08:00+02:00",
+  "report_generated_at": "2026-08-30T16:18:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "release_candidate_visual_theme_experiment",
+    "lifecycle_phase": "release_candidate_owner_visual_approval",
     "active_branch": "website-v1",
     "default_branch": "main",
     "pull_request": 1,
@@ -130,11 +130,13 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner reported MariaDB upgraded successfully to 12.3.3; recorded as current runtime state.",
-    "Removed invented concept KPI/statistics from the homepage experiment.",
-    "Moved the bright Verify credential visual out of the hero into its own lower showcase section.",
-    "Concept hero now uses real modern interior photography with blur, crop, white highlights and blue overlay to reproduce the spatial depth from the preferred visual concept.",
-    "Hero copy remains the dominant foreground element; photography supplies atmosphere rather than fabricated operational metrics."
+    "Owner decided to release with the existing light V1 layout and not the concept theme experiment.",
+    "Public ?theme=concept loading was disabled.",
+    "Temporary external Unsplash CSP allowance was removed.",
+    "Concept-only homepage and OPS experiment hooks were removed from release templates.",
+    "The successful Verify visual motif from the concept experiment was retained as a native visual card on verify.php.",
+    "Verify visual is multilingual and integrated into the existing light V1 design.",
+    "Concept stylesheet is no longer a required V1 release artifact."
   ],
   "blockers": [
     {
@@ -266,6 +268,14 @@
       "source_authority": "Owner",
       "verification_status": "implemented",
       "summary": "Public contact email addresses should not be present as directly readable mailto/plain addresses in initial HTML; they are reconstructed client-side as a pragmatic anti-scraping measure."
+    },
+    {
+      "id": "MM-DEC-V1-LIGHT-LAYOUT",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DECISION",
+      "source_authority": "Owner",
+      "verification_status": "implemented",
+      "summary": "MysteryMarket V1 will release with the established light layout; the experimental dark concept theme will not be publicly selectable."
     }
   ],
   "dependencies": [
@@ -331,9 +341,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the latest concept iteration and visually verify the real photographic background, foreground readability and lower Verify showcase. Then run preflight/smoke after the MariaDB 12.3.3 upgrade.",
-    "owner_action_required": "Review ?theme=concept and confirm whether the photographic direction now matches the desired first mockup.",
-    "blocker": "none; concept remains isolated from default theme."
+    "action": "Deploy release cleanup and Verify visual integration, run preflight/release-smoke/final-review, then perform final visual check of Verify page before explicit Owner merge approval.",
+    "owner_action_required": "Deploy website-v1 and visually confirm the Verify card placement.",
+    "blocker": "Final owner visual confirmation only."
   },
   "evidence": [
     {
@@ -606,6 +616,31 @@
       "type": "commit",
       "id": "6769a8215bb015ee31f5e86f609b7fb67a9d56fc",
       "summary": "real blurred interior photography in concept hero"
+    },
+    {
+      "type": "commit",
+      "id": "1edbbb384d80e95244da88efa9577ae4f005873e",
+      "summary": "disable public concept theme switch"
+    },
+    {
+      "type": "commit",
+      "id": "d2addbf981f5babeb6979eeb89161597fa1d9c4f",
+      "summary": "remove temporary external image source from CSP"
+    },
+    {
+      "type": "commit",
+      "id": "c66ec79b5e225ddd81bf619e345747a8a2dd3608",
+      "summary": "add Verify visual card to release page"
+    },
+    {
+      "type": "commit",
+      "id": "a90f02111364fa79b9d10411f79753f32464f00d",
+      "summary": "style Verify visual card for V1 release"
+    },
+    {
+      "type": "commit",
+      "id": "19e718bb628b429c5ff402b515358d60cb6fd5d1",
+      "summary": "remove concept stylesheet from V1 preflight requirements"
     }
   ]
 }
