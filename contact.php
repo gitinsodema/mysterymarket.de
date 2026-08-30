@@ -34,13 +34,13 @@ $typeLabels = $typeLabelsByLang[$lang] ?? $typeLabelsByLang['de'];
 
 $validationByLang = [
     'de'=>[
-        'session'=>'Die Formularsitzung ist abgelaufen.','failed'=>'Die Anfrage konnte nicht verarbeitet werden.','type'=>'Bitte wählen Sie die Art Ihrer Anfrage.','name'=>'Bitte geben Sie Ihren Namen ein.','email'=>'Bitte geben Sie eine gültige E-Mail-Adresse ein.','subject'=>'Bitte geben Sie einen Betreff ein.','message'=>'Bitte beschreiben Sie Ihre Anfrage.','privacy'=>'Bitte bestätigen Sie die Datenschutzhinweise.','store'=>'Die Anfrage konnte derzeit nicht gespeichert werden. Bitte schreiben Sie alternativ an hello@mysterymarket.de.'
+        'session'=>'Die Formularsitzung ist abgelaufen.','failed'=>'Die Anfrage konnte nicht verarbeitet werden.','type'=>'Bitte wählen Sie die Art Ihrer Anfrage.','name'=>'Bitte geben Sie Ihren Namen ein.','email'=>'Bitte geben Sie eine gültige E-Mail-Adresse ein.','subject'=>'Bitte geben Sie einen Betreff ein.','message'=>'Bitte beschreiben Sie Ihre Anfrage.','privacy'=>'Bitte bestätigen Sie die Datenschutzhinweise.','store'=>'Die Anfrage konnte derzeit nicht gespeichert werden. Bitte nutzen Sie alternativ die Kontaktmöglichkeit auf dieser Seite.'
     ],
     'en'=>[
-        'session'=>'The form session has expired.','failed'=>'The enquiry could not be processed.','type'=>'Please select the type of enquiry.','name'=>'Please enter your name.','email'=>'Please enter a valid email address.','subject'=>'Please enter a subject.','message'=>'Please describe your enquiry.','privacy'=>'Please confirm the privacy notice.','store'=>'The enquiry could not be saved at this time. Please email hello@mysterymarket.de instead.'
+        'session'=>'The form session has expired.','failed'=>'The enquiry could not be processed.','type'=>'Please select the type of enquiry.','name'=>'Please enter your name.','email'=>'Please enter a valid email address.','subject'=>'Please enter a subject.','message'=>'Please describe your enquiry.','privacy'=>'Please confirm the privacy notice.','store'=>'The enquiry could not be saved at this time. Please use the contact option on this page instead.'
     ],
     'nl'=>[
-        'session'=>'De formuliesessie is verlopen.','failed'=>'De aanvraag kon niet worden verwerkt.','type'=>'Selecteer het type aanvraag.','name'=>'Vul uw naam in.','email'=>'Vul een geldig e-mailadres in.','subject'=>'Vul een onderwerp in.','message'=>'Beschrijf uw aanvraag.','privacy'=>'Bevestig de privacyverklaring.','store'=>'De aanvraag kon momenteel niet worden opgeslagen. Mail eventueel naar hello@mysterymarket.de.'
+        'session'=>'De formuliesessie is verlopen.','failed'=>'De aanvraag kon niet worden verwerkt.','type'=>'Selecteer het type aanvraag.','name'=>'Vul uw naam in.','email'=>'Vul een geldig e-mailadres in.','subject'=>'Vul een onderwerp in.','message'=>'Beschrijf uw aanvraag.','privacy'=>'Bevestig de privacyverklaring.','store'=>'De aanvraag kon momenteel niet worden opgeslagen. Gebruik eventueel de contactmogelijkheid op deze pagina.'
     ],
 ];
 $validation = $validationByLang[$lang] ?? $validationByLang['de'];
