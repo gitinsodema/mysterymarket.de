@@ -967,3 +967,11 @@ nav a[aria-current=page],
 @media(max-width:620px){
   .backoffice-request-history>div{grid-template-columns:1fr}
 }
+
+
+/* Semantic status colors: green=ok, amber=open, red=problem, blue=informational */
+.status--ok{background:#e8f7ef;color:#08784f;border:1px solid #bfe8d5}
+.status--warn{background:#fff5df;color:#9a6300;border:1px solid #f3d698}
+.status--danger{background:#fdebec;color:#a62432;border:1px solid #f0bcc2}
+.status--info{background:#eaf3ff;color:#176fd1;border:1px solid #c8dcf5}
+.status--neutral{background:#eef2f6;color:#52617a;border:1px solid #d8e0e8}
