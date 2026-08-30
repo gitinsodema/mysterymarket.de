@@ -1197,3 +1197,44 @@ nav a[aria-current=page],
   .credential-service-actions{margin-top:12px}
   .credential-output-grid{grid-template-columns:1fr}
 }
+
+
+/* R1.2 Verify credential editor */
+.credential-service-heading{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:flex-start;
+}
+.credential-service-heading>div{max-width:760px}
+.credential-editor{display:grid;gap:14px}
+.credential-editor-section{
+  padding:16px 18px;
+  border:1px solid #e1e6ec;
+  border-radius:12px;
+  background:#f8fafc;
+}
+.credential-editor-head{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom:12px;
+}
+.credential-editor-head>span{
+  width:30px;height:30px;border-radius:9px;
+  display:grid;place-items:center;
+  background:var(--ink);color:#fff;
+  font-size:11px;font-weight:900;
+}
+.credential-editor-head strong{display:block;color:var(--ink)}
+.credential-editor-head small{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+.credential-asset-state{display:grid;gap:8px;margin-top:14px}
+.credential-asset-state>div{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  padding:8px 0;border-bottom:1px solid #e8edf2;
+}
+.credential-asset-state>div:last-child{border-bottom:0}
+@media(max-width:760px){
+  .credential-service-heading{display:block}
+  .credential-service-heading>.button{margin-top:12px;width:100%}
+}
