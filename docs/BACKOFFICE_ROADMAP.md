@@ -135,16 +135,17 @@ No full email client in R1.1.
 
 Implementation status: started on `r1.2-credentials`.
 
-First foundation implemented:
-- role-independent `credential_subjects`
-- personal `credentials` lifecycle records
-- central `credential_orders` for Apple Wallet and physical issuance/equipment
-- Elite members are seeded as credential subjects
-- Admins create/use their own personal credential subject independently of Admin role
-- authenticated `/backoffice/credentials.php` self-service/admin overview
-- "Ausweis bestellen" includes Apple Wallet as first-class digital channel
-- no real `.pkpass` is generated until Apple Pass Type ID/signing certificate are configured server-side
-- Verify binding remains explicit through `verify_reference_code`; no duplicate validation authority is introduced
+Corrected implementation direction:
+- `audit_verifications` remains the authoritative credential source
+- existing project credentials such as Vodafone / SKOPOS NEXT and HP / BARE are the reference records
+- R1.2 adds an output/fulfilment service around those Verify credentials
+- no separate generic MysteryMarket identity credential is created
+- authenticated Admin `/backoffice/credentials.php` lists existing personal Verify credentials
+- each Verify credential can be opened in Verify, opened as the existing print card, and requested for Apple Wallet or physical fulfilment
+- output requests are stored in `verify_credential_outputs` and reference `audit_verifications.id`
+- "Ausweis bestellen" therefore means producing another representation of an existing Verify credential
+- no real `.pkpass` is generated until Pass Type ID/signing certificate are configured server-side
+- MysteryMarket Verify remains the authoritative validation source
 
 
 ### Credential lifecycle
@@ -292,15 +293,13 @@ Implementation waits for the actual ATLAS API contract; no speculative endpoint 
 
 ## Credential ownership model
 
-Credentials must belong to a person/identity, not to a login role.
+Project credentials are represented by personal `audit_verifications` records, not by a generic login-role credential.
 
 Reason:
-- an admin may also hold personal MysteryMarket credentials
-- Elite members hold credentials
-- Verify / QR / Apple Wallet / printed cards should all refer to the same subject identity
-- admin vs Elite is an access role, not credential ownership
-
-R1.2 will therefore introduce a credential subject/identity relationship that can be linked to a backoffice account independently of whether that account is `admin` or `elite`.
+- the real credential is project-specific (for example Vodafone / SKOPOS NEXT or HP / BARE)
+- Verify / QR / Apple Wallet / printed cards must all represent that same project credential
+- Admin/Elite is only a Backoffice access role and must not create a second generic identity card
+- one person may hold multiple project credentials at the same time
 
 
 ## R1.2 Credential ordering and Apple Wallet
