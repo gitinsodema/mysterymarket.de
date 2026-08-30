@@ -82,3 +82,64 @@ function mmCredentialDateOrNull(string $value): ?string
 
     return $value;
 }
+
+
+function mmCredentialStoreUploadedAsset(array $file, int $credentialId, string $type): string
+{
+    $allowedTypes = [
+        'photo' => ['extensions'=>['png','jpg','jpeg','webp'], 'mime'=>['image/png','image/jpeg','image/webp'], 'max'=>5 * 1024 * 1024],
+        'brand_logo' => ['extensions'=>['png','jpg','jpeg','webp'], 'mime'=>['image/png','image/jpeg','image/webp'], 'max'=>5 * 1024 * 1024],
+        'agency_logo' => ['extensions'=>['png','jpg','jpeg','webp'], 'mime'=>['image/png','image/jpeg','image/webp'], 'max'=>5 * 1024 * 1024],
+        'document' => ['extensions'=>['pdf'], 'mime'=>['application/pdf'], 'max'=>10 * 1024 * 1024],
+    ];
+
+    if (!isset($allowedTypes[$type])) {
+        throw new InvalidArgumentException('Ungültiger Asset-Typ.');
+    }
+
+    $error = (int)($file['error'] ?? UPLOAD_ERR_NO_FILE);
+    if ($error !== UPLOAD_ERR_OK) {
+        throw new RuntimeException('Datei-Upload fehlgeschlagen.');
+    }
+
+    $tmp = (string)($file['tmp_name'] ?? '');
+    $original = (string)($file['name'] ?? '');
+    $size = (int)($file['size'] ?? 0);
+
+    if ($tmp === '' || !is_uploaded_file($tmp) || $size < 1 || $size > $allowedTypes[$type]['max']) {
+        throw new RuntimeException('Ungültige oder zu große Datei.');
+    }
+
+    $extension = strtolower(pathinfo($original, PATHINFO_EXTENSION));
+    if (!in_array($extension, $allowedTypes[$type]['extensions'], true)) {
+        throw new RuntimeException('Dateiformat nicht erlaubt.');
+    }
+
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($tmp) ?: '';
+    if (!in_array($mime, $allowedTypes[$type]['mime'], true)) {
+        throw new RuntimeException('Dateiinhalt entspricht keinem erlaubten MIME-Typ.');
+    }
+
+    $assetDir = rtrim((string)(mmConfig()['security']['verify_asset_dir'] ?? ''), '/');
+    $base = $assetDir !== '' ? realpath($assetDir) : false;
+    if ($base === false || !is_dir($base) || !is_writable($base)) {
+        throw new RuntimeException('Privates Verify-Asset-Verzeichnis ist nicht beschreibbar.');
+    }
+
+    $safeExt = $extension === 'jpeg' ? 'jpg' : $extension;
+    $filename = sprintf(
+        'cred_%d_%s_%s.%s',
+        $credentialId,
+        $type,
+        bin2hex(random_bytes(6)),
+        $safeExt
+    );
+
+    $target = $base . DIRECTORY_SEPARATOR . $filename;
+    if (!move_uploaded_file($tmp, $target)) {
+        throw new RuntimeException('Datei konnte nicht in den privaten Verify-Speicher verschoben werden.');
+    }
+
+    @chmod($target, 0640);
+    return $filename;
+}
