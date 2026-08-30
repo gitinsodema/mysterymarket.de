@@ -211,7 +211,11 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
         <label>Adresszusatz<input name="address_line2" maxlength="200" value="<?= mmEscape((string)($member['address_line2'] ?? '')) ?>"></label>
         <label>Land
           <select name="country_code" data-atlas-country data-current-country="<?= mmEscape((string)($member['country_code'] ?? '')) ?>">
-            <option value="">Land wird geladen …</option>
+            <?php if (!empty($member['country_code'])): ?>
+              <option value="<?= mmEscape((string)$member['country_code']) ?>" selected><?= mmEscape((string)$member['country_code']) ?> · aktueller Wert</option>
+            <?php else: ?>
+              <option value="">Land wird geladen …</option>
+            <?php endif; ?>
           </select>
         </label>
         <label>Region / Bundesland
