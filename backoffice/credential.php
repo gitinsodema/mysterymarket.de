@@ -36,14 +36,14 @@ if (!$credential) {
 $error = '';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    $action = (string)($_POST['action'] ?? 'save_details');
+
     if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
         http_response_code(400);
         $error = 'Ungültige Sitzung.';
-    } elseif ((int)$credential['is_active'] === 1) {
-        $error = 'Aktive Verify-Ausweise sind schreibgeschützt. Änderungen erfolgen erst über einen kontrollierten Revisionsworkflow.';
+    } elseif ((int)$credential['is_active'] === 1 && !in_array($action, ['deactivate','create_revision'], true)) {
+        $error = 'Aktive Verify-Ausweise sind schreibgeschützt. Änderungen erfolgen über Deaktivierung oder einen kontrollierten Revisions-Draft.';
     } else {
-        $action = (string)($_POST['action'] ?? 'save_details');
-
         try {
             if ($action === 'save_details') {
                 $personName = trim((string)($_POST['person_name'] ?? ''));
@@ -241,6 +241,97 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
 
+            if ($action === 'deactivate') {
+                if ((int)$credential['is_active'] !== 1) {
+                    throw new RuntimeException('Nur aktive Verify-Ausweise können deaktiviert werden.');
+                }
+
+                $stmt = mmDb()->prepare(
+                    'UPDATE audit_verifications
+                     SET is_active = 0, updated_at = NOW()
+                     WHERE id = :id
+                       AND is_personal_verification = 1
+                       AND is_active = 1'
+                );
+                $stmt->execute(['id'=>$id]);
+
+                if ($stmt->rowCount() !== 1) {
+                    throw new RuntimeException('Deaktivierung konnte nicht eindeutig gespeichert werden.');
+                }
+
+                mmBackofficeAudit((int)$user['id'], 'verify_credential.deactivated', 'audit_verification', $id, [
+                    'reference_code'=>(string)$credential['reference_code']
+                ]);
+
+                header('Location: /backoffice/credential.php?id=' . $id . '&deactivated=1', true, 303);
+                exit;
+            }
+
+            if ($action === 'create_revision') {
+                if ((int)$credential['is_active'] !== 1) {
+                    throw new RuntimeException('Eine Revision kann nur aus einem aktiven Verify-Ausweis erzeugt werden.');
+                }
+
+                $newReference = mmCredentialGenerateVerifyReference();
+                $nextRevision = max(2, ((int)($credential['revision_no'] ?? 1)) + 1);
+
+                $stmt = mmDb()->prepare(
+                    "INSERT INTO audit_verifications
+                     (reference_code, public_title, public_partner, public_client,
+                      valid_from, valid_until, confidentiality_mode, public_note,
+                      person_name, role_label, agency_name, project_name, brand_name,
+                      photo_asset, brand_logo_asset, agency_logo_asset, scope_key,
+                      document_asset, document_label, document_enabled, print_card_enabled,
+                      is_personal_verification, is_active, supersedes_verification_id, revision_no,
+                      created_at, updated_at)
+                     VALUES
+                     (:reference_code, :public_title, :public_partner, :public_client,
+                      :valid_from, :valid_until, :confidentiality_mode, :public_note,
+                      :person_name, :role_label, :agency_name, :project_name, :brand_name,
+                      :photo_asset, :brand_logo_asset, :agency_logo_asset, :scope_key,
+                      :document_asset, :document_label, :document_enabled, :print_card_enabled,
+                      1, 0, :supersedes_verification_id, :revision_no,
+                      NOW(), NOW())"
+                );
+                $stmt->execute([
+                    'reference_code'=>$newReference,
+                    'public_title'=>$credential['public_title'],
+                    'public_partner'=>$credential['public_partner'],
+                    'public_client'=>$credential['public_client'],
+                    'valid_from'=>$credential['valid_from'],
+                    'valid_until'=>$credential['valid_until'],
+                    'confidentiality_mode'=>$credential['confidentiality_mode'],
+                    'public_note'=>$credential['public_note'],
+                    'person_name'=>$credential['person_name'],
+                    'role_label'=>$credential['role_label'],
+                    'agency_name'=>$credential['agency_name'],
+                    'project_name'=>$credential['project_name'],
+                    'brand_name'=>$credential['brand_name'],
+                    'photo_asset'=>$credential['photo_asset'],
+                    'brand_logo_asset'=>$credential['brand_logo_asset'],
+                    'agency_logo_asset'=>$credential['agency_logo_asset'],
+                    'scope_key'=>$credential['scope_key'],
+                    'document_asset'=>$credential['document_asset'],
+                    'document_label'=>$credential['document_label'],
+                    'document_enabled'=>$credential['document_enabled'],
+                    'print_card_enabled'=>$credential['print_card_enabled'],
+                    'supersedes_verification_id'=>$id,
+                    'revision_no'=>$nextRevision,
+                ]);
+
+                $revisionId = (int)mmDb()->lastInsertId();
+
+                mmBackofficeAudit((int)$user['id'], 'verify_credential.revision_created', 'audit_verification', $revisionId, [
+                    'source_id'=>$id,
+                    'source_reference'=>(string)$credential['reference_code'],
+                    'new_reference'=>$newReference,
+                    'revision_no'=>$nextRevision
+                ]);
+
+                header('Location: /backoffice/credential.php?id=' . $revisionId . '&revision_created=1', true, 303);
+                exit;
+            }
+
             throw new InvalidArgumentException('Unbekannte Aktion.');
         } catch (InvalidArgumentException|RuntimeException $e) {
             $error = $e->getMessage();
@@ -283,6 +374,8 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
   <?php if (isset($_GET['asset_saved'])): ?><div class="alert success"><strong>Asset sicher gespeichert und gebunden.</strong></div><?php endif; ?>
   <?php if (isset($_GET['asset_removed'])): ?><div class="alert success"><strong>Asset-Bindung entfernt.</strong></div><?php endif; ?>
   <?php if (isset($_GET['activated'])): ?><div class="alert success"><strong>Verify-Ausweis aktiviert.</strong> Der Datensatz ist jetzt produktiv und über Verify gültig, sofern er im Gültigkeitszeitraum liegt.</div><?php endif; ?>
+  <?php if (isset($_GET['deactivated'])): ?><div class="alert success"><strong>Verify-Ausweis deaktiviert.</strong> Die Referenz ist nicht mehr produktiv gültig.</div><?php endif; ?>
+  <?php if (isset($_GET['revision_created'])): ?><div class="alert success"><strong>Revision als neuer Draft angelegt.</strong> Der bisherige Ausweis wurde nicht verändert.</div><?php endif; ?>
   <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
 
   <div class="grid two">
@@ -293,6 +386,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
       <p><strong><?= mmEscape((string)$credential['person_name']) ?></strong><br><?= mmEscape((string)$credential['role_label']) ?></p>
       <p><?= mmEscape((string)$credential['agency_name']) ?> · <?= mmEscape((string)$credential['brand_name']) ?></p>
       <p><strong>Gültig:</strong> <?= mmEscape((string)($credential['valid_from'] ?: '—')) ?> – <?= mmEscape((string)($credential['valid_until'] ?: '—')) ?></p>
+      <p><strong>Revision:</strong> <?= (int)($credential['revision_no'] ?? 1) ?><?php if (!empty($credential['supersedes_verification_id'])): ?> · Folgeversion<?php endif; ?></p>
     </article>
 
     <article class="card">
@@ -388,7 +482,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
       <p class="eyebrow">Freigabe</p>
       <h2>Verify-Aktivierung.</h2>
       <?php if ((int)$credential['is_active'] === 1): ?>
-        <p>Dieser Ausweis ist aktiv und produktiv.</p>
+        <p>Dieser Ausweis ist aktiv und produktiv. Änderungen erfolgen über eine neue Revision oder durch kontrollierte Deaktivierung.</p>
       <?php elseif ($activationReady): ?>
         <p>Alle Integritätsbedingungen sind erfüllt. Der Ausweis kann jetzt produktiv aktiviert werden.</p>
       <?php else: ?>
@@ -396,7 +490,22 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
       <?php endif; ?>
     </div>
 
-    <?php if ((int)$credential['is_active'] !== 1): ?>
+    <?php if ((int)$credential['is_active'] === 1): ?>
+      <div class="credential-lifecycle-actions">
+        <form method="post" action="/backoffice/credential.php?id=<?= $id ?>" onsubmit="return confirm('Neue Revision aus <?= mmEscape((string)$credential['reference_code']) ?> als inaktiven Draft anlegen?');">
+          <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+          <input type="hidden" name="id" value="<?= $id ?>">
+          <input type="hidden" name="action" value="create_revision">
+          <button type="submit">Revision als Draft anlegen</button>
+        </form>
+        <form method="post" action="/backoffice/credential.php?id=<?= $id ?>" onsubmit="return confirm('Verify-Ausweis <?= mmEscape((string)$credential['reference_code']) ?> wirklich deaktivieren?');">
+          <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+          <input type="hidden" name="id" value="<?= $id ?>">
+          <input type="hidden" name="action" value="deactivate">
+          <button type="submit" class="button secondary">Ausweis deaktivieren</button>
+        </form>
+      </div>
+    <?php else: ?>
       <?php if ($integrityErrors !== []): ?>
         <div class="credential-integrity-block">
           <strong>Noch offen:</strong>
