@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T21:08:00+02:00",
+  "report_generated_at": "2026-08-30T21:18:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,14 +134,13 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner approved the expandable certificate-style credential UI and requested continued R1.2 work.",
-    "Added Backoffice creation of new project-specific personal Verify credentials.",
-    "New credentials receive an automatically generated MM- Verify reference and are created inactive as drafts.",
-    "Draft creation captures person, role, agency, project, brand/client, validity, confidentiality and public note.",
-    "Added credential detail/editor page. Inactive drafts are editable; active production credentials are read-only in this first editor stage.",
-    "Credential detail shows protected asset/scope/document completeness without introducing a second public asset path.",
-    "Credential service now exposes 'Neuen Ausweis anlegen' and contextual 'Ausweis verwalten' actions.",
-    "Activation remains intentionally separate until protected assets, scope and integrity requirements can be enforced through the existing Verify security model."
+    "Owner runtime-confirmed creation of inactive Verify credential draft MM-AHBW85JB.",
+    "Draft completeness correctly reported missing photo, brand logo, agency logo, document, scope and document activation.",
+    "Added secure Backoffice upload/binding for photo, brand logo, agency logo and PDF into the existing private Verify asset directory outside webroot.",
+    "Added protected Admin-only preview endpoint for credential assets, including inactive drafts.",
+    "Added controlled unbind actions that remove database bindings without deleting private files automatically.",
+    "Added project scope selection limited to the two already defined production scopes; no speculative new scope is introduced.",
+    "Active production Verify credentials remain read-only for asset/scope changes."
   ],
   "blockers": [
     {
@@ -418,8 +417,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and test Backoffice creation of an inactive project Verify credential. Then implement protected asset binding/upload management and scope selection in the credential editor, followed by a guarded activation action using the existing Verify integrity rules.",
-    "owner_action_required": "Create one disposable inactive test credential in Backoffice and verify that it appears in the credential service and remains inactive.",
+    "action": "Deploy and test protected asset upload/binding on the inactive MM-AHBW85JB draft. Once photo/logos/document and an appropriate existing scope are bound, add a guarded Backoffice activation action that reuses the Verify integrity requirements before changing is_active.",
+    "owner_action_required": "Upload one test asset to the inactive draft and confirm the protected Admin preview works.",
     "blocker": "none"
   },
   "evidence": [
