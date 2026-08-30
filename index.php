@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/site.php';
 $c = mmPageCopy('home');
 mmHeader($c['title'], $c['description']);
 ?>
-<section class="hero">
+<section class="hero home-hero">
   <div>
     <p class="eyebrow">Independent Audit & Field Services</p>
     <h1><?= mmEscape($c['hero']) ?></h1>
