@@ -50,7 +50,7 @@ if (!$row) {
     exit;
 }
 
-$verifyUrl = 'https://mysterymarket.de/verify.php?code=' . rawurlencode($code) . '#credential';
+$verifyUrl = 'https://mysterymarket.de/verify?code=' . rawurlencode($code) . '#credential';
 
 if ($method === 'HEAD') {
     exit;
@@ -134,7 +134,7 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
     </section>
     <div class="print-controls">
       <button type="button" onclick="window.print()">Print card</button>
-      <a class="button secondary" href="/verify.php?code=<?= rawurlencode($code) ?>">Back to Verify</a>
+      <a class="button secondary" href="/verify?code=<?= rawurlencode($code) ?>">Back to Verify</a>
     </div>
   </div>
 </div>
