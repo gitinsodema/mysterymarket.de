@@ -1,10 +1,10 @@
 # MysteryMarket R1.1 Little Backoffice — Technical Release Review
 
-Status: technical release candidate preparation
+Status: approved for release
 
 Branch: `r1.1-little-backoffice`
 
-Public website baseline remains `VERSION 1.0.0` until explicit Owner approval for the R1.1 release.
+Release version: `1.1.0`
 
 ## Scope completed
 
@@ -109,6 +109,6 @@ Before merge/release:
 3. `scripts/backoffice-review.php` returns `MYSTERYMARKET_BACKOFFICE_REVIEW_OK`
 4. `scripts/atlas-smoke.php` returns `MYSTERYMARKET_ATLAS_SMOKE_OK`
 5. no secrets are committed
-6. Owner gives explicit R1.1 release approval
+6. Owner gives explicit R1.1 release approval — completed 2026-08-30
 
-R1.1 is not merged/released until explicit Owner approval.
+Owner approval was granted on 2026-08-30. R1.1 may be merged and released.
