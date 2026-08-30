@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T20:10:00+02:00",
+  "report_generated_at": "2026-08-30T20:18:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,12 +134,11 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner postponed mobile/iPhone visual QA and asked to continue in the current R1.1 context.",
-    "Recorded mobile visual QA as deferred rather than blocking current technical progress.",
-    "Updated the Elite profile membership card to use the semantic status badge instead of raw status text.",
-    "Removed stale member guidance that still referred to a future activation process; guidance now reflects the implemented one-time activation-link flow.",
-    "Added a CLI backoffice integrity review covering Elite user/member linkage, role correctness, membership/account-state consistency, duplicate open membership requests, agency reference integrity and ATLAS-profile consistency.",
-    "Preflight now requires the R1.1 backoffice integrity review script."
+    "Owner ran the R1.1 backoffice integrity review in production twice and confirmed zero warnings/failures.",
+    "Production integrity evidence: 5 active agencies, 1 active Elite shopper, warnings=0, MYSTERYMARKET_BACKOFFICE_REVIEW_OK.",
+    "Added docs/R1_1_RELEASE_REVIEW.md summarizing completed R1.1 scope, production evidence, deferred mobile QA and explicit close criteria.",
+    "Added scripts/r1.1-technical-gate.php to run preflight, backoffice integrity review and ATLAS smoke as one reproducible technical gate.",
+    "Preflight now requires the R1.1 release review document and technical gate script."
   ],
   "blockers": [
     {
@@ -400,8 +399,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the current R1.1 hardening changes and run scripts/backoffice-review.php. Resolve any integrity warnings/failures, then continue toward R1.1 technical closure. Mobile/iPhone visual QA remains intentionally deferred.",
-    "owner_action_required": "Run the backoffice integrity review after deploy and provide its output.",
+    "action": "Deploy and run scripts/r1.1-technical-gate.php. If it returns MYSTERYMARKET_R1_1_TECHNICAL_GATE_OK, R1.1 is technically ready for explicit Owner release approval. Mobile/iPhone visual polish remains deferred and non-blocking.",
+    "owner_action_required": "Run the technical gate and, only if satisfied, provide explicit R1.1 release approval.",
     "blocker": "none"
   },
   "evidence": [
@@ -1090,6 +1089,11 @@
       "type": "owner_directive",
       "date": "2026-08-30",
       "summary": "Owner explicitly deferred mobile review and requested continued R1.1 work in context."
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "R1.1 backoffice integrity review passed with active_agencies=5, active_elite=1, warnings=0 and MYSTERYMARKET_BACKOFFICE_REVIEW_OK."
     }
   ]
 }
