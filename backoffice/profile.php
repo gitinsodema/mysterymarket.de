@@ -190,7 +190,7 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
   <div class="grid two">
     <article class="card">
       <span class="badge">Mitgliedschaft</span>
-      <h2><?= mmEscape((string)$member['membership_status']) ?></h2>
+      <h2><?= mmBackofficeStatusBadge((string)$member['membership_status']) ?></h2>
       <p><strong>E-Mail:</strong> <?= mmEscape((string)$member['email']) ?></p>
       <p><strong>Mitglied seit:</strong> <?= mmEscape((string)($member['joined_at'] ?: '—')) ?></p>
     </article>
