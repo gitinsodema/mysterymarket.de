@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T20:18:00+02:00",
+  "report_generated_at": "2026-08-30T20:36:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -18,10 +18,10 @@
     "summary": "One-time historical import reconstructed the website foundation, public positioning, Verify system, V1 release candidate, production hardening and current release blockers."
   },
   "current_state": {
-    "current_version": "1.0.0",
-    "target_release": "1.0.0 production",
-    "lifecycle_phase": "post_v1_r1_1_backoffice_foundation",
-    "active_branch": "r1.1-little-backoffice",
+    "current_version": "1.1.0",
+    "target_release": "1.2.0",
+    "lifecycle_phase": "r1_2_credentials_active_development",
+    "active_branch": "r1.2-credentials",
     "default_branch": "main",
     "pull_request": null,
     "pull_request_state": "not_opened",
@@ -134,11 +134,15 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner ran the R1.1 backoffice integrity review in production twice and confirmed zero warnings/failures.",
-    "Production integrity evidence: 5 active agencies, 1 active Elite shopper, warnings=0, MYSTERYMARKET_BACKOFFICE_REVIEW_OK.",
-    "Added docs/R1_1_RELEASE_REVIEW.md summarizing completed R1.1 scope, production evidence, deferred mobile QA and explicit close criteria.",
-    "Added scripts/r1.1-technical-gate.php to run preflight, backoffice integrity review and ATLAS smoke as one reproducible technical gate.",
-    "Preflight now requires the R1.1 release review document and technical gate script."
+    "Owner approved R1.1; PR #2 was merged to main as release 1.1.0.",
+    "Started R1.2 on dedicated branch r1.2-credentials from main.",
+    "Added role-independent credential_subjects so credentials belong to a person/identity rather than an Admin/Elite role.",
+    "Added credentials lifecycle records with type, status, validity, Verify reference, replacement relationship and audit creator.",
+    "Added credential_orders as the central issuance/equipment request model with Apple Wallet and physical options.",
+    "Existing Elite members are seeded as credential subjects; Admins receive their own personal subject lazily when opening the credential area.",
+    "Added authenticated /backoffice/credentials.php for personal credential identity, Ausweis bestellen, own credentials/orders and Admin overview.",
+    "Apple Wallet is already a first-class issuance channel in Ausweis bestellen; real pkpass signing intentionally waits for Apple Pass Type ID/certificate.",
+    "Added R1.2 credential migration, helper, dashboard links, semantic statuses, styling and integrity review."
   ],
   "blockers": [
     {
@@ -334,6 +338,14 @@
       "source_authority": "ATLAS approved shared INSODEMA geography contract",
       "verification_status": "copied_to_active_branch_and_integration_prepared",
       "summary": "MysteryMarket consumes ATLAS Geography Reference API v1 server-to-server using its own MYSTERYMARKET token and canonical ATLAS IDs."
+    },
+    {
+      "id": "MM-DEC-R1-2-CREDENTIAL-FOUNDATION",
+      "classification": "CURRENT_AUTHORITY",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner + R1.2 roadmap",
+      "verification_status": "implemented_pending_owner_runtime_test",
+      "summary": "R1.2 uses role-independent credential subjects and a shared credential/order lifecycle; Apple Wallet is a first-class issuance channel rather than a separate identity."
     }
   ],
   "dependencies": [
@@ -399,9 +411,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and run scripts/r1.1-technical-gate.php. If it returns MYSTERYMARKET_R1_1_TECHNICAL_GATE_OK, R1.1 is technically ready for explicit Owner release approval. Mobile/iPhone visual polish remains deferred and non-blocking.",
-    "owner_action_required": "Run the technical gate and, only if satisfied, provide explicit R1.1 release approval.",
-    "blocker": "none"
+    "action": "Deploy r1.2-credentials, run the migration and credentials review, then open /backoffice/credentials.php as Admin and Elite. Submit one Apple Wallet request from the Admin identity to validate the role-independent subject/order flow before adding admin approval, Verify binding and real Wallet pass generation.",
+    "owner_action_required": "Deploy and test the R1.2 credential foundation; no Apple certificate/key is required yet.",
+    "blocker": "Real Apple Wallet pass signing later requires Apple Developer Pass Type ID and signing certificate."
   },
   "evidence": [
     {
