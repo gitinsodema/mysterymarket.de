@@ -73,7 +73,7 @@ mmHeader('Kontakte', 'Read-only Kontaktanfragen im MysteryMarket Backoffice.', '
             <td><?= mmEscape((string)($row['organisation'] ?: '—')) ?></td>
             <td><?= mmEscape((string)$row['request_type']) ?></td>
             <td><?= mmEscape((string)$row['subject']) ?></td>
-            <td><span class="status"><?= mmEscape((string)$row['status']) ?></span></td>
+            <td><?= mmBackofficeStatusBadge((string)$row['status']) ?></td>
           </tr>
         <?php endforeach; ?>
         </tbody>
