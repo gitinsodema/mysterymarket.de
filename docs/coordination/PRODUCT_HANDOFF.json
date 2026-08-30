@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T17:24:00+02:00",
+  "report_generated_at": "2026-08-30T17:38:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,18 +134,16 @@
     }
   ],
   "completed_since_last_report": [
-    "V1.0.0 remains frozen on main as the released baseline.",
-    "Created post-release branch r1.1-little-backoffice.",
-    "Owner approved the Little Backoffice / Elite Area / Credentials / Connected Elite roadmap.",
-    "Clarified product boundary: MysteryMarket may publish private project hints to Elite members, while ShopperMatch remains a separate job and matching platform.",
-    "Confirmed Apple Wallet as a real R1.2 target for Elite credentials using signed Wallet passes.",
-    "Added docs/BACKOFFICE_ROADMAP.md with R1.1, R1.2 and R1.3 scope.",
-    "Added R1.1 database foundation for backoffice users, Elite members, private feed posts, agency approvals, audit logging and login throttling.",
-    "Added secure session/CSRF/role/login-throttling authentication foundation.",
-    "Added private backoffice login, logout and role-aware shell; not linked from the public website.",
-    "Added safe CLI bootstrap for admin/elite accounts using an environment-provided password.",
-    "Extended preflight to cover the R1.1 foundation.",
-    "Added an idempotent PDO-based R1.1 migration runner so production DB credentials do not need to be exposed in shell commands."
+    "Owner confirmed the private backoffice is visible; login is not yet possible because no admin account has been bootstrapped.",
+    "Admin dashboard is now operational with live counts for active Elite members, feed posts, new contact requests and open agency approvals.",
+    "Added Elite member list and invited-member creation flow.",
+    "New Elite members are created with disabled accounts and unusable random credentials until a later explicit invitation/password activation flow exists.",
+    "Added Elite member detail view with membership status management and audit logging.",
+    "Added private Elite feed visible to authenticated admin/Elite users.",
+    "Added admin feed editor for project hints, agencies, training, OPS, important and general information.",
+    "Feed posts support optional agency, project context, region, external link and pinned state.",
+    "Extended R1.1 visual styling for dashboard metrics, member tables and internal feed.",
+    "Extended preflight to require all new operational R1.1 pages."
   ],
   "blockers": [
     {
@@ -366,9 +364,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy r1.1-little-backoffice to the development/production checkout, apply database/20260830_backoffice_foundation.sql, create the first admin account, then test private login/logout before building the Admin Dashboard and Elite member list.",
-    "owner_action_required": "Apply the R1.1 foundation migration and bootstrap the first admin account when ready for live testing.",
-    "blocker": "R1.1 database migration and first admin bootstrap not yet applied."
+    "action": "Deploy the current R1.1 branch, run preflight, bootstrap the first admin account, log in, create one invited Elite member and one private feed post, then verify admin and Elite-area access behavior.",
+    "owner_action_required": "Bootstrap the first admin account and perform the first authenticated R1.1 test.",
+    "blocker": "No initial admin account exists yet."
   },
   "evidence": [
     {
@@ -801,6 +799,41 @@
       "type": "commit",
       "id": "50d8189a9a189f68954d06168c3e73ac1caec11d",
       "summary": "idempotent R1.1 backoffice migration runner"
+    },
+    {
+      "type": "commit",
+      "id": "a411b6613d45b3f126850124c561b9bae710da87",
+      "summary": "Elite member list"
+    },
+    {
+      "type": "commit",
+      "id": "e62b4047ec4718424eef6802a34813cb945d97e4",
+      "summary": "invited Elite member creation"
+    },
+    {
+      "type": "commit",
+      "id": "9fd4e77400c8c095b50ee55890722b8e14603767",
+      "summary": "private Elite feed"
+    },
+    {
+      "type": "commit",
+      "id": "0d18e5017934c852e6412acb2bf8cb46eef9d7b7",
+      "summary": "admin Elite feed editor"
+    },
+    {
+      "type": "commit",
+      "id": "14ee4c501fc521c50e77ba6a287a15afff88465c",
+      "summary": "operational backoffice dashboard"
+    },
+    {
+      "type": "commit",
+      "id": "cb59d3c9bf96a694711d12260fb1136eb08064a1",
+      "summary": "Elite member detail and status management"
+    },
+    {
+      "type": "commit",
+      "id": "93aba259937c2295f5cfd93f2ebf3770aaf2ae29",
+      "summary": "R1.1 operational page preflight coverage"
     }
   ]
 }
