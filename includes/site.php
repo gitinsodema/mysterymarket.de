@@ -28,6 +28,25 @@ function mmStartSecureSession(): void
     session_start();
 }
 
+function mmServiceIconSvg(string $key): string
+{
+    $key = strtolower(trim($key));
+    $paths = [
+        'inspection' => '<path d="M9 5h6M10 3h4a1 1 0 0 1 1 1v2H9V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="m8 11 2 2 4-4M8 17h8"/>',
+        'brand' => '<path d="M4 20h16V8l-8-5-8 5v12Z"/><path d="M9 20v-6h6v6M8 9h.01M12 9h.01M16 9h.01"/>',
+        'compliance' => '<path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/>',
+        'protection' => '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+        'fieldwork' => '<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+        'mystery' => '<path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path d="m4 4 16 16"/>',
+        'connect' => '<circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="m9 11 6-4M9 13l6 4"/>',
+        'reporting' => '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+        'custom' => '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/><circle cx="12" cy="12" r="4"/>',
+    ];
+
+    $inner = $paths[$key] ?? $paths['custom'];
+    return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' . $inner . '</svg>';
+}
+
 function mmEmailLink(string $localPart, string $label = ''): string
 {
     $domain = 'mysterymarket.de';
