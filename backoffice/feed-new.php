@@ -9,6 +9,7 @@ $user = mmBackofficeRequireLogin('admin');
 $error = '';
 
 $categories = ['project_hint','agency','training','ops','important','general'];
+$agencies = mmDb()->query("SELECT id, name, short_name FROM agencies WHERE is_active = 1 ORDER BY name ASC")->fetchAll();
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
@@ -18,7 +19,18 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         $category = (string)($_POST['category'] ?? 'general');
         $title = trim((string)($_POST['title'] ?? ''));
         $body = trim((string)($_POST['body'] ?? ''));
+        $agencyId = (int)($_POST['agency_id'] ?? 0);
         $agency = trim((string)($_POST['agency_name'] ?? ''));
+        if ($agencyId > 0) {
+            $agencyStmt = mmDb()->prepare('SELECT name FROM agencies WHERE id = :id AND is_active = 1 LIMIT 1');
+            $agencyStmt->execute(['id'=>$agencyId]);
+            $selectedAgency = $agencyStmt->fetchColumn();
+            if ($selectedAgency !== false) {
+                $agency = (string)$selectedAgency;
+            } else {
+                $agencyId = 0;
+            }
+        }
         $project = trim((string)($_POST['project_context'] ?? ''));
         $region = trim((string)($_POST['region_label'] ?? ''));
         $url = trim((string)($_POST['external_url'] ?? ''));
@@ -31,10 +43,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         } else {
             $stmt = mmDb()->prepare(
                 'INSERT INTO elite_feed_posts
-                 (author_user_id, category, title, body, agency_name, project_context, region_label, external_url,
+                 (author_user_id, category, title, body, agency_id, agency_name, project_context, region_label, external_url,
                   publish_from, publish_until, is_pinned, is_active, created_at, updated_at)
                  VALUES
-                 (:author, :category, :title, :body, :agency, :project, :region, :url,
+                 (:author, :category, :title, :body, :agency_id, :agency, :project, :region, :url,
                   NOW(), NULL, :pinned, 1, NOW(), NOW())'
             );
             $stmt->execute([
@@ -42,6 +54,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 'category'=>$category,
                 'title'=>$title,
                 'body'=>$body,
+                'agency_id'=>$agencyId > 0 ? $agencyId : null,
                 'agency'=>$agency !== '' ? $agency : null,
                 'project'=>$project !== '' ? $project : null,
                 'region'=>$region !== '' ? $region : null,
@@ -74,7 +87,15 @@ mmHeader('Elite Info posten', 'Internen Elite-Feed-Beitrag erstellen.', 'noindex
       <label>Titel<input name="title" maxlength="200" required></label>
       <label>Text<textarea name="body" required></textarea></label>
       <div class="form-grid">
-        <label>Agentur<input name="agency_name" maxlength="200"></label>
+        <label>Agentur
+          <select name="agency_id">
+            <option value="0">Keine / Freitext</option>
+            <?php foreach ($agencies as $agencyRow): ?>
+              <option value="<?= (int)$agencyRow['id'] ?>"><?= mmEscape((string)($agencyRow['short_name'] ?: $agencyRow['name'])) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </label>
+        <label>Agentur-Freitext<input name="agency_name" maxlength="200" placeholder="Nur falls noch nicht in Stammdaten"></label>
         <label>Projekt / Kontext<input name="project_context" maxlength="255"></label>
         <label>Region<input name="region_label" maxlength="160"></label>
         <label>Externer Link<input type="url" name="external_url" maxlength="500"></label>
