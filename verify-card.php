@@ -4,6 +4,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/site.php';
 require_once __DIR__ . '/includes/db.php';
 
+header('X-Robots-Tag: noindex, noarchive');
+header('Cache-Control: private, no-store, max-age=0');
+header('Pragma: no-cache');
+
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 if (!in_array($method, ['GET','HEAD'], true)) {
     header('Allow: GET, HEAD');
@@ -47,10 +51,6 @@ if (!$row) {
 }
 
 $verifyUrl = 'https://mysterymarket.de/verify.php?code=' . rawurlencode($code) . '#credential';
-
-header('X-Robots-Tag: noindex, noarchive');
-header('Cache-Control: private, no-store, max-age=0');
-header('Pragma: no-cache');
 
 if ($method === 'HEAD') {
     exit;
