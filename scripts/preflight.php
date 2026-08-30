@@ -13,6 +13,38 @@ $required = [
 
 $failures = 0;
 
+$phpFiles = [];
+$iterator = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)
+);
+foreach ($iterator as $fileInfo) {
+    if (!$fileInfo->isFile() || strtolower($fileInfo->getExtension()) !== 'php') {
+        continue;
+    }
+    $path = $fileInfo->getPathname();
+    if (str_contains($path, DIRECTORY_SEPARATOR . '.git' . DIRECTORY_SEPARATOR)) {
+        continue;
+    }
+    $phpFiles[] = $path;
+}
+sort($phpFiles);
+
+foreach ($phpFiles as $phpFile) {
+    $command = escapeshellarg(PHP_BINARY) . ' -l ' . escapeshellarg($phpFile) . ' 2>&1';
+    exec($command, $lintOutput, $lintCode);
+    if ($lintCode !== 0) {
+        fwrite(STDERR, "[FAIL] PHP lint: " . substr($phpFile, strlen($root) + 1) . "\n");
+        foreach ($lintOutput as $line) {
+            fwrite(STDERR, "       {$line}\n");
+        }
+        $failures++;
+    }
+    $lintOutput = [];
+}
+if ($failures === 0) {
+    echo "[PASS] PHP lint across repository\n";
+}
+
 $version = trim((string)@file_get_contents($root . '/VERSION'));
 if ($version === '1.1.0') {
     echo "[PASS] MysteryMarket release version 1.1.0\n";
