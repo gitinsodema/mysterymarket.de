@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T19:46:00+02:00",
+  "report_generated_at": "2026-08-30T19:52:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,12 +134,10 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed the complete ATLAS address flow works 100% even for a difficult private address.",
-    "Owner requested a more natural entry order so users start with country and postal code rather than working upward from street fields.",
-    "Elite profile address UX reordered to country -> postal code -> locality -> subdivision -> street -> house number.",
-    "Locality is automatically selected when ATLAS returns a single match.",
-    "Administrative subdivision is automatically selected when the chosen ATLAS locality provides an administrative_unit_id.",
-    "Manual locality/address fallbacks remain available for incomplete international coverage."
+    "Owner requested the manual ATLAS fallback fields be hidden by default behind a 'Meine Adresse wird nicht erkannt' disclosure.",
+    "Manual locality, address fallback, address addition and fallback notice are now grouped in a hidden panel.",
+    "The panel opens with an explicit button and can be closed again.",
+    "If an existing profile already contains manual-address data, the fallback panel remains visible automatically so stored values are not hidden from the user."
   ],
   "blockers": [
     {
@@ -400,8 +398,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and verify the reordered ATLAS address flow. If successful, extract the flow into a reusable MysteryMarket address component for future onboarding/contact/admin forms.",
-    "owner_action_required": "Quick visual test of the new top-down country/postal/locality/street order.",
+    "action": "Deploy and visually verify the compact ATLAS address form with the manual fallback disclosure. If successful, keep this as the reusable address UX pattern for future MysteryMarket forms.",
+    "owner_action_required": "Quick visual test of the disclosure button and fallback panel.",
     "blocker": "none"
   },
   "evidence": [
