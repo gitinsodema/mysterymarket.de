@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T14:10:00+02:00",
+  "report_generated_at": "2026-08-30T14:24:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "release_candidate_integrity_hardening",
+    "lifecycle_phase": "release_candidate_data_hygiene",
     "active_branch": "website-v1",
     "default_branch": "main",
     "pull_request": 1,
@@ -43,9 +43,9 @@
     ]
   },
   "release_progress": {
-    "lifecycle_phase": "release_candidate_integrity_hardening",
-    "release_readiness_percent": 95,
-    "operational_readiness_percent": 96,
+    "lifecycle_phase": "release_candidate_data_hygiene",
+    "release_readiness_percent": 96,
+    "operational_readiness_percent": 97,
     "bootstrap_readiness_percent": 100,
     "publication_readiness_percent": 95,
     "basis": {
@@ -118,9 +118,9 @@
     },
     {
       "id": "MM-V1-HP",
-      "status": "in_progress",
-      "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
-      "summary": "HP/BARE credential MM-8ACFCSH5 created with validity 2025-11-01 through 2026-10-31 and hp_bare_retail_2025_2026 scope. Private assets reported uploaded; final DB binding/activation and mobile test remain."
+      "status": "complete",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "summary": "HP/BARE credential MM-8ACFCSH5 is active and passed the production credential integrity audit with validity 2025-11-01 through 2026-10-31 and hp_bare_retail_2025_2026 scope."
     },
     {
       "id": "MM-V1-RELEASE",
@@ -130,12 +130,12 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed security hardening round 1 passed in production.",
-    "Established source/control-plane rule that docs/ and coordination files must not be part of the production web artifact.",
-    "Added export-ignore metadata for docs/, AGENTS.md, AI_START_HERE.md, README.md, VERSION and source metadata.",
-    "Added credential integrity audit mode.",
-    "Personal credential activation now fails closed when required identity/project/validity/scope/document/card fields are incomplete.",
-    "Activation now verifies that bound photo/logo/document files exist inside the private Verify asset directory and match allowed MIME types."
+    "Owner reported both active credentials pass integrity audit: Vodafone/SKOPOS and HP/BARE.",
+    "Confirmed HP/BARE credential MM-8ACFCSH5 active with correct validity, scope and evidence.",
+    "Added guarded delete-draft operation for inactive personal credential drafts with no project-specific assets.",
+    "Added reproducible production web artifact build/check using git archive export-ignore.",
+    "Added bounded rate-limit cleanup and data-retention status CLI.",
+    "Contact-request retention intentionally remains report-only until an explicit retention policy is approved."
   ],
   "blockers": [
     {
@@ -155,15 +155,15 @@
     {
       "id": "MM-BLOCK-HP-CREDENTIAL",
       "type": "technical_and_owner_test",
-      "status": "open",
+      "status": "resolved",
       "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
-      "summary": "HP/BARE credential assets must be confirmed bound, record activated and tested on iPhone."
+      "summary": "HP/BARE credential is active and passed integrity audit. Real-device visual/QR/PDF confirmation can remain part of final QA."
     },
     {
       "id": "MM-BLOCK-DUPLICATE",
       "type": "data_hygiene",
-      "status": "open",
-      "summary": "Inactive duplicate HP/BARE draft MM-FRRCK7UX remains and should be removed or explicitly archived after confirming it has no bound assets."
+      "status": "ready_to_resolve",
+      "summary": "Inactive incomplete duplicate HP/BARE draft MM-FRRCK7UX is confirmed by audit and can now be removed using guarded delete-draft."
     },
     {
       "id": "MM-BLOCK-MAIL",
@@ -176,6 +176,13 @@
       "type": "owner_approval",
       "status": "open",
       "summary": "PR #1 must not be merged to main without explicit Owner release approval."
+    },
+    {
+      "id": "MM-BLOCK-CONTACT-RETENTION",
+      "type": "policy",
+      "status": "open_non_release_gate",
+      "classification": "APPROVAL_REQUEST",
+      "summary": "A retention period for stored contact requests has not yet been explicitly approved. No automatic deletion of contact content is implemented."
     }
   ],
   "owner_actions": [
@@ -301,9 +308,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy round 2 integrity hardening and run audit-personal. Complete HP/BARE bindings if still incomplete, then activate only through the new integrity guard.",
-    "owner_action_required": "Run production pull, preflight and verify-record.php audit-personal and return output.",
-    "blocker": "Any active personal credential failing integrity audit."
+    "action": "Deploy round 3 tooling, remove the confirmed inactive duplicate MM-FRRCK7UX through guarded delete-draft, run credential audit, rate-limit cleanup/status and production artifact boundary check.",
+    "owner_action_required": "Run the provided production commands and return output.",
+    "blocker": "None expected; duplicate draft cleanup should be guarded and deterministic."
   },
   "evidence": [
     {
@@ -416,6 +423,26 @@
       "type": "owner_statement",
       "date": "2026-08-30",
       "summary": "docs/ should not be synchronized to the web; round 1 reported successful."
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "MM-K4AD8HQR and MM-8ACFCSH5 both passed credential integrity audit as active records."
+    },
+    {
+      "type": "commit",
+      "id": "37dcdace80e1343352d728ea1278675cd2b9c9e7",
+      "summary": "guarded deletion for inactive credential drafts"
+    },
+    {
+      "type": "commit",
+      "id": "3e0419ff10ece8d6c55a6f6cfec4c6b7c40acd9e",
+      "summary": "production web artifact boundary check"
+    },
+    {
+      "type": "commit",
+      "id": "91aa29aace661f6f6df721585f344206c1125cd8",
+      "summary": "rate-limit cleanup and retention reporting"
     }
   ]
 }
