@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T15:48:00+02:00",
+  "report_generated_at": "2026-08-30T15:59:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -130,11 +130,11 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner requested the isolated concept theme be significantly brighter and closer to the preferred visual mockup.",
-    "Concept background now uses layered bright blue light fields and blurred structural bands instead of near-black navy.",
-    "Panels were lightened with more transparent blue glass treatment.",
-    "OPS visual cards now deliberately use blue, orange and green as eye-catcher colors, with an additional violet accent for the fourth benefit card.",
-    "Hero CTA, alternating section glow and product-strip accents were strengthened to better match the preferred visual concept."
+    "Owner requested the concept preview include the actual high-energy visual elements rather than only a dark recolor.",
+    "Homepage now contains concept-only room-depth layer, three floating KPI/stat cards and a bright Verify credential visual.",
+    "OPS preview now contains concept-only floating action chips.",
+    "Default V1 theme hides all concept-only hooks; no default layout/content change.",
+    "Concept stylesheet now renders blurred room lighting, floating glass statistics, a white high-contrast credential card and blue/orange/green action accents."
   ],
   "blockers": [
     {
@@ -331,9 +331,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the updated concept stylesheet and visually compare ?theme=concept on desktop and iPhone. Keep default V1 untouched until Owner explicitly selects the concept direction.",
-    "owner_action_required": "Review brightness, background depth and blue/orange/green eye-catcher balance.",
-    "blocker": "none; experiment remains isolated behind ?theme=concept."
+    "action": "Deploy and inspect the new concept preview on desktop first, then iPhone. Decide whether this expressive direction should remain preview-only or become the V1 presentation.",
+    "owner_action_required": "Review https://mysterymarket.de/?theme=concept and report whether the room depth, KPI action and Verify visual now match the desired direction.",
+    "blocker": "none; default V1 remains isolated."
   },
   "evidence": [
     {
@@ -576,6 +576,21 @@
       "type": "owner_statement",
       "date": "2026-08-30",
       "summary": "Owner explicitly approved blue/orange/green concept colors and asked for brighter background and mockup-like eye-catcher boxes."
+    },
+    {
+      "type": "commit",
+      "id": "98000c680a334c52d3b2f8e6a6207baadcb54b88",
+      "summary": "concept-only homepage KPI and Verify visual hooks"
+    },
+    {
+      "type": "commit",
+      "id": "d822ac6f4f1ab00b45c5bdd7abc6d3133706d598",
+      "summary": "concept-only OPS floating chips"
+    },
+    {
+      "type": "commit",
+      "id": "600baca2d8d4bfe7a5876031bb2608fafa8c12a8",
+      "summary": "experiential hero room, floating KPIs and Verify card styling"
     }
   ]
 }
