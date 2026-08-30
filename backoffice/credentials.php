@@ -58,13 +58,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     $pdo->beginTransaction();
 
                     $credentialStmt = $pdo->prepare(
-                        'SELECT *
+                        "SELECT *
                          FROM credentials
                          WHERE subject_id = :subject_id
                            AND credential_status IN ('draft','approved','active')
                          ORDER BY id DESC
                          LIMIT 1
-                         FOR UPDATE'
+                         FOR UPDATE"
                     );
                     $credentialStmt->execute(['subject_id'=>(int)$subject['id']]);
                     $credential = $credentialStmt->fetch();
