@@ -66,6 +66,7 @@
     const postalId = atlasForm.querySelector('[data-atlas-postal-id]');
     const localityId = atlasForm.querySelector('[data-atlas-locality-id]');
     const localityName = atlasForm.querySelector('[data-atlas-locality-name]');
+    const streetAtlasId = atlasForm.querySelector('[data-atlas-street-id]');
 
     const endpoint = '/backoffice/atlas-reference.php';
 
@@ -317,12 +318,16 @@
       if (adminName) adminName.value = '';
       if (postalId) postalId.value = '';
       if (localityId) localityId.value = '';
+      if (streetAtlasId) streetAtlasId.value = '';
+      if (streetOptions) streetOptions.replaceChildren();
       await loadSubdivisions();
       if (postal?.value) await resolvePostal();
     });
     subdivision?.addEventListener('change', syncSubdivision);
     locality?.addEventListener('change', () => {
       if (localityManual) localityManual.value = '';
+      if (streetAtlasId) streetAtlasId.value = '';
+      if (streetOptions) streetOptions.replaceChildren();
       syncLocality();
     });
     localityManual?.addEventListener('input', () => {
