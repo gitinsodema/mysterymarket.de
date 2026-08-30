@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T20:02:00+02:00",
+  "report_generated_at": "2026-08-30T20:10:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,12 +134,12 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner requested the Elite profile to look less like a large form and more like a compact profile.",
-    "Profile is now split into compact Personal, Address and Assignment Profile cards with tighter spacing and smaller controls.",
-    "The manual-address disclosure is visually de-emphasized in grey rather than presented like a primary action.",
-    "Organisation was re-framed: added a structured work_profile classification for private/occasional, side job, self-employed, own agency/company, employed and other.",
-    "Existing organisation data is preserved and the UI now labels it 'Firma / Agentur (optional)' instead of making organisation the primary concept.",
-    "Added migration and preflight coverage for work_profile."
+    "Owner postponed mobile/iPhone visual QA and asked to continue in the current R1.1 context.",
+    "Recorded mobile visual QA as deferred rather than blocking current technical progress.",
+    "Updated the Elite profile membership card to use the semantic status badge instead of raw status text.",
+    "Removed stale member guidance that still referred to a future activation process; guidance now reflects the implemented one-time activation-link flow.",
+    "Added a CLI backoffice integrity review covering Elite user/member linkage, role correctness, membership/account-state consistency, duplicate open membership requests, agency reference integrity and ATLAS-profile consistency.",
+    "Preflight now requires the R1.1 backoffice integrity review script."
   ],
   "blockers": [
     {
@@ -400,8 +400,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the compact profile layout and work-profile migration, then visually review spacing/field density on iPhone. Continue small profile polish based on that visual pass.",
-    "owner_action_required": "Visual test of the new compact profile character and work-profile field.",
+    "action": "Deploy the current R1.1 hardening changes and run scripts/backoffice-review.php. Resolve any integrity warnings/failures, then continue toward R1.1 technical closure. Mobile/iPhone visual QA remains intentionally deferred.",
+    "owner_action_required": "Run the backoffice integrity review after deploy and provide its output.",
     "blocker": "none"
   },
   "evidence": [
@@ -1085,6 +1085,11 @@
       "type": "owner_runtime_test",
       "date": "2026-08-30",
       "summary": "Owner reported the full ATLAS address flow 100% successful, including a difficult real-world address."
+    },
+    {
+      "type": "owner_directive",
+      "date": "2026-08-30",
+      "summary": "Owner explicitly deferred mobile review and requested continued R1.1 work in context."
     }
   ]
 }
