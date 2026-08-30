@@ -341,7 +341,7 @@ $rtl = $verifyLang === 'ar';
     <?php if ($result): ?>
       <?php $isPersonal = ((int)($result['is_personal_verification'] ?? 0)) === 1; ?>
       <?php if ($isPersonal): ?>
-        <article class="verify-credential">
+        <article class="verify-credential" id="credential">
           <div class="verify-credential-head">
             <div class="verify-brand-lockup">
               <?php if (!empty($result['brand_logo_asset'])): ?>
@@ -387,7 +387,7 @@ $rtl = $verifyLang === 'ar';
 
           <div class="actions">
             <?php if (!empty($result['document_enabled']) && !empty($result['document_asset'])): ?>
-              <a class="button" href="/verify-asset.php?code=<?= rawurlencode((string)$result['reference_code']) ?>&type=document" target="_blank" rel="noopener" title="<?= mmEscape((string)($result['document_label'] ?: $detailCopy['document'])) ?>"><?= mmEscape((string)($result['document_label'] ?: $detailCopy['document_open'])) ?></a>
+              <a class="button" href="/verify-asset.php?code=<?= rawurlencode((string)$result['reference_code']) ?>&type=document" title="<?= mmEscape((string)($result['document_label'] ?: $detailCopy['document'])) ?>"><?= mmEscape((string)($result['document_label'] ?: $detailCopy['document_open'])) ?></a>
             <?php endif; ?>
             <?php if (!empty($result['print_card_enabled'])): ?>
               <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$result['reference_code']) ?>"><?= mmEscape($detailCopy['print']) ?></a>
@@ -409,7 +409,7 @@ $rtl = $verifyLang === 'ar';
         </div>
       <?php endif; ?>
     <?php endif; ?>
-    <form method="post" action="/verify.php?lang=<?= mmEscape(mmLanguage()) ?>&verify_lang=<?= mmEscape($verifyLang) ?>">
+    <form method="post" action="/verify.php?lang=<?= mmEscape(mmLanguage()) ?>&verify_lang=<?= mmEscape($verifyLang) ?>#credential">
       <label><?= mmEscape($c['label']) ?>
         <input name="code" maxlength="64" autocomplete="off" placeholder="MM-26-XXXX" value="<?= mmEscape($code) ?>" required>
       </label>
