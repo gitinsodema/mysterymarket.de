@@ -63,7 +63,7 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
     <?php if ($role === 'admin'): ?>
       <a class="backoffice-module" href="/backoffice/members.php"><span>01</span><strong>Elite Shopper</strong><small>Mitglieder & Status</small></a>
       <a class="backoffice-module" href="/backoffice/membership-requests.php"><span>01B</span><strong>Mitgliedschaft</strong><small>Pause-/Beendigungsanfragen</small></a>
-      <a class="backoffice-module" href="/backoffice/credentials.php"><span>02</span><strong>Credentials</strong><small>Ausweise · QR · Wallet</small></a>
+      <a class="backoffice-module" href="/backoffice/credentials.php"><span>02</span><strong>Ausweis-Service</strong><small>Verify · Druck · Wallet · Karte</small></a>
       <a class="backoffice-module" href="/backoffice/approvals.php"><span>03</span><strong>Kommunikation</strong><small>Agentur-Freigaben</small></a>
       <a class="backoffice-module" href="/backoffice/contacts.php"><span>04</span><strong>Kontakte</strong><small>Read-only Anfragen</small></a>
       <a class="backoffice-module" href="/backoffice/feed.php"><span>05</span><strong>Elite Feed</strong><small>Interne Hinweise</small></a>
@@ -71,7 +71,7 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
       <a class="backoffice-module" href="/backoffice/system.php"><span>07</span><strong>System</strong><small>Status & Audit Log</small></a>
     <?php else: ?>
       <a class="backoffice-module" href="/backoffice/profile.php"><span>01</span><strong>Mitgliedschaft</strong><small>Status & Profil</small></a>
-      <a class="backoffice-module" href="/backoffice/credentials.php"><span>02</span><strong>Mein Ausweis</strong><small>QR · Wallet · Karte</small></a>
+      <article class="backoffice-module"><span>02</span><strong>Projekt-Ausweise</strong><small>Werden projektbezogen über Verify bereitgestellt</small></article>
       <a class="backoffice-module" href="/backoffice/feed.php"><span>03</span><strong>Elite Feed</strong><small>Interne Projekt- und Partnerinfos</small></a>
       <article class="backoffice-module"><span>04</span><strong>ShopperMatch</strong><small>Eigenständige Job-/Matching-Plattform</small></article>
     <?php endif; ?>
