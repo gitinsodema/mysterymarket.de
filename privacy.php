@@ -42,14 +42,14 @@ mmHeader($c['title'], $c['lead']);
 ?>
 <section class="hero"><div><p class="eyebrow"><?= mmEscape($c['title']) ?></p><h1><?= mmEscape($c['hero']) ?></h1><p class="lead"><?= mmEscape($c['lead']) ?></p></div></section>
 <section class="section">
-<div class="definition"><strong><?= mmEscape($c['responsible']) ?></strong><div><?= mmEscape((string)($legal['brand'] ?? 'MysteryMarket')) ?> · <?= mmEscape((string)($legal['owner_name'] ?? '')) ?><br><?= mmEscape((string)($legal['street'] ?? '')) ?>, <?= mmEscape(trim((string)($legal['postal_code'] ?? '') . ' ' . (string)($legal['city'] ?? ''))) ?><br>privacy@mysterymarket.de</div></div>
+<div class="definition"><strong><?= mmEscape($c['responsible']) ?></strong><div><?= mmEscape((string)($legal['brand'] ?? 'MysteryMarket')) ?> · <?= mmEscape((string)($legal['owner_name'] ?? '')) ?><br><?= mmEscape((string)($legal['street'] ?? '')) ?>, <?= mmEscape(trim((string)($legal['postal_code'] ?? '') . ' ' . (string)($legal['city'] ?? ''))) ?><br><?= mmEmailLink('privacy', 'Datenschutz-Kontakt') ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['hosting']) ?></strong><div><?= mmEscape($text['hosting']) ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['contact']) ?></strong><div><?= mmEscape($text['contact']) ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['verify']) ?></strong><div><?= mmEscape($text['verify']) ?></div></div>
 <div class="definition" id="cookies"><strong><?= mmEscape($c['cookies']) ?></strong><div><?= mmEscape($text['cookies']) ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['recipients']) ?></strong><div><?= mmEscape($text['recipients']) ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['retention']) ?></strong><div><?= mmEscape($text['retention']) ?></div></div>
-<div class="definition"><strong><?= mmEscape($c['rights']) ?></strong><div><?= mmEscape($text['rights']) ?><br><a href="mailto:privacy@mysterymarket.de">privacy@mysterymarket.de</a></div></div>
+<div class="definition"><strong><?= mmEscape($c['rights']) ?></strong><div><?= mmEscape($text['rights']) ?><br><?= mmEmailLink('privacy', 'Datenschutz-Kontakt') ?></div></div>
 <div class="definition"><strong><?= mmEscape($c['security']) ?></strong><div><?= mmEscape($text['security']) ?></div></div>
 </section>
 <?php mmFooter(); ?>
