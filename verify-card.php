@@ -50,6 +50,11 @@ $verifyUrl = 'https://mysterymarket.de/verify.php?code=' . rawurlencode($code) .
 
 header('X-Robots-Tag: noindex, noarchive');
 header('Cache-Control: private, no-store, max-age=0');
+header('Pragma: no-cache');
+
+if ($method === 'HEAD') {
+    exit;
+}
 ?>
 <!doctype html>
 <html lang="de">
