@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T21:38:00+02:00",
+  "report_generated_at": "2026-08-30T21:48:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,14 +134,15 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed guarded activation behaved as expected and requested continuation.",
-    "Added controlled deactivation for active personal Verify credentials.",
-    "Added revision lineage fields supersedes_verification_id and revision_no.",
-    "An active Verify credential can create a new inactive revision draft with a fresh MM reference while preserving the existing project/asset baseline for review.",
-    "Active credentials remain read-only; edits happen only on the inactive revision draft.",
-    "Activating a revision atomically activates the new credential and deactivates the superseded active credential.",
-    "Credential review now detects invalid active revision chains where both a revision and its superseded credential remain active.",
-    "Validity expiry continues to be authoritative through valid_until in Verify and credential-state rendering."
+    "Owner understood the inactive Vodafone revision draft and requested continuation.",
+    "Added Admin fulfilment workflow for verify_credential_outputs.",
+    "Output requests now progress through requested, approved, processing, ready, shipped or cancelled using controlled transitions.",
+    "Physical outputs require a shipping reference before they can be marked shipped.",
+    "Apple Wallet requests are treated as digital outputs and cannot enter processing/ready until real Apple signing prerequisites are configured.",
+    "Added private Apple Wallet configuration placeholders for Pass Type Identifier, Team Identifier, organization name, signing certificate, certificate password and Apple WWDR certificate.",
+    "Added server-side Apple Wallet readiness checks without exposing secret configuration values.",
+    "Credential service now shows Wallet readiness and links each output request to its own fulfilment detail workflow.",
+    "Credential review validates shipped-output tracking data and reports Apple Wallet readiness as informational until Apple credentials are provisioned."
   ],
   "blockers": [
     {
@@ -418,9 +419,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the revision migration and lifecycle UI, run backoffice migration, preflight and credential review, then test creating a revision from one active credential without activating it. After owner confirmation, continue with print/fulfilment workflow and Apple Wallet generation prerequisites.",
-    "owner_action_required": "Create one revision draft from an active credential and confirm the original remains active while the new revision remains inactive.",
-    "blocker": "none"
+    "action": "Deploy and test one physical output request through requested -> approved -> processing -> ready -> shipped with a test shipping reference. Separately confirm Apple Wallet remains blocked at processing until real Apple Pass Type ID and signing certificates are configured. Then implement CR80/Zebra print-ready output and, once Apple credentials exist, real signed pkpass generation.",
+    "owner_action_required": "Run migration/preflight/review and test one physical fulfilment request status flow.",
+    "blocker": "Real Apple Wallet generation requires Apple Developer Pass Type ID, Pass Type signing certificate/private key and WWDR certificate."
   },
   "evidence": [
     {
