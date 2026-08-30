@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T20:36:00+02:00",
+  "report_generated_at": "2026-08-30T20:49:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,15 +134,13 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner approved R1.1; PR #2 was merged to main as release 1.1.0.",
-    "Started R1.2 on dedicated branch r1.2-credentials from main.",
-    "Added role-independent credential_subjects so credentials belong to a person/identity rather than an Admin/Elite role.",
-    "Added credentials lifecycle records with type, status, validity, Verify reference, replacement relationship and audit creator.",
-    "Added credential_orders as the central issuance/equipment request model with Apple Wallet and physical options.",
-    "Existing Elite members are seeded as credential subjects; Admins receive their own personal subject lazily when opening the credential area.",
-    "Added authenticated /backoffice/credentials.php for personal credential identity, Ausweis bestellen, own credentials/orders and Admin overview.",
-    "Apple Wallet is already a first-class issuance channel in Ausweis bestellen; real pkpass signing intentionally waits for Apple Pass Type ID/certificate.",
-    "Added R1.2 credential migration, helper, dashboard links, semantic statuses, styling and integrity review."
+    "Owner corrected R1.2 scope: MysteryMarket must not create an additional generic MysteryMarket identity card.",
+    "R1.2 is now defined as an output/fulfilment service for existing project-specific personal Verify credentials such as Vodafone/SKOPOS NEXT and HP/BARE.",
+    "audit_verifications remains the authoritative credential record and already contains person, agency, project, brand, validity, protected assets, scope and Verify reference.",
+    "Removed the mistaken parallel credential_subjects/credentials/credential_orders lifecycle from the active design.",
+    "Added verify_credential_outputs linked directly to audit_verifications for Apple Wallet and physical output/fulfilment requests.",
+    "Rebuilt /backoffice/credentials.php as an Admin Verify-Ausweis-Service listing existing personal Verify credentials with Verify, print-card, Wallet and physical-output actions.",
+    "Elite dashboard no longer implies a separate generic personal credential."
   ],
   "blockers": [
     {
@@ -341,11 +339,19 @@
     },
     {
       "id": "MM-DEC-R1-2-CREDENTIAL-FOUNDATION",
-      "classification": "CURRENT_AUTHORITY",
+      "classification": "SUPERSEDED_DECISION",
       "instruction_classification": "OWNER_DIRECTIVE",
       "source_authority": "Owner + R1.2 roadmap",
+      "verification_status": "superseded_by_owner_correction",
+      "summary": "Superseded: the initial generic role-independent credential-subject model was too broad and would have created a parallel MysteryMarket credential."
+    },
+    {
+      "id": "MM-DEC-R1-2-VERIFY-CREDENTIAL-SERVICE",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
       "verification_status": "implemented_pending_owner_runtime_test",
-      "summary": "R1.2 uses role-independent credential subjects and a shared credential/order lifecycle; Apple Wallet is a first-class issuance channel rather than a separate identity."
+      "summary": "R1.2 is a creation/output/fulfilment service for project-specific personal audit_verifications credentials. Verify remains authoritative; Wallet, print and physical cards are representations of the same project credential."
     }
   ],
   "dependencies": [
@@ -411,9 +417,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy r1.2-credentials, run the migration and credentials review, then open /backoffice/credentials.php as Admin and Elite. Submit one Apple Wallet request from the Admin identity to validate the role-independent subject/order flow before adding admin approval, Verify binding and real Wallet pass generation.",
-    "owner_action_required": "Deploy and test the R1.2 credential foundation; no Apple certificate/key is required yet.",
-    "blocker": "Real Apple Wallet pass signing later requires Apple Developer Pass Type ID and signing certificate."
+    "action": "Deploy the corrected R1.2 migration and Verify-Ausweis-Service. Confirm that the two existing HP/BARE and Vodafone/SKOPOS personal Verify credentials appear as the service source records. Then add controlled creation/editing of new personal Verify credentials in the Backoffice before implementing Apple Wallet signing.",
+    "owner_action_required": "Deploy, run migration/review, and visually confirm the two existing project credentials are listed.",
+    "blocker": "none for credential-service UI; real Apple Wallet signing later requires Apple Developer credentials."
   },
   "evidence": [
     {
