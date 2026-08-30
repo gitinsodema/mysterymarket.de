@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T20:57:00+02:00",
+  "report_generated_at": "2026-08-30T21:08:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,11 +134,14 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed the corrected Verify credential-service direction and requested a less compressed credential UI.",
-    "Each project credential is now presented as a certificate-style summary card showing project, person, agency, Verify reference, validity and status.",
-    "Credential functions are hidden by default behind a single 'Ausweis öffnen' action.",
-    "Opening a credential reveals Verify, print-card and output/fulfilment functions beneath that specific certificate.",
-    "Apple Wallet and physical output choices are therefore contextual actions on one existing Verify credential rather than a dense global action grid."
+    "Owner approved the expandable certificate-style credential UI and requested continued R1.2 work.",
+    "Added Backoffice creation of new project-specific personal Verify credentials.",
+    "New credentials receive an automatically generated MM- Verify reference and are created inactive as drafts.",
+    "Draft creation captures person, role, agency, project, brand/client, validity, confidentiality and public note.",
+    "Added credential detail/editor page. Inactive drafts are editable; active production credentials are read-only in this first editor stage.",
+    "Credential detail shows protected asset/scope/document completeness without introducing a second public asset path.",
+    "Credential service now exposes 'Neuen Ausweis anlegen' and contextual 'Ausweis verwalten' actions.",
+    "Activation remains intentionally separate until protected assets, scope and integrity requirements can be enforced through the existing Verify security model."
   ],
   "blockers": [
     {
@@ -415,8 +418,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and visually verify the expandable certificate-style credential service. If approved, continue with controlled Backoffice creation/editing of personal Verify credentials using the existing HP/BARE and Vodafone/SKOPOS records as reference templates.",
-    "owner_action_required": "Quick visual test of collapsed and expanded credential cards.",
+    "action": "Deploy and test Backoffice creation of an inactive project Verify credential. Then implement protected asset binding/upload management and scope selection in the credential editor, followed by a guarded activation action using the existing Verify integrity rules.",
+    "owner_action_required": "Create one disposable inactive test credential in Backoffice and verify that it appears in the credential service and remains inactive.",
     "blocker": "none"
   },
   "evidence": [
