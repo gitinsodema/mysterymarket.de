@@ -29,7 +29,11 @@ mmHeader($c['title'], $c['description']);
   </div>
   <div class="service-teaser-grid">
     <?php foreach (mmServiceItems() as $i => $service): ?>
-      <a href="<?= mmEscape(mmLangUrl('/services.php')) ?>" class="service-teaser"><span><?= str_pad((string)($i+1),2,'0',STR_PAD_LEFT) ?></span><strong><?= mmEscape($service[1]) ?></strong></a>
+      <a href="<?= mmEscape(mmLangUrl('/services.php')) ?>" class="service-teaser service-tone-<?= ($i % 4) + 1 ?>">
+        <span class="service-teaser-icon" aria-hidden="true"><?= mmServiceIconSvg((string)$service[0]) ?></span>
+        <span><?= str_pad((string)($i+1),2,'0',STR_PAD_LEFT) ?></span>
+        <strong><?= mmEscape($service[1]) ?></strong>
+      </a>
     <?php endforeach; ?>
   </div>
 </section>
