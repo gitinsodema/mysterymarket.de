@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T18:42:00+02:00",
+  "report_generated_at": "2026-08-30T18:55:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,13 +134,13 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner provided the expected ATLAS API shape: countries, country subdivisions, subdivision postal areas, postal-area lookup, street autocomplete and geo containment.",
-    "Added minimal agency master-data table with name, short name, website and active flag.",
-    "Added admin agency overview, creation and editing pages.",
-    "Elite Feed editor now offers active agencies from master data as a select and preserves a free-text fallback for unregistered agencies.",
-    "Agency approval creation now offers the same agency master-data select with free-text fallback.",
-    "Dashboard now links directly to Agency master data.",
-    "Backoffice migration runner and preflight now cover the agency master-data module."
+    "Owner confirmed Apple Wallet must appear inside the future 'Ausweis bestellen' credential issuance/order area.",
+    "Apple Wallet is now documented as a first-class credential output alongside physical card, holder, lanyard, full set and replacement card.",
+    "Wallet expirationDate will be used for natural credential expiry; early suspension/revocation remains controlled by MysteryMarket credential lifecycle/Verify and later Wallet updates.",
+    "Added admin read-only Audit Log page showing the latest 250 backoffice events.",
+    "Added compact System overview with safe counts, public release version and PHP runtime, without exposing secrets.",
+    "Dashboard now links to System and Audit Log.",
+    "Preflight now covers the new System/Audit pages."
   ],
   "blockers": [
     {
@@ -320,6 +320,14 @@
       "source_authority": "Owner",
       "verification_status": "documented",
       "summary": "Credentials belong to a person/identity independently of admin/Elite role so admins can also hold and view their own credentials."
+    },
+    {
+      "id": "MM-DEC-WALLET-IN-CREDENTIAL-ORDERING",
+      "classification": "APPROVED_FUTURE_DIRECTION",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "documented",
+      "summary": "Apple Wallet is a first-class issuance option inside 'Ausweis bestellen', using the same credential identity/lifecycle as physical outputs."
     }
   ],
   "dependencies": [
@@ -385,9 +393,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the agency master-data migration, add the first real agencies, then verify Feed and Approval forms select them correctly. ATLAS integration remains pending the final API contract files.",
-    "owner_action_required": "Add/confirm the initial agency names and provide the final ATLAS API contract files when available.",
-    "blocker": "ATLAS integration waits for final contract files; agency master data has no blocker."
+    "action": "Deploy and verify System/Audit pages. Continue R1.1 hardening while the ATLAS contract is finalized; then close R1.1 and start R1.2 credential subject/order/Wallet implementation.",
+    "owner_action_required": "Review System/Audit pages after deployment; provide final ATLAS API contract when ready.",
+    "blocker": "none"
   },
   "evidence": [
     {
