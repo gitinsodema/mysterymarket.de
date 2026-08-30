@@ -15,6 +15,12 @@ return [
         'rate_limit_salt' => 'REPLACE_WITH_A_LONG_RANDOM_SECRET',
         'verify_asset_dir' => '/var/www/vhosts/mysterymarket.de/private/verify-assets',
     ],
+    'atlas' => [
+        'base_url' => 'https://atlas.insodema.com/api/v1',
+        'token' => 'REPLACE_WITH_MYSTERYMARKET_ATLAS_TOKEN',
+        'product' => 'MYSTERYMARKET',
+        'timeout_seconds' => 8,
+    ],
     'legal' => [
         'brand' => 'MysteryMarket',
         'legal_form' => 'Einzelunternehmen',
