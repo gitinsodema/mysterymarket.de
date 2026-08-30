@@ -218,6 +218,37 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
       <label>Organisation<input name="organisation" maxlength="200" value="<?= mmEscape((string)($member['organisation'] ?? '')) ?>"></label>
       <label>Telefon<input name="phone" maxlength="60" value="<?= mmEscape((string)($member['phone'] ?? '')) ?>"></label>
       <div class="form-grid">
+        <label>Land
+          <select name="country_code" data-atlas-country data-current-country="<?= mmEscape((string)($member['country_code'] ?? '')) ?>">
+            <?php if (!empty($member['country_code'])): ?>
+              <option value="<?= mmEscape((string)$member['country_code']) ?>" selected><?= mmEscape((string)$member['country_code']) ?> · aktueller Wert</option>
+            <?php else: ?>
+              <option value="">Land wird geladen …</option>
+            <?php endif; ?>
+          </select>
+        </label>
+        <label>PLZ
+          <input name="postal_code" maxlength="24" data-atlas-postal value="<?= mmEscape((string)($member['postal_code'] ?? '')) ?>" autocomplete="postal-code">
+          <small class="field-hint" data-atlas-postal-status>Nach Land + PLZ lädt ATLAS passende Orte.</small>
+        </label>
+        <label>Ort
+          <select name="city" data-atlas-locality data-current-locality="<?= mmEscape((string)($member['locality_atlas_id'] ?? '')) ?>">
+            <option value="<?= mmEscape((string)($member['city'] ?? '')) ?>"><?= mmEscape((string)($member['city'] ?? 'Bitte PLZ eingeben')) ?></option>
+          </select>
+          <small class="field-hint">Bei eindeutiger PLZ wird der Ort automatisch gewählt.</small>
+        </label>
+        <label>Region / Bundesland
+          <select data-atlas-subdivision data-current-admin="<?= mmEscape((string)($member['administrative_unit_atlas_id'] ?? '')) ?>">
+            <option value="">Wird nach Möglichkeit automatisch erkannt</option>
+          </select>
+        </label>
+        <label>Ort manuell
+          <input name="city_manual" maxlength="120" data-atlas-locality-manual placeholder="Nur verwenden, wenn der Ort in ATLAS fehlt">
+          <small class="field-hint">Freitext-Fallback ohne erfundene ATLAS-ID.</small>
+        </label>
+        <label>Adresszusatz
+          <input name="address_line2" maxlength="200" value="<?= mmEscape((string)($member['address_line2'] ?? '')) ?>">
+        </label>
         <label>Straße
           <input name="street_name" maxlength="200" data-atlas-street list="atlas-street-options" autocomplete="address-line1"
                  value="<?= mmEscape((string)($member['street_name'] ?? '')) ?>"
@@ -228,39 +259,10 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
         <label>Hausnummer
           <input name="house_number" maxlength="40" data-atlas-house-number value="<?= mmEscape((string)($member['house_number'] ?? '')) ?>">
         </label>
-        <label>Adresszusatz<input name="address_line2" maxlength="200" value="<?= mmEscape((string)($member['address_line2'] ?? '')) ?>"></label>
-        <label>Straße / Adresse manuell
+        <label class="wide">Straße / Adresse manuell
           <input name="address_line1_fallback" maxlength="200" placeholder="Nur falls keine strukturierte Straße verfügbar ist"
                  value="<?= empty($member['street_name']) ? mmEscape((string)($member['address_line1'] ?? '')) : '' ?>">
           <small class="field-hint">Fallback ohne erfundene ATLAS-ID.</small>
-        </label>
-        <label>Land
-          <select name="country_code" data-atlas-country data-current-country="<?= mmEscape((string)($member['country_code'] ?? '')) ?>">
-            <?php if (!empty($member['country_code'])): ?>
-              <option value="<?= mmEscape((string)$member['country_code']) ?>" selected><?= mmEscape((string)$member['country_code']) ?> · aktueller Wert</option>
-            <?php else: ?>
-              <option value="">Land wird geladen …</option>
-            <?php endif; ?>
-          </select>
-        </label>
-        <label>Region / Bundesland
-          <select data-atlas-subdivision data-current-admin="<?= mmEscape((string)($member['administrative_unit_atlas_id'] ?? '')) ?>">
-            <option value="">Bitte zuerst Land wählen</option>
-          </select>
-        </label>
-        <label>PLZ
-          <input name="postal_code" maxlength="24" data-atlas-postal value="<?= mmEscape((string)($member['postal_code'] ?? '')) ?>" autocomplete="postal-code">
-          <small class="field-hint" data-atlas-postal-status>PLZ wird über ATLAS geprüft.</small>
-        </label>
-        <label>Ort
-          <select name="city" data-atlas-locality data-current-locality="<?= mmEscape((string)($member['locality_atlas_id'] ?? '')) ?>">
-            <option value="<?= mmEscape((string)($member['city'] ?? '')) ?>"><?= mmEscape((string)($member['city'] ?? 'Bitte PLZ eingeben')) ?></option>
-          </select>
-          <small class="field-hint">ATLAS-Ort bevorzugt.</small>
-        </label>
-        <label>Ort manuell
-          <input name="city_manual" maxlength="120" data-atlas-locality-manual placeholder="Nur verwenden, wenn der Ort in ATLAS fehlt">
-          <small class="field-hint">Freitext-Fallback ohne erfundene ATLAS-ID.</small>
         </label>
         <label>Mobilitätsprofil
           <select name="mobility_profile">
