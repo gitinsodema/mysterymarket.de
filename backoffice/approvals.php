@@ -61,7 +61,7 @@ mmHeader('Agentur-Freigaben', 'Interne Freigabe- und Kommunikationsübersicht.',
             <td><a href="/backoffice/approval.php?id=<?= (int)$row['id'] ?>"><strong><?= mmEscape((string)$row['agency_name']) ?></strong></a></td>
             <td><?= mmEscape((string)($row['contact_name'] ?: '—')) ?></td>
             <td><?= mmEscape((string)$row['purpose']) ?></td>
-            <td><span class="status"><?= mmEscape((string)$row['approval_status']) ?></span></td>
+            <td><?= mmBackofficeStatusBadge((string)$row['approval_status']) ?></td>
             <td><?= mmEscape((string)($row['requested_at'] ?: '—')) ?></td>
             <td><?= mmEscape((string)($row['responded_at'] ?: '—')) ?></td>
           </tr>
