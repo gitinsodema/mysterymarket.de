@@ -60,6 +60,8 @@
     const street = atlasForm.querySelector('[data-atlas-street]');
     const streetOptions = atlasForm.querySelector('[data-atlas-street-options]');
     const streetStatus = atlasForm.querySelector('[data-atlas-street-status]');
+    const manualToggle = atlasForm.querySelector('[data-atlas-manual-toggle]');
+    const manualFields = atlasForm.querySelector('[data-atlas-manual-fields]');
     const postalStatus = atlasForm.querySelector('[data-atlas-postal-status]');
     const adminId = atlasForm.querySelector('[data-atlas-admin-id]');
     const adminName = atlasForm.querySelector('[data-atlas-admin-name]');
@@ -336,6 +338,18 @@
 
     let postalTimer = 0;
     let streetTimer = 0;
+
+    manualToggle?.addEventListener('click', () => {
+      if (!manualFields) return;
+      const willOpen = manualFields.hidden;
+      manualFields.hidden = !willOpen;
+      manualToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      manualToggle.textContent = willOpen ? 'Manuelle Adresse wieder schließen' : 'Meine Adresse wird nicht erkannt';
+      if (willOpen) {
+        const firstInput = manualFields.querySelector('input');
+        firstInput?.focus();
+      }
+    });
     country?.addEventListener('change', async () => {
       if (adminId) adminId.value = '';
       if (adminName) adminName.value = '';
