@@ -39,7 +39,7 @@ if (!$row) {
     exit;
 }
 
-$verifyUrl = 'https://mysterymarket.de/verify.php?code=' . rawurlencode($code);
+$verifyUrl = 'https://mysterymarket.de/verify.php?code=' . rawurlencode($code) . '#credential';
 
 header('X-Robots-Tag: noindex, noarchive');
 header('Cache-Control: private, no-store, max-age=0');
