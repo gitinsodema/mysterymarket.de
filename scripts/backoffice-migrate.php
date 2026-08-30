@@ -9,22 +9,27 @@ if (PHP_SAPI !== 'cli') {
     exit(1);
 }
 
-$file = dirname(__DIR__) . '/database/20260830_backoffice_foundation.sql';
-$sql = @file_get_contents($file);
-if (!is_string($sql) || trim($sql) === '') {
-    fwrite(STDERR, "Backoffice foundation migration is missing or empty.
-");
-    exit(1);
-}
+$files = [
+    dirname(__DIR__) . '/database/20260830_backoffice_foundation.sql',
+    dirname(__DIR__) . '/database/20260830_backoffice_activation_tokens.sql',
+];
 
 $pdo = mmDb();
 
-try {
-    $pdo->exec($sql);
-} catch (Throwable $e) {
-    fwrite(STDERR, "Backoffice foundation migration failed: " . $e->getMessage() . "
-");
-    exit(1);
+foreach ($files as $file) {
+    $sql = @file_get_contents($file);
+    if (!is_string($sql) || trim($sql) === '') {
+        fwrite(STDERR, "Backoffice migration is missing or empty: {$file}\n");
+        exit(1);
+    }
+
+    try {
+        $pdo->exec($sql);
+        echo "[PASS] migration " . basename($file) . "\n";
+    } catch (Throwable $e) {
+        fwrite(STDERR, "Backoffice migration failed (" . basename($file) . "): " . $e->getMessage() . "\n");
+        exit(1);
+    }
 }
 
 $required = [
@@ -34,6 +39,7 @@ $required = [
     'agency_approvals',
     'backoffice_audit_log',
     'backoffice_login_rate_limits',
+    'backoffice_activation_tokens',
 ];
 
 $check = $pdo->prepare(
