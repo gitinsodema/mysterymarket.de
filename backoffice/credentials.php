@@ -74,9 +74,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                         $title = ($user['role'] ?? '') === 'elite' ? 'Elite Shopper Credential' : 'MysteryMarket Personal Credential';
 
                         $insertCredential = $pdo->prepare(
-                            'INSERT INTO credentials
+                            "INSERT INTO credentials
                              (subject_id, credential_code, credential_type, title, credential_status, created_by_user_id, created_at, updated_at)
-                             VALUES (:subject_id, :credential_code, :credential_type, :title, 'draft', :created_by, NOW(), NOW())'
+                             VALUES (:subject_id, :credential_code, :credential_type, :title, 'draft', :created_by, NOW(), NOW())"
                         );
 
                         do {
