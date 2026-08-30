@@ -168,6 +168,24 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
 
 function mmFooter(): void
 {
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $isBackoffice = str_starts_with($path, '/backoffice');
+
+    if ($isBackoffice) {
+        ?>
+</main>
+<footer class="site-footer backoffice-footer">
+    <div class="backoffice-footer-inner">
+        <span><strong>MysteryMarket</strong> · Private Backoffice</span>
+        <span>© <?= date('Y') ?> MysteryMarket</span>
+    </div>
+</footer>
+<script src="/public/js/site.js" defer></script>
+</body>
+</html>
+<?php
+        return;
+    }
     ?>
 </main>
 <footer class="site-footer">
