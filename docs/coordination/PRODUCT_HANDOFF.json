@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T17:12:00+02:00",
+  "report_generated_at": "2026-08-30T17:24:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,11 +20,11 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "released",
-    "active_branch": "main",
+    "lifecycle_phase": "post_v1_r1_1_backoffice_foundation",
+    "active_branch": "r1.1-little-backoffice",
     "default_branch": "main",
-    "pull_request": 1,
-    "pull_request_state": "merged",
+    "pull_request": null,
+    "pull_request_state": "not_opened",
     "production_domain": "mysterymarket.de",
     "runtime": "PHP 8.5 + MariaDB 12.3.3 + Plesk",
     "positioning": "Operational audit and fieldwork partner for agencies and direct clients; not positioned as a competing full-service evaluation/reporting agency.",
@@ -39,7 +39,11 @@
       "Protected private identity/logo/document assets outside webroot",
       "Project-specific authorisation scopes",
       "iPhone-compatible protected PDF delivery with byte-range support",
-      "Printable CR80 auditor ID with local QR generation"
+      "Printable CR80 auditor ID with local QR generation",
+      "R1.1 private backoffice authentication foundation",
+      "R1.1 Elite member lifecycle data model",
+      "R1.1 private Elite feed data model",
+      "R1.1 agency approval tracking foundation"
     ]
   },
   "release_progress": {
@@ -130,11 +134,17 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner explicitly approved V1 release/merge.",
-    "PR #1 release candidate head 2c27de4 was promoted to main.",
-    "GitHub now records PR #1 as merged at commit 2c27de4d72cf9a745775c0c012e29c01c4a39a51.",
-    "MysteryMarket V1.0.0 is released on main.",
-    "Known non-release follow-ups remain mail deliverability, contact retention policy and future deployment artifact separation."
+    "V1.0.0 remains frozen on main as the released baseline.",
+    "Created post-release branch r1.1-little-backoffice.",
+    "Owner approved the Little Backoffice / Elite Area / Credentials / Connected Elite roadmap.",
+    "Clarified product boundary: MysteryMarket may publish private project hints to Elite members, while ShopperMatch remains a separate job and matching platform.",
+    "Confirmed Apple Wallet as a real R1.2 target for Elite credentials using signed Wallet passes.",
+    "Added docs/BACKOFFICE_ROADMAP.md with R1.1, R1.2 and R1.3 scope.",
+    "Added R1.1 database foundation for backoffice users, Elite members, private feed posts, agency approvals, audit logging and login throttling.",
+    "Added secure session/CSRF/role/login-throttling authentication foundation.",
+    "Added private backoffice login, logout and role-aware shell; not linked from the public website.",
+    "Added safe CLI bootstrap for admin/elite accounts using an environment-provided password.",
+    "Extended preflight to cover the R1.1 foundation."
   ],
   "blockers": [
     {
@@ -274,6 +284,22 @@
       "source_authority": "Owner",
       "verification_status": "implemented",
       "summary": "MysteryMarket V1 will release with the established light layout; the experimental dark concept theme will not be publicly selectable."
+    },
+    {
+      "id": "MM-DEC-ELITE-SHOPPERMATCH-BOUNDARY",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "documented",
+      "summary": "MysteryMarket Elite provides private member information and may announce project opportunities seen by the admin; ShopperMatch remains a separate job/matching system and is not mixed into each MysteryMarket project post."
+    },
+    {
+      "id": "MM-DEC-APPLE-WALLET-CREDENTIAL",
+      "classification": "APPROVED_FUTURE_DIRECTION",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "technically feasible",
+      "summary": "R1.2 will target a real Apple Wallet pass for Elite Shopper credentials, with MysteryMarket Verify remaining authoritative."
     }
   ],
   "dependencies": [
@@ -339,9 +365,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Treat main as the released V1.0.0 baseline. Start all new functionality in a new post-release branch and preserve Verify as reusable infrastructure.",
-    "owner_action_required": "none",
-    "blocker": "none"
+    "action": "Deploy r1.1-little-backoffice to the development/production checkout, apply database/20260830_backoffice_foundation.sql, create the first admin account, then test private login/logout before building the Admin Dashboard and Elite member list.",
+    "owner_action_required": "Apply the R1.1 foundation migration and bootstrap the first admin account when ready for live testing.",
+    "blocker": "R1.1 database migration and first admin bootstrap not yet applied."
   },
   "evidence": [
     {
@@ -729,6 +755,46 @@
       "type": "merge",
       "id": "2c27de4d72cf9a745775c0c012e29c01c4a39a51",
       "summary": "PR #1 merged/promoted to main as V1.0.0"
+    },
+    {
+      "type": "commit",
+      "id": "817dcd920e5996e5cd76c6eab599dc6985830c54",
+      "summary": "post-V1 Elite Backoffice roadmap"
+    },
+    {
+      "type": "commit",
+      "id": "ac3a14b1a5083c02768098cea3c820eac3026ad4",
+      "summary": "R1.1 backoffice data model"
+    },
+    {
+      "type": "commit",
+      "id": "fdafe7ca29db8c84c7e8a757f5b3ed71ded9d0b1",
+      "summary": "secure backoffice auth foundation"
+    },
+    {
+      "type": "commit",
+      "id": "76cd6243dbeea8f1df48b4dcb19f6a2df7443559",
+      "summary": "private backoffice login"
+    },
+    {
+      "type": "commit",
+      "id": "77e1ba354430fdab3cb68644f2113f969bad34e7",
+      "summary": "role-aware backoffice shell"
+    },
+    {
+      "type": "commit",
+      "id": "7c5f1bd8ab7933f2769cb41052aa9fbf960f937d",
+      "summary": "secure backoffice logout"
+    },
+    {
+      "type": "commit",
+      "id": "17f85153dc5c0537b0f651f1fc169911890b0f4b",
+      "summary": "backoffice account bootstrap CLI"
+    },
+    {
+      "type": "web_research",
+      "date": "2026-08-30",
+      "summary": "Apple official Wallet documentation confirms signed passes can be distributed from a website and optionally updated through a web service."
     }
   ]
 }
