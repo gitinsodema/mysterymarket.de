@@ -85,8 +85,8 @@ mmHeader('Elite Shopper', 'Interne Mitgliedsverwaltung.', 'noindex,nofollow');
   <div class="grid two">
     <article class="card">
       <span class="badge">Mitgliedschaft</span>
-      <h2><?= mmEscape((string)$member['membership_status']) ?></h2>
-      <p>Login: <strong><?= mmEscape((string)$member['account_status']) ?></strong></p>
+      <h2><?= mmBackofficeStatusBadge((string)$member['membership_status']) ?></h2>
+      <p>Login: <?= mmBackofficeStatusBadge((string)$member['account_status']) ?></p>
       <p>Letzter Login: <?= mmEscape((string)($member['last_login_at'] ?: '—')) ?></p>
     </article>
     <article class="card">
