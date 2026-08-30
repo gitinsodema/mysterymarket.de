@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T18:55:00+02:00",
+  "report_generated_at": "2026-08-30T19:08:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,13 +134,15 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed Apple Wallet must appear inside the future 'Ausweis bestellen' credential issuance/order area.",
-    "Apple Wallet is now documented as a first-class credential output alongside physical card, holder, lanyard, full set and replacement card.",
-    "Wallet expirationDate will be used for natural credential expiry; early suspension/revocation remains controlled by MysteryMarket credential lifecycle/Verify and later Wallet updates.",
-    "Added admin read-only Audit Log page showing the latest 250 backoffice events.",
-    "Added compact System overview with safe counts, public release version and PHP runtime, without exposing secrets.",
-    "Dashboard now links to System and Audit Log.",
-    "Preflight now covers the new System/Audit pages."
+    "Copied the approved ATLAS Geography Reference API v1 contract from main onto r1.1-little-backoffice.",
+    "Prepared dedicated server-side ATLAS configuration for MYSTERYMARKET without committing credentials.",
+    "Added secure server-side ATLAS client with Bearer authentication, MYSTERYMARKET product identity, unique request IDs, TLS verification and response tracing.",
+    "Added authenticated Backoffice-only ATLAS reference proxy for countries, subdivisions, postal areas, localities and streets; the Bearer token is never returned to browser code.",
+    "Added CLI ATLAS smoke test for authentication and country lookup.",
+    "Extended Elite profile storage with canonical ATLAS reference IDs for administrative unit, postal area, locality and street, with readable snapshots/fallback fields retained.",
+    "Prepared Elite profile persistence for future ATLAS-selected reference IDs while keeping current manual address entry operational.",
+    "System overview now reports whether ATLAS is configured.",
+    "Preflight now verifies the approved contract, ATLAS integration files and warns until the production token is configured."
   ],
   "blockers": [
     {
@@ -328,6 +330,14 @@
       "source_authority": "Owner",
       "verification_status": "documented",
       "summary": "Apple Wallet is a first-class issuance option inside 'Ausweis bestellen', using the same credential identity/lifecycle as physical outputs."
+    },
+    {
+      "id": "MM-DEC-ATLAS-V1-CONTRACT",
+      "classification": "CURRENT_AUTHORITY",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "ATLAS approved shared INSODEMA geography contract",
+      "verification_status": "copied_to_active_branch_and_integration_prepared",
+      "summary": "MysteryMarket consumes ATLAS Geography Reference API v1 server-to-server using its own MYSTERYMARKET token and canonical ATLAS IDs."
     }
   ],
   "dependencies": [
@@ -393,9 +403,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and verify System/Audit pages. Continue R1.1 hardening while the ATLAS contract is finalized; then close R1.1 and start R1.2 credential subject/order/Wallet implementation.",
-    "owner_action_required": "Review System/Audit pages after deployment; provide final ATLAS API contract when ready.",
-    "blocker": "none"
+    "action": "Deploy the prepared ATLAS integration and migration, add the dedicated MYSTERYMARKET token to production config/local.php, then run scripts/atlas-smoke.php. After a successful live response, inspect actual response item shapes and enable the final address autocomplete UX.",
+    "owner_action_required": "Install the dedicated MYSTERYMARKET ATLAS token in production config/local.php when instructed.",
+    "blocker": "ATLAS live UX activation waits only for the production MYSTERYMARKET token and first successful smoke response."
   },
   "evidence": [
     {
