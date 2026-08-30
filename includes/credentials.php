@@ -143,3 +143,94 @@ function mmCredentialStoreUploadedAsset(array $file, int $credentialId, string $
     @chmod($target, 0640);
     return $filename;
 }
+
+
+function mmCredentialIntegrityErrors(array $row): array
+{
+    if ((int)($row['is_personal_verification'] ?? 0) !== 1) {
+        return ['Kein persönlicher Verify-Ausweis.'];
+    }
+
+    $errors = [];
+    $required = [
+        'person_name'=>'Person fehlt',
+        'role_label'=>'Rolle fehlt',
+        'agency_name'=>'Agentur fehlt',
+        'project_name'=>'Projekt fehlt',
+        'brand_name'=>'Marke / Kunde fehlt',
+        'photo_asset'=>'Foto fehlt',
+        'brand_logo_asset'=>'Markenlogo fehlt',
+        'agency_logo_asset'=>'Agenturlogo fehlt',
+        'scope_key'=>'Scope fehlt',
+        'document_asset'=>'Dokument fehlt',
+        'document_label'=>'Dokumentbezeichnung fehlt',
+    ];
+
+    foreach ($required as $column=>$message) {
+        if (trim((string)($row[$column] ?? '')) === '') {
+            $errors[] = $message;
+        }
+    }
+
+    if (empty($row['valid_from'])) {
+        $errors[] = 'Gültigkeitsbeginn fehlt';
+    }
+    if (empty($row['valid_until'])) {
+        $errors[] = 'Gültigkeitsende fehlt';
+    }
+    if (!empty($row['valid_from']) && !empty($row['valid_until'])
+        && (string)$row['valid_until'] < (string)$row['valid_from']) {
+        $errors[] = 'Gültigkeitszeitraum ist ungültig';
+    }
+    if ((int)($row['document_enabled'] ?? 0) !== 1) {
+        $errors[] = 'Dokument ist nicht aktiviert';
+    }
+    if ((int)($row['print_card_enabled'] ?? 0) !== 1) {
+        $errors[] = 'Druckkarte ist nicht aktiviert';
+    }
+
+    $allowedScopes = ['vodafone_skopos_2026','hp_bare_retail_2025_2026'];
+    $scope = trim((string)($row['scope_key'] ?? ''));
+    if ($scope !== '' && !in_array($scope, $allowedScopes, true)) {
+        $errors[] = 'Scope ist unbekannt';
+    }
+
+    $assetDir = rtrim((string)(mmConfig()['security']['verify_asset_dir'] ?? ''), '/');
+    $base = $assetDir !== '' ? realpath($assetDir) : false;
+    if ($base === false || !is_dir($base) || !is_readable($base)) {
+        $errors[] = 'Privater Verify-Asset-Speicher ist nicht verfügbar';
+        return array_values(array_unique($errors));
+    }
+
+    $rules = [
+        'photo_asset'=>['image/png','image/jpeg','image/webp'],
+        'brand_logo_asset'=>['image/png','image/jpeg','image/webp'],
+        'agency_logo_asset'=>['image/png','image/jpeg','image/webp'],
+        'document_asset'=>['application/pdf'],
+    ];
+
+    foreach ($rules as $column=>$allowedMime) {
+        $filename = trim((string)($row[$column] ?? ''));
+        if ($filename === '') {
+            continue;
+        }
+        if (basename($filename) !== $filename) {
+            $errors[] = $column . ': ungültiger Dateiname';
+            continue;
+        }
+
+        $file = realpath($base . DIRECTORY_SEPARATOR . $filename);
+        if ($file === false || !is_file($file) || !is_readable($file)
+            || !str_starts_with($file, $base . DIRECTORY_SEPARATOR)) {
+            $errors[] = $column . ': Datei nicht verfügbar';
+            continue;
+        }
+
+        $mime = (new finfo(FILEINFO_MIME_TYPE))->file($file) ?: '';
+        if (!in_array($mime, $allowedMime, true)) {
+            $errors[] = $column . ': ungültiger Dateityp';
+        }
+    }
+
+    return array_values(array_unique($errors));
+}
