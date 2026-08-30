@@ -99,7 +99,7 @@ mmHeader('Agentur-Freigabe', 'Interner Freigabevorgang.', 'noindex,nofollow');
     </article>
     <article class="card">
       <span class="badge">Status</span>
-      <h2><?= mmEscape((string)$row['approval_status']) ?></h2>
+      <h2><?= mmBackofficeStatusBadge((string)$row['approval_status']) ?></h2>
       <p><strong>Angefragt:</strong> <?= mmEscape((string)($row['requested_at'] ?: '—')) ?></p>
       <p><strong>Antwort:</strong> <?= mmEscape((string)($row['responded_at'] ?: '—')) ?></p>
       <p><strong>Erstellt:</strong> <?= mmEscape((string)$row['created_at']) ?></p>
