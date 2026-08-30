@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T17:38:00+02:00",
+  "report_generated_at": "2026-08-30T17:47:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,16 +134,15 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed the private backoffice is visible; login is not yet possible because no admin account has been bootstrapped.",
-    "Admin dashboard is now operational with live counts for active Elite members, feed posts, new contact requests and open agency approvals.",
-    "Added Elite member list and invited-member creation flow.",
-    "New Elite members are created with disabled accounts and unusable random credentials until a later explicit invitation/password activation flow exists.",
-    "Added Elite member detail view with membership status management and audit logging.",
-    "Added private Elite feed visible to authenticated admin/Elite users.",
-    "Added admin feed editor for project hints, agencies, training, OPS, important and general information.",
-    "Feed posts support optional agency, project context, region, external link and pinned state.",
-    "Extended R1.1 visual styling for dashboard metrics, member tables and internal feed.",
-    "Extended preflight to require all new operational R1.1 pages."
+    "Owner successfully logged into the backoffice and validated Dashboard and Elite Feed.",
+    "Clarified that the dashboard's new-contact count comes from existing public contact_requests rows with status=new.",
+    "Backoffice routes now use a compact private footer instead of the full public website footer/product strip.",
+    "Added admin-only read-only contact inbox with filtering by all/new/seen/done.",
+    "Added contact detail view showing submitted contact data, message, timestamps and notification/confirmation status.",
+    "Added internal contact status management new/seen/done with CSRF protection and audit logging.",
+    "No reply/send capability exists in the contact inbox by design.",
+    "Dashboard Contacts module now links to the operational contact inbox.",
+    "Extended preflight to cover contact inbox pages."
   ],
   "blockers": [
     {
@@ -364,9 +363,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the current R1.1 branch, run preflight, bootstrap the first admin account, log in, create one invited Elite member and one private feed post, then verify admin and Elite-area access behavior.",
-    "owner_action_required": "Bootstrap the first admin account and perform the first authenticated R1.1 test.",
-    "blocker": "No initial admin account exists yet."
+    "action": "Deploy current R1.1 branch and verify compact footer plus the six existing contact requests. Then implement Agency Approval tracking as the next admin module.",
+    "owner_action_required": "Review the contact inbox and confirm the existing records/status behavior.",
+    "blocker": "none"
   },
   "evidence": [
     {
@@ -834,6 +833,36 @@
       "type": "commit",
       "id": "93aba259937c2295f5cfd93f2ebf3770aaf2ae29",
       "summary": "R1.1 operational page preflight coverage"
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "Owner reported successful admin login and successful Dashboard/Elite Feed test."
+    },
+    {
+      "type": "commit",
+      "id": "c4dd4a8459ef87a1d2a1f8b77a602a83ae22a44b",
+      "summary": "compact backoffice footer"
+    },
+    {
+      "type": "commit",
+      "id": "60c77a50e2e70a5184f1af5cc785b2efecd2ca26",
+      "summary": "read-only contact inbox"
+    },
+    {
+      "type": "commit",
+      "id": "c8f91f2915dd493035b580f7fa6156cd8a0dd1f8",
+      "summary": "contact detail and internal status"
+    },
+    {
+      "type": "commit",
+      "id": "338c543c524cc58ac2585acdc47ba1b8b5a863c0",
+      "summary": "backoffice contact/footer styling"
+    },
+    {
+      "type": "commit",
+      "id": "3e082e67c934dfb43742a4b801fd245789d3305d",
+      "summary": "contact inbox preflight coverage"
     }
   ]
 }
