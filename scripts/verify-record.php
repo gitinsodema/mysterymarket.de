@@ -11,6 +11,7 @@ if (PHP_SAPI !== 'cli') {
 function vrUsage(): never
 {
     fwrite(STDERR, "Usage:\n");
+    fwrite(STDERR, "  php scripts/verify-record.php audit-personal\n");
     fwrite(STDERR, "  php scripts/verify-record.php list-personal\n");
     fwrite(STDERR, "  php scripts/verify-record.php status <reference>\n");
     fwrite(STDERR, "  php scripts/verify-record.php validity <reference> <YYYY-MM-DD|-> <YYYY-MM-DD|->\n");
@@ -51,11 +52,104 @@ $args = $_SERVER['argv'] ?? [];
 $action = strtolower(trim((string)($args[1] ?? '')));
 $reference = strtoupper(trim((string)($args[2] ?? '')));
 
-if (!in_array($action, ['list-personal','status','validity','activate','deactivate','scope','clone-personal'], true)) {
+if (!in_array($action, ['audit-personal','list-personal','status','validity','activate','deactivate','scope','clone-personal'], true)) {
     vrUsage();
 }
 
 $pdo = mmDb();
+
+function vrPersonalIntegrityErrors(array $row): array
+{
+    if ((int)($row['is_personal_verification'] ?? 0) !== 1) {
+        return [];
+    }
+
+    $errors = [];
+    $requiredText = [
+        'person_name' => 'person_name',
+        'role_label' => 'role_label',
+        'agency_name' => 'agency_name',
+        'project_name' => 'project_name',
+        'brand_name' => 'brand_name',
+        'photo_asset' => 'photo_asset',
+        'brand_logo_asset' => 'brand_logo_asset',
+        'agency_logo_asset' => 'agency_logo_asset',
+        'scope_key' => 'scope_key',
+        'document_asset' => 'document_asset',
+        'document_label' => 'document_label',
+    ];
+
+    foreach ($requiredText as $column => $label) {
+        if (trim((string)($row[$column] ?? '')) === '') {
+            $errors[] = $label . ' missing';
+        }
+    }
+
+    if (empty($row['valid_from'])) {
+        $errors[] = 'valid_from missing';
+    }
+    if (empty($row['valid_until'])) {
+        $errors[] = 'valid_until missing';
+    }
+    if (!empty($row['valid_from']) && !empty($row['valid_until']) && (string)$row['valid_until'] < (string)$row['valid_from']) {
+        $errors[] = 'validity range invalid';
+    }
+    if ((int)($row['document_enabled'] ?? 0) !== 1) {
+        $errors[] = 'document not enabled';
+    }
+    if ((int)($row['print_card_enabled'] ?? 0) !== 1) {
+        $errors[] = 'print card not enabled';
+    }
+
+    return $errors;
+}
+
+function vrFetchIntegrityRow(PDO $pdo, string $reference): array
+{
+    $stmt = $pdo->prepare(
+        'SELECT reference_code, person_name, role_label, agency_name, project_name, brand_name,
+                valid_from, valid_until, photo_asset, brand_logo_asset, agency_logo_asset,
+                scope_key, document_asset, document_label, document_enabled,
+                print_card_enabled, is_personal_verification, is_active
+         FROM audit_verifications
+         WHERE reference_code = :reference
+         LIMIT 1'
+    );
+    $stmt->execute(['reference' => $reference]);
+    return $stmt->fetch() ?: [];
+}
+
+if ($action === 'audit-personal') {
+    $stmt = $pdo->query(
+        'SELECT reference_code, person_name, role_label, agency_name, project_name, brand_name,
+                valid_from, valid_until, photo_asset, brand_logo_asset, agency_logo_asset,
+                scope_key, document_asset, document_label, document_enabled,
+                print_card_enabled, is_personal_verification, is_active
+         FROM audit_verifications
+         WHERE is_personal_verification = 1
+         ORDER BY id ASC'
+    );
+
+    $failures = 0;
+    foreach ($stmt->fetchAll() ?: [] as $row) {
+        $errors = vrPersonalIntegrityErrors($row);
+        $referenceCode = (string)$row['reference_code'];
+
+        if (!$errors) {
+            echo "[PASS] {$referenceCode} credential integrity complete"
+                . ((int)$row['is_active'] === 1 ? ' · active' : ' · inactive') . PHP_EOL;
+            continue;
+        }
+
+        $state = (int)$row['is_active'] === 1 ? '[FAIL]' : '[WARN]';
+        echo $state . " {$referenceCode}: " . implode('; ', $errors) . PHP_EOL;
+        if ((int)$row['is_active'] === 1) {
+            $failures++;
+        }
+    }
+
+    exit($failures === 0 ? 0 : 1);
+}
 
 if ($action === 'list-personal') {
     $stmt = $pdo->query(
@@ -233,7 +327,19 @@ if ($action === 'validity') {
 }
 
 $isActive = $action === 'activate' ? 1 : 0;
+
+if ($isActive === 1) {
+    $integrityRow = vrFetchIntegrityRow($pdo, $reference);
+    $integrityErrors = vrPersonalIntegrityErrors($integrityRow);
+
+    if ($integrityErrors) {
+        fwrite(STDERR, "[FAIL] {$reference} cannot be activated: "
+            . implode('; ', $integrityErrors) . PHP_EOL);
+        exit(1);
+    }
+}
+
 $stmt = $pdo->prepare('UPDATE audit_verifications SET is_active = :is_active WHERE reference_code = :reference');
 $stmt->execute(['is_active' => $isActive, 'reference' => $reference]);
 
-echo "[PASS] {$reference} " . ($isActive ? 'activated' : 'deactivated') . PHP_EOL;
+echo "[PASS] {$reference} " . ($isActive ? 'activated after integrity validation' : 'deactivated') . PHP_EOL;
