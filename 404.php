@@ -51,7 +51,7 @@ mmHeader($c['title'], $c['lead'], 'noindex,follow');
     <div class="audit-quote"><?= mmEscape($c['quote']) ?></div>
     <div class="actions">
       <a class="button" href="<?= mmEscape(mmLangUrl('/')) ?>"><?= mmEscape($c['home']) ?></a>
-      <a class="button secondary" href="<?= mmEscape(mmLangUrl('/verify.php')) ?>"><?= mmEscape($c['verify']) ?></a>
+      <a class="button secondary" href="<?= mmEscape(mmLangUrl('/verify')) ?>"><?= mmEscape($c['verify']) ?></a>
       <a class="button secondary" href="<?= mmEscape(mmLangUrl('/services.php')) ?>"><?= mmEscape($c['services']) ?></a>
     </div>
   </div>
