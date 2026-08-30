@@ -902,3 +902,32 @@ nav a[aria-current=page],
 .elite-feed-post>small{display:block;margin-top:18px;color:#8a98a8}
 @media(max-width:900px){.backoffice-stat-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.backoffice-stat-grid{grid-template-columns:1fr}}
+
+
+/* Compact private footer + contact inbox */
+.backoffice-footer{
+  max-width:var(--max);
+  margin:auto;
+  padding:18px 26px 22px;
+  border-top:1px solid var(--line);
+}
+.backoffice-footer-inner{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  flex-wrap:wrap;
+  color:var(--muted);
+  font-size:12px;
+}
+.backoffice-footer-inner strong{color:var(--ink)}
+.backoffice-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.backoffice-contact-message{
+  background:#fff;
+  border:1px solid #d8e5ef;
+  border-left:5px solid var(--brand-blue);
+  border-radius:16px;
+  padding:28px;
+  box-shadow:0 12px 30px #0019500b;
+}
+.backoffice-contact-message h2{font-size:30px}
+.backoffice-contact-message p{white-space:normal;color:var(--ink);max-width:900px}
