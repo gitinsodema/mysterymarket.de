@@ -1,0 +1,325 @@
+/* MysteryMarket concept theme
+   Preview-only override. Loaded with ?theme=concept.
+   Keeps the existing structure/content and changes presentation only. */
+
+:root{
+  --concept-bg:#00102f;
+  --concept-bg-2:#001950;
+  --concept-bg-3:#062a5c;
+  --concept-surface:rgba(4,28,67,.82);
+  --concept-surface-strong:rgba(1,22,54,.94);
+  --concept-line:rgba(0,140,150,.38);
+  --concept-line-soft:rgba(255,255,255,.12);
+  --concept-ink:#f7fbff;
+  --concept-muted:#b8c8db;
+  --concept-teal:#008c96;
+  --concept-teal-bright:#19c7cf;
+  --concept-red:#be001e;
+  --concept-shadow:0 24px 70px rgba(0,8,30,.38);
+}
+
+html{
+  background:var(--concept-bg);
+}
+
+body{
+  color:var(--concept-ink);
+  background:
+    radial-gradient(circle at 72% 13%,rgba(45,136,214,.30),transparent 24%),
+    radial-gradient(circle at 18% 30%,rgba(0,140,150,.18),transparent 28%),
+    radial-gradient(circle at 55% 52%,rgba(35,112,190,.12),transparent 32%),
+    linear-gradient(180deg,#001633 0,#001950 38%,#00152f 100%);
+  min-height:100vh;
+  position:relative;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-2;
+  background:
+    linear-gradient(90deg,transparent 0 9%,rgba(255,255,255,.045) 9.2% 9.6%,transparent 9.8% 24%,rgba(255,255,255,.035) 24.2% 24.55%,transparent 24.8% 42%,rgba(255,255,255,.025) 42.2% 42.45%,transparent 42.7% 100%),
+    linear-gradient(180deg,rgba(20,70,128,.22),transparent 38%);
+  filter:blur(1px);
+}
+
+body:after{
+  content:"";
+  position:fixed;
+  inset:72px 0 auto;
+  height:440px;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 52% 30%,rgba(255,255,255,.12),transparent 11%),
+    radial-gradient(circle at 64% 38%,rgba(255,255,255,.08),transparent 9%),
+    linear-gradient(110deg,rgba(14,57,105,.78),rgba(8,43,83,.56) 42%,rgba(13,64,114,.66) 70%,rgba(4,30,63,.74));
+  box-shadow:inset 0 -1px 0 rgba(0,140,150,.36);
+}
+
+a{color:#67dce1}
+
+.site-header{
+  max-width:none;
+  margin:0;
+  padding:18px max(26px,calc((100vw - var(--max))/2 + 26px));
+  background:rgba(0,20,52,.94);
+  border-bottom:1px solid rgba(57,139,208,.22);
+  box-shadow:0 12px 34px rgba(0,8,30,.22);
+  backdrop-filter:blur(14px);
+  position:sticky;
+  top:0;
+  z-index:30;
+}
+
+.brand{color:white}
+.brand-mark{
+  background:linear-gradient(#001950,#001950) padding-box,
+             conic-gradient(var(--concept-teal-bright) 0 42%,var(--concept-red) 42% 55%,#6da8d9 55% 100%) border-box;
+  color:#fff;
+  box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 24px rgba(0,140,150,.26);
+}
+.brand-copy strong{font-size:22px;color:white}
+.brand-copy .brand-accent,
+.footer-brand .brand-accent{color:#2da9ff}
+.brand small{color:#a9bfd6}
+
+.header-right{gap:8px}
+.global-language a,
+.site-header nav a{color:#b7c7d9}
+.global-language a[aria-current=page],
+.site-header nav a[aria-current=page],
+.site-header nav a:hover{color:#fff}
+.site-header nav a[aria-current=page]{box-shadow:inset 0 -2px 0 #2da9ff}
+
+main{
+  max-width:none;
+  padding:0;
+}
+
+main>.hero,
+main>.section{
+  width:min(var(--max),calc(100% - 52px));
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.hero{
+  min-height:470px;
+  padding:78px 0 64px;
+  align-items:center;
+  position:relative;
+}
+
+.hero:before{
+  content:"";
+  position:absolute;
+  inset:28px -28px 18px;
+  z-index:-1;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 76% 40%,rgba(29,125,216,.24),transparent 24%),
+    linear-gradient(120deg,rgba(0,20,52,.84),rgba(0,25,60,.62) 48%,rgba(0,36,77,.74));
+  border:1px solid rgba(45,169,255,.16);
+  box-shadow:var(--concept-shadow);
+  backdrop-filter:blur(16px);
+}
+
+.hero .eyebrow{color:#49d9df}
+.hero h1{
+  color:#fff;
+  text-shadow:0 10px 30px rgba(0,0,0,.26);
+}
+.hero .lead{color:#d2deea}
+
+.notice,
+.card,
+.service-card,
+.partner-card,
+.verify-box,
+.form-card,
+.contact-channels,
+.feature-panel,
+.process-grid article,
+.elite-card{
+  background:linear-gradient(145deg,rgba(5,35,78,.92),rgba(4,25,58,.88));
+  border:1px solid rgba(66,161,225,.20);
+  box-shadow:0 16px 40px rgba(0,8,30,.18);
+  color:var(--concept-ink);
+}
+
+.card p,
+.definition div,
+.partner-note,
+.feature-panel p,
+.elite-card p,
+.service-card>p:not(.eyebrow),
+.contact-channels small,
+.ops-benefit-card p,
+.ops-connect-copy>p:not(.eyebrow),
+.process-grid p{color:var(--concept-muted)}
+
+.notice{
+  border-left:4px solid var(--concept-teal-bright);
+  background:linear-gradient(145deg,rgba(0,140,150,.18),rgba(3,30,68,.92));
+}
+
+h1,h2,h3,
+.partner-card strong,
+.footer-brand strong,
+.footer-heading{color:white}
+
+.eyebrow{color:var(--concept-teal-bright)}
+.lead{color:var(--concept-muted)}
+
+.section{
+  border-top:1px solid rgba(104,162,211,.16);
+  padding:56px 0;
+}
+
+.button,button{
+  background:linear-gradient(135deg,#0b65bb,#178ad9);
+  box-shadow:0 10px 28px rgba(18,115,203,.24);
+}
+.button:hover,button:hover{
+  background:linear-gradient(135deg,var(--concept-teal),var(--concept-teal-bright));
+}
+.button.secondary{
+  background:rgba(0,20,52,.56);
+  border:1px solid rgba(87,175,236,.54);
+  color:#fff;
+  box-shadow:none;
+}
+
+.badge{
+  background:rgba(0,140,150,.18);
+  color:#69e5e9;
+  border:1px solid rgba(0,140,150,.34);
+}
+
+.status{
+  background:rgba(23,100,59,.22);
+  color:#7ee4a4;
+}
+
+.service-teaser,
+.product-mini{
+  background:linear-gradient(145deg,rgba(7,38,82,.94),rgba(3,25,58,.92));
+  border-color:rgba(73,157,218,.22);
+}
+.service-teaser strong,
+.product-mini strong{color:#fff}
+.product-mini small{color:var(--concept-muted)}
+.product-code{
+  background:linear-gradient(145deg,#07376d,#001950);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);
+}
+
+.partner-card span,
+.contact-channels span{color:#90a9c2}
+
+.definition{border-color:rgba(113,169,211,.18)}
+
+input,select,textarea{
+  background:rgba(255,255,255,.95);
+  border-color:#7f97ad;
+  color:#001950;
+}
+
+.site-footer{
+  max-width:none;
+  margin:0;
+  padding:42px max(26px,calc((100vw - var(--max))/2 + 26px)) 26px;
+  background:linear-gradient(180deg,#00132d,#000f25);
+  border-top:1px solid rgba(0,140,150,.28);
+  color:#9fb2c8;
+  box-shadow:0 -18px 50px rgba(0,8,30,.20);
+}
+.site-footer a{color:#a9bdd2}
+.site-footer a:hover{color:#fff}
+.footer-heading{color:#dbe8f5}
+.product-strip,
+.footer-bottom{border-color:rgba(101,155,204,.18)}
+.product-strip-intro strong{color:#fff}
+.product-strip-intro span{color:#3dd7df}
+
+.cookie-panel{
+  background:rgba(0,18,45,.98);
+  border:1px solid rgba(42,154,213,.28);
+  border-top:4px solid var(--concept-red);
+  box-shadow:0 24px 70px rgba(0,0,0,.45);
+}
+
+.elite-signal{
+  background:linear-gradient(135deg,#001950,#07376d);
+  border:1px solid rgba(61,172,224,.26);
+  box-shadow:var(--concept-shadow);
+}
+
+.not-found-code{color:rgba(122,168,207,.16)}
+.audit-quote{
+  background:rgba(0,140,150,.15);
+  border-left-color:var(--concept-teal-bright);
+  color:#fff;
+}
+
+/* OPS concept treatment */
+.ops-preview-stage,
+.ops-decision-visual,
+.ops-bridge-flow{
+  background:linear-gradient(145deg,rgba(3,35,78,.95),rgba(1,21,53,.92));
+  border-color:rgba(39,157,219,.28);
+  box-shadow:0 24px 70px rgba(0,8,30,.28);
+}
+.ops-desktop{
+  background:#f8fbff;
+  border-color:#5b83a7;
+  box-shadow:0 24px 70px rgba(0,0,0,.34);
+}
+.ops-window-bar{background:#eaf0f6}
+.ops-dashboard{background:#f9fbfd}
+.ops-benefit-card,
+.ops-decision-card,
+.ops-bridge-endpoint,
+.ops-bridge-core,
+.ops-bridge-examples>div{
+  background:linear-gradient(145deg,rgba(7,39,83,.96),rgba(3,24,56,.96));
+  border-color:rgba(63,158,218,.24);
+}
+.ops-benefit-card h3,
+.ops-decision-card h3,
+.ops-bridge-endpoint strong,
+.ops-bridge-examples strong{color:#fff}
+.ops-benefit-card p,
+.ops-decision-card p,
+.ops-bridge-endpoint span,
+.ops-bridge-examples span{color:var(--concept-muted)}
+.ops-next-action{
+  background:linear-gradient(135deg,#00295d,#004d74);
+  border:1px solid rgba(36,179,190,.34);
+}
+.ops-connector-map{
+  background:radial-gradient(circle at center,rgba(0,140,150,.22),rgba(3,24,56,.94) 58%,rgba(1,18,44,.98));
+  border-color:rgba(52,166,219,.24);
+}
+.ops-node{
+  background:#06295e;
+  color:#fff;
+  border-color:rgba(73,163,222,.32);
+}
+.ops-hub{background:#001950}
+
+@media(max-width:850px){
+  .site-header{padding:16px 20px}
+  main>.hero,main>.section{width:min(100% - 32px,var(--max))}
+  .hero{padding-top:46px}
+  .hero:before{inset:14px -8px 10px}
+  .site-footer{padding-left:20px;padding-right:20px}
+}
+
+@media(max-width:620px){
+  body:after{height:560px}
+  .brand-copy strong{font-size:19px}
+}
