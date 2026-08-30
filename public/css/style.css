@@ -975,3 +975,15 @@ nav a[aria-current=page],
 .status--danger{background:#fdebec;color:#a62432;border:1px solid #f0bcc2}
 .status--info{background:#eaf3ff;color:#176fd1;border:1px solid #c8dcf5}
 .status--neutral{background:#eef2f6;color:#52617a;border:1px solid #d8e0e8}
+
+
+/* ATLAS manual address fallback disclosure */
+.atlas-manual-toggle-wrap{margin-top:4px}
+.atlas-manual-fields{
+  margin-top:4px;
+  padding:18px;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  background:#fafbfd;
+}
+.atlas-manual-fields[hidden]{display:none}
