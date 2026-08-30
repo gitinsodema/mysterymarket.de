@@ -110,7 +110,7 @@ if ($action === 'clone-personal') {
         (:reference_code, :public_title, :public_partner, :public_client, :valid_from, :valid_until,
          :confidentiality_mode, :public_note, :person_name, :role_label, :agency_name, :project_name,
          :brand_name, :photo_asset, NULL, NULL, NULL,
-         NULL, NULL, 0, 1, 1, 1)'
+         NULL, NULL, 0, 1, 1, 0)'
     );
 
     $stmt->execute([
@@ -130,7 +130,7 @@ if ($action === 'clone-personal') {
         'photo_asset' => $source['photo_asset'],
     ]);
 
-    echo "[PASS] Personal Verify record cloned without logos, document or project scope.\n";
+    echo "[PASS] Personal Verify record cloned inactive without logos, document or project scope.\n";
     echo "Reference: {$newReference}\n";
     echo "URL: https://mysterymarket.de/verify.php?code=" . rawurlencode($newReference) . "#credential\n";
     exit(0);
