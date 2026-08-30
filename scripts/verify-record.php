@@ -17,6 +17,7 @@ function vrUsage(): never
     fwrite(STDERR, "  php scripts/verify-record.php validity <reference> <YYYY-MM-DD|-> <YYYY-MM-DD|->\n");
     fwrite(STDERR, "  php scripts/verify-record.php activate <reference>\n");
     fwrite(STDERR, "  php scripts/verify-record.php deactivate <reference>\n");
+    fwrite(STDERR, "  php scripts/verify-record.php delete-draft <reference>\n");
     fwrite(STDERR, "  php scripts/verify-record.php scope <reference> <scope-key|->\n");
     fwrite(STDERR, "  php scripts/verify-record.php clone-personal <source-reference> <agency> <project> <brand> <YYYY-MM-DD|-> <YYYY-MM-DD|->\n");
     exit(2);
@@ -52,7 +53,7 @@ $args = $_SERVER['argv'] ?? [];
 $action = strtolower(trim((string)($args[1] ?? '')));
 $reference = strtoupper(trim((string)($args[2] ?? '')));
 
-if (!in_array($action, ['audit-personal','list-personal','status','validity','activate','deactivate','scope','clone-personal'], true)) {
+if (!in_array($action, ['audit-personal','list-personal','status','validity','activate','deactivate','delete-draft','scope','clone-personal'], true)) {
     vrUsage();
 }
 
@@ -322,6 +323,47 @@ if ($action === 'status') {
     foreach ($stmt->fetch() ?: [] as $key => $value) {
         echo $key . ': ' . ($value === null || $value === '' ? '—' : (string)$value) . PHP_EOL;
     }
+    exit(0);
+}
+
+if ($action === 'delete-draft') {
+    $row = vrFetchIntegrityRow($pdo, $reference);
+    if (!$row) {
+        fwrite(STDERR, "[FAIL] Unknown Verify reference: {$reference}\n");
+        exit(1);
+    }
+
+    if ((int)($row['is_active'] ?? 0) !== 0) {
+        fwrite(STDERR, "[FAIL] Active Verify records cannot be deleted with delete-draft. Deactivate first only if deletion is explicitly intended.\n");
+        exit(1);
+    }
+
+    $boundAssets = array_filter([
+        trim((string)($row['brand_logo_asset'] ?? '')),
+        trim((string)($row['agency_logo_asset'] ?? '')),
+        trim((string)($row['document_asset'] ?? '')),
+    ], static fn(string $value): bool => $value !== '');
+
+    if ($boundAssets) {
+        fwrite(STDERR, "[FAIL] Draft has project-specific assets bound and will not be deleted automatically: "
+            . implode(', ', $boundAssets) . "\n");
+        exit(1);
+    }
+
+    $stmt = $pdo->prepare(
+        'DELETE FROM audit_verifications
+         WHERE reference_code = :reference
+           AND is_active = 0
+           AND is_personal_verification = 1'
+    );
+    $stmt->execute(['reference' => $reference]);
+
+    if ($stmt->rowCount() !== 1) {
+        fwrite(STDERR, "[FAIL] Draft deletion did not affect exactly one record.\n");
+        exit(1);
+    }
+
+    echo "[PASS] Inactive personal Verify draft deleted: {$reference}\n";
     exit(0);
 }
 
