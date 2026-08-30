@@ -1,0 +1,8 @@
+# Files that belong to source/control-plane context and must not be part of a production web artifact.
+docs/ export-ignore
+AGENTS.md export-ignore
+AI_START_HERE.md export-ignore
+README.md export-ignore
+VERSION export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
