@@ -7,13 +7,25 @@ header('X-Robots-Tag: noindex, noarchive');
 
 $user = mmBackofficeRequireLogin('admin');
 $error = '';
+$agencies = mmDb()->query("SELECT id, name, short_name FROM agencies WHERE is_active = 1 ORDER BY name ASC")->fetchAll();
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
         http_response_code(400);
         $error = 'Ungültige Sitzung.';
     } else {
+        $agencyId = (int)($_POST['agency_id'] ?? 0);
         $agency = trim((string)($_POST['agency_name'] ?? ''));
+        if ($agencyId > 0) {
+            $agencyStmt = mmDb()->prepare('SELECT name FROM agencies WHERE id = :id AND is_active = 1 LIMIT 1');
+            $agencyStmt->execute(['id'=>$agencyId]);
+            $selectedAgency = $agencyStmt->fetchColumn();
+            if ($selectedAgency !== false) {
+                $agency = (string)$selectedAgency;
+            } else {
+                $agencyId = 0;
+            }
+        }
         $contact = trim((string)($_POST['contact_name'] ?? ''));
         $email = strtolower(trim((string)($_POST['contact_email'] ?? '')));
         $purpose = trim((string)($_POST['purpose'] ?? ''));
@@ -26,13 +38,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         } else {
             $stmt = mmDb()->prepare(
                 'INSERT INTO agency_approvals
-                 (agency_name, contact_name, contact_email, purpose, approval_status,
+                 (agency_id, agency_name, contact_name, contact_email, purpose, approval_status,
                   requested_at, responded_at, evidence_reference, internal_note, created_by, created_at, updated_at)
                  VALUES
                  (:agency, :contact, :email, :purpose, \'draft\',
                   NULL, NULL, NULL, :note, :created_by, NOW(), NOW())'
             );
             $stmt->execute([
+                'agency_id'=>$agencyId > 0 ? $agencyId : null,
                 'agency'=>$agency,
                 'contact'=>$contact !== '' ? $contact : null,
                 'email'=>$email !== '' ? $email : null,
@@ -58,7 +71,15 @@ mmHeader('Freigabevorgang anlegen', 'Neuen Agentur-Freigabevorgang anlegen.', 'n
     <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
     <form method="post" action="/backoffice/approval-new.php">
       <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
-      <label>Agentur<input name="agency_name" maxlength="200" required></label>
+      <label>Agentur
+        <select name="agency_id">
+          <option value="0">Keine / Freitext</option>
+          <?php foreach ($agencies as $agencyRow): ?>
+            <option value="<?= (int)$agencyRow['id'] ?>"><?= mmEscape((string)($agencyRow['short_name'] ?: $agencyRow['name'])) ?></option>
+          <?php endforeach; ?>
+        </select>
+      </label>
+      <label>Agentur-Freitext<input name="agency_name" maxlength="200" placeholder="Nur falls noch nicht in Stammdaten"></label>
       <div class="form-grid">
         <label>Ansprechpartner<input name="contact_name" maxlength="160"></label>
         <label>Kontakt-E-Mail<input type="email" name="contact_email" maxlength="254"></label>
