@@ -102,6 +102,7 @@ $outputStmt = mmDb()->query(
      LIMIT 100"
 );
 $outputs = $outputStmt->fetchAll();
+$walletReadiness = mmAppleWalletReadiness();
 
 mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Credentials.', 'noindex,nofollow');
 ?>
@@ -211,9 +212,17 @@ mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Creden
 </section>
 
 <section class="section">
-  <div class="section-head">
-    <p class="eyebrow">Ausgabe / Fulfilment</p>
-    <h2>Anfragen.</h2>
+  <div class="section-head credential-service-heading">
+    <div>
+      <p class="eyebrow">Ausgabe / Fulfilment</p>
+      <h2>Anfragen.</h2>
+    </div>
+    <div class="credential-wallet-readiness">
+      <strong>Apple Wallet</strong>
+      <?= !empty($walletReadiness['ready'])
+          ? mmBackofficeStatusBadge('active', 'bereit')
+          : mmBackofficeStatusBadge('pending', 'Setup offen') ?>
+    </div>
   </div>
 
   <?php if (!$outputs): ?>
@@ -226,7 +235,10 @@ mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Creden
             <strong><?= mmEscape((string)$output['reference_code']) ?> · <?= mmEscape(mmCredentialOutputLabel((string)$output['output_type'])) ?></strong>
             <small><?= mmEscape((string)$output['person_name']) ?> · <?= mmEscape(mmCredentialProjectLabel($output)) ?> · <?= mmEscape((string)$output['requested_at']) ?></small>
           </div>
-          <?= mmBackofficeStatusBadge((string)$output['output_status']) ?>
+          <div class="credential-output-list-actions">
+            <?= mmBackofficeStatusBadge((string)$output['output_status']) ?>
+            <a class="button secondary" href="/backoffice/credential-output.php?id=<?= (int)$output['id'] ?>">Bearbeiten</a>
+          </div>
         </article>
       <?php endforeach; ?>
     </div>
