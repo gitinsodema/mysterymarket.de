@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T18:24:00+02:00",
+  "report_generated_at": "2026-08-30T18:35:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,16 +134,12 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed the Elite activation flow works successfully.",
-    "Owner confirmed no invitation email was sent; the activation link was used manually as designed.",
-    "Owner reported the password minimum-length error was not immediately obvious during activation.",
-    "Activation UI now shows the 12-character requirement visibly and provides immediate client-side feedback for too-short or mismatched passwords.",
-    "Added Elite profile self-service for name, organisation, phone, address, country, preferred regions, mobility profile and ShopperMatch profile link.",
-    "Added Elite membership pause/end request workflow instead of allowing members to directly change privileged membership state.",
-    "Added admin membership-request queue with approve/reject handling.",
-    "Approved pause/end requests update membership state and disable the Elite account; active-session revalidation then removes access on the next request.",
-    "Dashboard now links Elite users to their profile and admins to membership requests, including an open-request count.",
-    "Added migration and preflight coverage for Elite membership requests."
+    "Owner proposed reusing the existing ATLAS postal/city/region dataset and API instead of duplicating global location data in MysteryMarket.",
+    "Architecture decision recorded: MysteryMarket will use a normalized country_iso/postal_code/city/region contract and wait for the real ATLAS API specification before implementation.",
+    "Owner defined semantic status colors: green=OK, amber/yellow=open/new/parked, red=problem/negative, blue/grey=informational/neutral.",
+    "Added reusable semantic backoffice status helper and applied it to memberships, agency approvals, contacts, membership requests and related detail views.",
+    "Agency approval draft/requested are no longer shown green; approved is green, draft/requested amber, rejected/expired red.",
+    "Credential ownership decision recorded for R1.2: credentials belong to a person/identity, not to a role, so an admin account can also view and own personal credentials."
   ],
   "blockers": [
     {
@@ -299,6 +295,30 @@
       "source_authority": "Owner",
       "verification_status": "technically feasible",
       "summary": "R1.2 will target a real Apple Wallet pass for Elite Shopper credentials, with MysteryMarket Verify remaining authoritative."
+    },
+    {
+      "id": "MM-DEC-ATLAS-ADDRESS-SOURCE",
+      "classification": "APPROVED_FUTURE_DIRECTION",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "documented",
+      "summary": "Use ATLAS as the central location/address source for country/postal/city/region data rather than duplicating a global dataset inside MysteryMarket."
+    },
+    {
+      "id": "MM-DEC-SEMANTIC-STATUS-COLORS",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "implemented",
+      "summary": "Green means OK/active/approved; amber means open/new/draft/requested/parked; red means rejected/suspended/ended/expired/failed; blue/grey is informational/neutral."
+    },
+    {
+      "id": "MM-DEC-CREDENTIAL-SUBJECT-IDENTITY",
+      "classification": "APPROVED_FUTURE_DIRECTION",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "documented",
+      "summary": "Credentials belong to a person/identity independently of admin/Elite role so admins can also hold and view their own credentials."
     }
   ],
   "dependencies": [
@@ -364,9 +384,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the current R1.1 branch, rerun backoffice migrations, verify the improved activation feedback, update an Elite profile, submit a pause request and approve/reject it from admin. Then continue with remaining R1.1 admin/settings polish and prepare R1.1 release verification.",
-    "owner_action_required": "Test Elite profile and membership-request flow with the existing test Elite account.",
-    "blocker": "none"
+    "action": "Obtain the ATLAS API contract for country/postal/city/region lookup. Meanwhile deploy and visually verify semantic status colors, then continue R1.1 hardening. R1.2 credentials will use a role-independent identity/subject model.",
+    "owner_action_required": "Share or approve the ATLAS API contract when available.",
+    "blocker": "ATLAS integration intentionally waits for the actual API contract."
   },
   "evidence": [
     {
