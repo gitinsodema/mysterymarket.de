@@ -28,6 +28,17 @@ function mmStartSecureSession(): void
     session_start();
 }
 
+function mmEmailLink(string $localPart, string $label = ''): string
+{
+    $domain = 'mysterymarket.de';
+    $text = $label !== '' ? $label : 'E-Mail';
+    $fallback = mmLangUrl('/contact.php');
+
+    return '<a href="' . mmEscape($fallback) . '" data-mm-mail data-mm-local="'
+        . mmEscape(strrev($localPart)) . '" data-mm-domain="' . mmEscape(strrev($domain))
+        . '" data-mm-reveal="1">' . mmEscape($text) . '</a>';
+}
+
 function mmClientIpHash(): string
 {
     $security = mmConfig()['security'] ?? [];
@@ -46,7 +57,6 @@ function mmNav(): array
     return [
         '/' => mmT('nav.home', 'Home'),
         '/services.php' => mmT('nav.services', 'Leistungen'),
-        '/audits.php' => mmT('nav.audits', 'Aktuelle Audits'),
         '/verify.php' => mmT('nav.verify', 'Verify'),
         '/tools.php' => mmT('nav.ops', 'OPS'),
         '/elite-shopper.php' => mmT('nav.elite', 'Elite Shopper'),
@@ -59,10 +69,12 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
 {
     $nav = mmNav();
     $current = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $currentNav = $current === '/verify' ? '/verify.php' : $current;
+    $canonicalCurrent = in_array($current, ['/verify','/verify.php'], true) ? '/verify' : $current;
     $lang = mmLanguage();
     $docLang = $htmlLang ?? $lang;
     $baseUrl = 'https://mysterymarket.de';
-    $canonicalPath = mmLangUrl($current, $lang);
+    $canonicalPath = mmLangUrl($canonicalCurrent, $lang);
     $canonicalUrl = $baseUrl . $canonicalPath;
     $ogLocale = match ($docLang) {
         'en' => 'en_GB',
@@ -83,10 +95,10 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
     <meta name="theme-color" content="#001950">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="canonical" href="<?= mmEscape($canonicalUrl) ?>">
-    <link rel="alternate" hreflang="de" href="<?= mmEscape($baseUrl . mmLangUrl($current, 'de')) ?>">
-    <link rel="alternate" hreflang="en" href="<?= mmEscape($baseUrl . mmLangUrl($current, 'en')) ?>">
-    <link rel="alternate" hreflang="nl" href="<?= mmEscape($baseUrl . mmLangUrl($current, 'nl')) ?>">
-    <link rel="alternate" hreflang="x-default" href="<?= mmEscape($baseUrl . mmLangUrl($current, 'de')) ?>">
+    <link rel="alternate" hreflang="de" href="<?= mmEscape($baseUrl . mmLangUrl($canonicalCurrent, 'de')) ?>">
+    <link rel="alternate" hreflang="en" href="<?= mmEscape($baseUrl . mmLangUrl($canonicalCurrent, 'en')) ?>">
+    <link rel="alternate" hreflang="nl" href="<?= mmEscape($baseUrl . mmLangUrl($canonicalCurrent, 'nl')) ?>">
+    <link rel="alternate" hreflang="x-default" href="<?= mmEscape($baseUrl . mmLangUrl($canonicalCurrent, 'de')) ?>">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="MysteryMarket">
     <meta property="og:title" content="<?= mmEscape($title . ' · MysteryMarket') ?>">
@@ -103,16 +115,17 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
 <header class="site-header">
     <a class="brand" href="<?= mmEscape(mmLangUrl('/')) ?>" aria-label="MysteryMarket">
         <span class="brand-mark">MM</span>
-        <span><strong>MysteryMarket</strong><small>Audit & Field Services</small></span>
+        <span class="brand-copy"><strong><span>Mystery</span><span class="brand-accent">Market</span></strong><small>Audit & Field Services</small></span>
     </a>
     <div class="header-right">
         <div class="global-language" aria-label="Language selector">
             <?php
-            $verifyCode = $current === '/verify.php' ? strtoupper(trim((string)($_GET['code'] ?? ''))) : '';
+            $verifyCode = $currentNav === '/verify.php' ? strtoupper(trim((string)($_GET['code'] ?? ''))) : '';
             $safeVerifyCode = preg_match('/^[A-Z0-9-]{4,64}$/', $verifyCode) ? $verifyCode : '';
             foreach (['de'=>'DE','en'=>'EN','nl'=>'NL'] as $languageKey => $languageLabel):
-                $languageHref = $current . '?lang=' . rawurlencode($languageKey);
-                if ($current === '/verify.php') {
+                $languageBase = $currentNav === '/verify.php' ? '/verify' : $current;
+                $languageHref = $languageBase . '?lang=' . rawurlencode($languageKey);
+                if ($currentNav === '/verify.php') {
                     $languageHref .= '&verify_lang=' . rawurlencode($languageKey);
                     if ($safeVerifyCode !== '') {
                         $languageHref .= '&code=' . rawurlencode($safeVerifyCode);
@@ -124,7 +137,7 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
         </div>
         <nav aria-label="Hauptnavigation">
             <?php foreach ($nav as $href => $label): ?>
-                <a href="<?= mmEscape(mmLangUrl($href)) ?>"<?= $current === $href ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
+                <a href="<?= mmEscape($href === '/verify.php' ? mmLangUrl('/verify') : mmLangUrl($href)) ?>"<?= $currentNav === $href ? ' aria-current="page"' : '' ?>><?= mmEscape($label) ?></a>
             <?php endforeach; ?>
         </nav>
     </div>
@@ -140,15 +153,15 @@ function mmFooter(): void
 <footer class="site-footer">
     <div class="footer-primary">
         <div class="footer-brand">
-            <strong>MysteryMarket</strong>
+            <strong><span>Mystery</span><span class="brand-accent">Market</span></strong>
             <p>Independent Audit & Field Services<br>Düsseldorf / Germany</p>
         </div>
         <div>
             <strong class="footer-heading"><?= mmEscape(mmT('footer.contact', 'Kontakt')) ?></strong>
             <p>
-                <a href="mailto:hello@mysterymarket.de">hello@mysterymarket.de</a><br>
-                <a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a><br>
-                <a href="mailto:eliteshopper@mysterymarket.de">eliteshopper@mysterymarket.de</a>
+                <?= mmEmailLink('hello', 'E-Mail') ?><br>
+                <?= mmEmailLink('agency', 'Agentur-Kontakt') ?><br>
+                <?= mmEmailLink('eliteshopper', 'Elite-Shopper-Kontakt') ?>
             </p>
         </div>
         <div>
@@ -157,7 +170,7 @@ function mmFooter(): void
                 <a href="<?= mmEscape(mmLangUrl('/services.php')) ?>"><?= mmEscape(mmT('nav.services', 'Leistungen')) ?></a>
                 <a href="<?= mmEscape(mmLangUrl('/audits.php')) ?>"><?= mmEscape(mmT('nav.audits', 'Aktuelle Audits')) ?></a>
                 <a href="<?= mmEscape(mmLangUrl('/elite-shopper.php')) ?>"><?= mmEscape(mmT('nav.elite', 'Elite Shopper')) ?></a>
-                <a href="<?= mmEscape(mmLangUrl('/tools.php')) ?>">OPS</a>
+                <a href="<?= mmEscape(mmLangUrl('/tools.php')) ?>">OPS Operational Suite</a>
             </div>
         </div>
         <div>
@@ -187,7 +200,7 @@ function mmFooter(): void
 
     <div class="footer-bottom">
         <span>© <?= date('Y') ?> MysteryMarket</span>
-        <span>INSODEMA · Research & Decision Lab</span>
+        <span><a href="https://insodema.com" target="_blank" rel="noopener noreferrer">INSODEMA · Systems &amp; Decision Research Lab</a></span>
     </div>
 </footer>
 
@@ -202,6 +215,7 @@ function mmFooter(): void
         <button type="button" data-cookie-accept><?= mmEscape(mmT('cookie.save','Auswahl speichern')) ?></button>
     </div>
 </div>
+<script src="/public/js/site.js" defer></script>
 <script src="/public/js/cookie-consent.js" defer></script>
 </body>
 </html>
