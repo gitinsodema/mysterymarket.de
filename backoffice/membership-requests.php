@@ -117,7 +117,7 @@ mmHeader('Mitgliedschaftsanfragen', 'Interne Bearbeitung von Elite-Mitgliedschaf
       <article class="elite-feed-post">
         <div class="elite-feed-meta">
           <span class="badge"><?= mmEscape((string)$row['request_type']) ?></span>
-          <span class="status"><?= mmEscape((string)$row['request_status']) ?></span>
+          <?= mmBackofficeStatusBadge((string)$row['request_status']) ?>
         </div>
         <h2><?= mmEscape((string)$row['display_name']) ?></h2>
         <p><?= mmEscape((string)$row['member_code']) ?> · <?= mmEscape((string)$row['created_at']) ?></p>
