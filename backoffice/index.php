@@ -68,6 +68,7 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
       <a class="backoffice-module" href="/backoffice/contacts.php"><span>04</span><strong>Kontakte</strong><small>Read-only Anfragen</small></a>
       <a class="backoffice-module" href="/backoffice/feed.php"><span>05</span><strong>Elite Feed</strong><small>Interne Hinweise</small></a>
       <a class="backoffice-module" href="/backoffice/agencies.php"><span>06</span><strong>Agenturen</strong><small>Stammdaten für Feed & Freigaben</small></a>
+      <a class="backoffice-module" href="/backoffice/system.php"><span>07</span><strong>System</strong><small>Status & Audit Log</small></a>
     <?php else: ?>
       <a class="backoffice-module" href="/backoffice/profile.php"><span>01</span><strong>Mitgliedschaft</strong><small>Status & Profil</small></a>
       <article class="backoffice-module"><span>02</span><strong>Mein Ausweis</strong><small>QR · Wallet · Karte folgt</small></article>
