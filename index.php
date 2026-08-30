@@ -5,6 +5,7 @@ $c = mmPageCopy('home');
 mmHeader($c['title'], $c['description']);
 ?>
 <section class="hero home-hero">
+  <img class="concept-only concept-hero-photo" src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1800&q=82" alt="" aria-hidden="true">
   <div class="concept-only concept-hero-room" aria-hidden="true"></div>
   <div>
     <p class="eyebrow">Independent Audit & Field Services</p>
