@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T15:24:00+02:00",
+  "report_generated_at": "2026-08-30T15:36:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "release_candidate_visual_polish",
+    "lifecycle_phase": "release_candidate_visual_theme_experiment",
     "active_branch": "website-v1",
     "default_branch": "main",
     "pull_request": 1,
@@ -130,15 +130,10 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner approved final visual polish before release.",
-    "Header brand mark redesigned using MysteryMarket navy, teal and red with brighter contrast and clearer MysteryMarket wordmark.",
-    "Removed Current Audits from primary navigation while retaining it in the footer.",
-    "Added clean /verify route, clean canonical/language URLs and clean Verify URLs on credential cards and internal links.",
-    "Public MysteryMarket email links are reconstructed client-side; plain addresses were removed from public rendered copy where applicable.",
-    "Footer OPS label changed to OPS Operational Suite.",
-    "Footer INSODEMA attribution corrected to Systems & Decision Research Lab and linked to insodema.com.",
-    "OPS page gained a visual intelligent-planning section covering planning, optimal routing, mobility profile and next-best-action recommendation in DE/EN/NL.",
-    "Final review now checks that selected public HTML surfaces contain no plain @mysterymarket.de address."
+    "Owner approved a non-destructive second CSS experiment based on the preferred dark visual concept.",
+    "Added public/css/style-concept.css as an override-only theme using the existing markup and MysteryMarket navy/teal/red palette.",
+    "Added query-controlled preview loading with ?theme=concept; default V1 stylesheet remains unchanged.",
+    "Concept theme applies dark layered background, glass-like panels, high-contrast header/footer and dark OPS surfaces while preserving content and structure."
   ],
   "blockers": [
     {
@@ -335,9 +330,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy visual-polish commits, run lint/preflight/final-review, then Owner visually reviews header logo, footer, clean /verify route, contact links and OPS planning visual on iPhone.",
-    "owner_action_required": "Deploy website-v1 and report visual findings or explicit V1 approval.",
-    "blocker": "Manual visual confirmation of the final polish."
+    "action": "Deploy the preview stylesheet and compare default V1 against ?theme=concept visually on desktop and iPhone. Keep default unchanged until Owner chooses.",
+    "owner_action_required": "Visually compare the two themes and decide whether the concept should replace, influence or remain separate from the default V1 style.",
+    "blocker": "none; experiment is isolated behind query parameter."
   },
   "evidence": [
     {
@@ -555,6 +550,21 @@
       "type": "owner_statement",
       "date": "2026-08-30",
       "summary": "Owner approved the final brand/footer/Verify/navigation/OPS visual polish before release."
+    },
+    {
+      "type": "commit",
+      "id": "7c78936fa8287c5790f222a44359c9795d8ce4d8",
+      "summary": "preview-only dark concept stylesheet"
+    },
+    {
+      "type": "commit",
+      "id": "f06a1814a9044bfd3d12fef2baf60eaabee3e591",
+      "summary": "query-driven concept theme preview"
+    },
+    {
+      "type": "owner_statement",
+      "date": "2026-08-30",
+      "summary": "Owner requested a second CSS closely matching the preferred generated visual concept without replacing the current design yet."
     }
   ]
 }
