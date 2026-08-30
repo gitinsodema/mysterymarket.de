@@ -931,3 +931,13 @@ nav a[aria-current=page],
 }
 .backoffice-contact-message h2{font-size:30px}
 .backoffice-contact-message p{white-space:normal;color:var(--ink);max-width:900px}
+
+
+/* Elite invitation / activation */
+.backoffice-token-output{
+  min-height:118px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13px;
+  line-height:1.5;
+  background:#f8fbfd;
+}
