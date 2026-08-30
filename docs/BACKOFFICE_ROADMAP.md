@@ -311,3 +311,28 @@ Planned order/issuance choices:
 - replacement card
 
 The order UI is not a merchandise shop; it is credential/equipment issuance for field operations.
+
+
+## ATLAS Geography Reference API v1 — integration status
+
+Authoritative contract:
+`docs/api/ATLAS_GEOGRAPHY_REFERENCE_API_V1.md`
+
+The approved contract is now present on the active R1.1 branch.
+
+Prepared MysteryMarket integration:
+- server-side configuration under `config/local.php -> atlas`
+- dedicated MYSTERYMARKET Bearer credential; never reuse SHOPPERMATCH credentials
+- server-side client in `includes/atlas.php`
+- authenticated Backoffice reference proxy in `backoffice/atlas-reference.php`
+- CLI smoke test in `scripts/atlas-smoke.php`
+- canonical Elite profile storage for administrative unit, postal area, locality and street ATLAS IDs
+- no cross-database foreign keys
+- token never exposed to browser JavaScript
+- ATLAS request/correlation identifiers logged server-side when returned
+- profile UI keeps controlled free-text fallback until the final response-item payloads have been verified live
+
+Activation prerequisite:
+- owner installs the dedicated MYSTERYMARKET token in production `config/local.php`
+- run `scripts/atlas-smoke.php`
+- only after successful smoke verification should live autocomplete/select UX be enabled
