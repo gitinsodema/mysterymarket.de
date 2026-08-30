@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T16:18:00+02:00",
+  "report_generated_at": "2026-08-30T16:32:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "release_candidate_owner_visual_approval",
+    "lifecycle_phase": "release_candidate_final_visual_polish",
     "active_branch": "website-v1",
     "default_branch": "main",
     "pull_request": 1,
@@ -130,13 +130,13 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner decided to release with the existing light V1 layout and not the concept theme experiment.",
-    "Public ?theme=concept loading was disabled.",
-    "Temporary external Unsplash CSP allowance was removed.",
-    "Concept-only homepage and OPS experiment hooks were removed from release templates.",
-    "The successful Verify visual motif from the concept experiment was retained as a native visual card on verify.php.",
-    "Verify visual is multilingual and integrated into the existing light V1 design.",
-    "Concept stylesheet is no longer a required V1 release artifact."
+    "Owner approved final V1 polish using the existing light layout as the base.",
+    "Added a local brand-safe hero visual at public/media/hero-audit-office.svg with abstract office, audit checklist and data-analysis cues.",
+    "Homepage hero now spans full width and uses the local visual beneath a restrained white readability wash.",
+    "Global V1 styling now follows the Verify visual language: white surfaces, blue structural accents, orange highlights and green status accents.",
+    "Service cards, generic content cards, partner cards, product tiles, OPS decision cards and footer received coordinated blue/orange/green accents.",
+    "Header logo mark now uses the final blue/orange/green signature.",
+    "Preflight now requires the local hero visual."
   ],
   "blockers": [
     {
@@ -341,9 +341,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy release cleanup and Verify visual integration, run preflight/release-smoke/final-review, then perform final visual check of Verify page before explicit Owner merge approval.",
-    "owner_action_required": "Deploy website-v1 and visually confirm the Verify card placement.",
-    "blocker": "Final owner visual confirmation only."
+    "action": "Deploy the final visual polish and inspect homepage on desktop and iPhone. If accepted, run preflight, release-smoke and final-review once more and freeze V1.",
+    "owner_action_required": "Visually review the new full-width hero and sitewide Verify-inspired accent system.",
+    "blocker": "Final visual confirmation only."
   },
   "evidence": [
     {
@@ -641,6 +641,31 @@
       "type": "commit",
       "id": "19e718bb628b429c5ff402b515358d60cb6fd5d1",
       "summary": "remove concept stylesheet from V1 preflight requirements"
+    },
+    {
+      "type": "commit",
+      "id": "ab012b1970aeb4c62b1268888cb7630a34768bc8",
+      "summary": "local audit-office hero visual"
+    },
+    {
+      "type": "commit",
+      "id": "37d7549b25c3d084b91616832d8d8afc96ec1cdf",
+      "summary": "enable final branded homepage hero"
+    },
+    {
+      "type": "commit",
+      "id": "63beb64b4c8807b0e9f8f5ddc26b82efaea4cde9",
+      "summary": "Verify-inspired light V1 design system"
+    },
+    {
+      "type": "commit",
+      "id": "7c4ee5a9627ac9be48d8ad7607813101f3549524",
+      "summary": "preflight requires local hero visual"
+    },
+    {
+      "type": "owner_statement",
+      "date": "2026-08-30",
+      "summary": "Owner approved final light-layout polish with white surfaces, blue/orange/green accents and a subtle full-width hero visual."
     }
   ]
 }
