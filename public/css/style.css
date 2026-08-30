@@ -1238,3 +1238,43 @@ nav a[aria-current=page],
   .credential-service-heading{display:block}
   .credential-service-heading>.button{margin-top:12px;width:100%}
 }
+
+
+/* R1.2 credential asset manager */
+.credential-asset-manager{display:grid;gap:10px;margin-bottom:16px}
+.credential-asset-item{
+  display:grid;
+  grid-template-columns:minmax(180px,1fr) minmax(0,2fr);
+  gap:14px;
+  align-items:center;
+  padding:12px 14px;
+  border:1px solid #e1e6ec;
+  border-radius:10px;
+  background:#fff;
+}
+.credential-asset-item>div:first-child strong{display:block;color:var(--ink)}
+.credential-asset-item>div:first-child small{display:block;color:var(--muted);font-size:11px;margin-top:2px;overflow-wrap:anywhere}
+.credential-asset-upload{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(180px,.7fr) auto;
+  gap:8px;
+  align-items:center;
+}
+.credential-asset-upload input[type="file"]{margin:0;padding:7px;background:#f8fafc}
+.credential-asset-upload input:not([type="file"]){margin:0}
+.credential-asset-upload button{white-space:nowrap}
+.credential-asset-actions{display:flex;gap:8px;justify-content:flex-end;align-items:center}
+.credential-asset-actions form{margin:0}
+.credential-scope-form{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:end;
+}
+.credential-scope-form select{margin:0}
+@media(max-width:760px){
+  .credential-asset-item{grid-template-columns:1fr}
+  .credential-asset-upload{grid-template-columns:1fr}
+  .credential-asset-actions{justify-content:flex-start;flex-wrap:wrap}
+  .credential-scope-form{grid-template-columns:1fr}
+}
