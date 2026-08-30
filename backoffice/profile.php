@@ -38,7 +38,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $address1 = trim((string)($_POST['address_line1'] ?? ''));
             $address2 = trim((string)($_POST['address_line2'] ?? ''));
             $postal = trim((string)($_POST['postal_code'] ?? ''));
-            $city = trim((string)($_POST['city'] ?? ''));
+            $city = trim((string)($_POST['city_manual'] ?? ''));
+            if ($city === '') {
+                $city = trim((string)($_POST['city'] ?? ''));
+            }
             $country = strtoupper(trim((string)($_POST['country_code'] ?? '')));
             $adminAtlasId = trim((string)($_POST['administrative_unit_atlas_id'] ?? ''));
             $adminName = trim((string)($_POST['administrative_unit_name'] ?? ''));
@@ -231,6 +234,11 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
           <select name="city" data-atlas-locality data-current-locality="<?= mmEscape((string)($member['locality_atlas_id'] ?? '')) ?>">
             <option value="<?= mmEscape((string)($member['city'] ?? '')) ?>"><?= mmEscape((string)($member['city'] ?? 'Bitte PLZ eingeben')) ?></option>
           </select>
+          <small class="field-hint">ATLAS-Ort bevorzugt.</small>
+        </label>
+        <label>Ort manuell
+          <input name="city_manual" maxlength="120" data-atlas-locality-manual placeholder="Nur verwenden, wenn der Ort in ATLAS fehlt">
+          <small class="field-hint">Freitext-Fallback ohne erfundene ATLAS-ID.</small>
         </label>
         <label>Mobilitätsprofil
           <select name="mobility_profile">
