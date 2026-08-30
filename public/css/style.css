@@ -1096,3 +1096,104 @@ nav a[aria-current=page],
   border-radius:8px;
 }
 .credential-admin-orders-head{margin-top:28px}
+
+
+/* R1.2 Verify credential certificate layout */
+.credential-certificate-list{display:grid;gap:14px}
+.credential-certificate{
+  background:#fff;
+  border:1px solid #dde3ea;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 8px 24px rgba(0,25,80,.05);
+}
+.credential-certificate-summary{
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr) auto;
+  gap:16px;
+  align-items:center;
+  padding:18px 20px;
+}
+.credential-certificate-mark{
+  width:48px;height:48px;border-radius:13px;
+  display:grid;place-items:center;
+  background:var(--ink);color:white;
+  font-weight:900;font-size:13px;letter-spacing:.08em;
+}
+.credential-certificate-main h3{margin:8px 0 10px;font-size:22px}
+.credential-certificate-topline{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+}
+.credential-certificate-meta{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px 16px;
+}
+.credential-certificate-meta span{min-width:0}
+.credential-certificate-meta strong{
+  display:block;
+  font-size:13px;
+  color:var(--ink);
+  overflow-wrap:anywhere;
+}
+.credential-certificate-meta small{
+  display:block;
+  margin-top:2px;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--muted);
+}
+.credential-certificate-toggle{white-space:nowrap}
+.credential-certificate-details{
+  border-top:1px solid #e5e9ef;
+  padding:18px 20px 20px;
+  background:#f8fafc;
+}
+.credential-certificate-details[hidden]{display:none}
+.credential-certificate-detail-head{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:flex-start;
+  margin-bottom:18px;
+}
+.credential-certificate-detail-head h4{margin:3px 0 0;font-size:18px}
+.credential-output-section{
+  border-top:1px solid #e0e6ed;
+  padding-top:16px;
+}
+.credential-output-section-head{margin-bottom:10px}
+.credential-output-section-head strong{display:block}
+.credential-output-section-head small{display:block;color:var(--muted);margin-top:2px}
+.credential-output-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+.credential-output-option{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border:1px solid #e0e5eb;
+  border-radius:10px;
+  background:white;
+}
+.credential-output-option strong{display:block;font-size:13px}
+.credential-output-option small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.credential-output-option .button{
+  flex:0 0 auto;
+  padding:7px 9px;
+  font-size:11px;
+}
+@media(max-width:760px){
+  .credential-certificate-summary{grid-template-columns:40px minmax(0,1fr)}
+  .credential-certificate-mark{width:40px;height:40px}
+  .credential-certificate-toggle{grid-column:1/-1;width:100%}
+  .credential-certificate-meta{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .credential-certificate-detail-head{display:block}
+  .credential-service-actions{margin-top:12px}
+  .credential-output-grid{grid-template-columns:1fr}
+}
