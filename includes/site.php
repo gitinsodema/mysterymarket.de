@@ -76,7 +76,6 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
     $baseUrl = 'https://mysterymarket.de';
     $canonicalPath = mmLangUrl($canonicalCurrent, $lang);
     $canonicalUrl = $baseUrl . $canonicalPath;
-    $conceptTheme = strtolower(trim((string)($_GET['theme'] ?? ''))) === 'concept';
 
     $ogLocale = match ($docLang) {
         'en' => 'en_GB',
@@ -111,7 +110,6 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
     <meta name="twitter:title" content="<?= mmEscape($title . ' · MysteryMarket') ?>">
     <meta name="twitter:description" content="<?= mmEscape($description) ?>">
     <link rel="stylesheet" href="/public/css/style.css">
-    <?php if ($conceptTheme): ?><link rel="stylesheet" href="/public/css/style-concept.css"><?php endif; ?>
 </head>
 <body>
 <a class="skip-link" href="#main-content"><?= mmEscape(mmT('accessibility.skip', 'Zum Hauptinhalt')) ?></a>
