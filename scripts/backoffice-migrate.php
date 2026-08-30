@@ -13,6 +13,7 @@ $files = [
     dirname(__DIR__) . '/database/20260830_backoffice_foundation.sql',
     dirname(__DIR__) . '/database/20260830_backoffice_activation_tokens.sql',
     dirname(__DIR__) . '/database/20260830_elite_membership_requests.sql',
+    dirname(__DIR__) . '/database/20260830_agencies.sql',
 ];
 
 $pdo = mmDb();
@@ -42,6 +43,7 @@ $required = [
     'backoffice_login_rate_limits',
     'backoffice_activation_tokens',
     'elite_membership_requests',
+    'agencies',
 ];
 
 $check = $pdo->prepare(
