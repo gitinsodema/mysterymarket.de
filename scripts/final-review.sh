@@ -36,6 +36,25 @@ check_body() {
   fi
 }
 
+check_absent() {
+  local url="$1"
+  local pattern="$2"
+  local body
+
+  if ! body="$(curl -sS "$url")"; then
+    echo "[FAIL] could not load $url" >&2
+    fail=1
+    return
+  fi
+
+  if grep -qE "$pattern" <<<"$body"; then
+    echo "[FAIL] unwanted public content found on $url" >&2
+    fail=1
+  else
+    echo "[PASS] unwanted public content absent on $url"
+  fi
+}
+
 for lang in de en nl; do
   suffix=""
   if [ "$lang" != "de" ]; then
@@ -49,6 +68,11 @@ for lang in de en nl; do
 done
 
 check_status 200 "$BASE/verify"
+
+for path in / /about.php /contact.php /legal-notice.php /privacy.php; do
+  check_absent "$BASE$path" '@mysterymarket\.de'
+done
+
 check_status 404 "$BASE/this-page-must-not-exist-v1"
 check_body "$BASE/this-page-must-not-exist-v1" '404'
 
