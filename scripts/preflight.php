@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $root = dirname(__DIR__);
 $required = [
-    '.htaccess','VERSION','docs/RELEASE_V1.md',
+    '.htaccess','VERSION','AI_START_HERE.md','docs/RELEASE_V1.md','docs/coordination/README.md','docs/coordination/PRODUCT_HANDOFF.json',
     'index.php','404.php','services.php','audits.php','verify.php','verify-asset.php','verify-card.php','tools.php','elite-shopper.php','about.php','contact.php',
     'legal-notice.php','privacy.php',
     'includes/site.php','includes/config.php','includes/db.php','includes/i18n.php','includes/content.php',
@@ -26,6 +26,14 @@ if (str_contains($htaccess, 'Permissions-Policy "camera=(self), microphone=(), g
     echo "[PASS] first-party Verify camera permission is configured\n";
 } else {
     fwrite(STDERR, "[FAIL] Verify camera Permissions-Policy is missing or too restrictive\n");
+    $failures++;
+}
+
+$handoff = @file_get_contents($root . '/docs/coordination/PRODUCT_HANDOFF.json');
+if ($handoff !== false && json_decode($handoff, true) !== null && json_last_error() === JSON_ERROR_NONE) {
+    echo "[PASS] PRODUCT_HANDOFF.json is valid JSON\n";
+} else {
+    fwrite(STDERR, "[FAIL] PRODUCT_HANDOFF.json is missing or invalid JSON\n");
     $failures++;
 }
 
