@@ -2,6 +2,47 @@
 declare(strict_types=1);
 require_once __DIR__ . '/includes/site.php';
 $c = mmPageCopy('ops');
+$opsDecisionCopy = [
+    'de' => [
+        'eyebrow' => 'Intelligente Einsatzplanung',
+        'title' => 'Planen. Route optimieren. Mobil entscheiden.',
+        'lead' => 'OPS verbindet Tagesplanung, optimale Reihenfolge und das Mobilitätsprofil zu einer operativen Entscheidung: welcher Auftrag passt wann, wo und mit welchem Weg am besten?',
+        'planning' => 'Intelligente Planung',
+        'planning_text' => 'Termine, Zeitfenster, Prioritäten und regionale Cluster werden gemeinsam betrachtet.',
+        'route' => 'Optimale Route',
+        'route_text' => 'OPS bewertet Reihenfolge und Wege so, dass unnötige Leerfahrten reduziert und Tagesabläufe verdichtet werden.',
+        'mobility' => 'Mobilitätsprofil',
+        'mobility_text' => 'Auto, ÖPNV oder kombinierte Wege werden als Teil der operativen Eignung berücksichtigt.',
+        'decision' => 'Nächste beste Aktion',
+        'decision_text' => 'Aus Planung, Route und Mobilität entsteht eine konkrete Empfehlung für den nächsten sinnvollen Einsatz.',
+    ],
+    'en' => [
+        'eyebrow' => 'Intelligent field planning',
+        'title' => 'Plan. Optimise the route. Decide on the move.',
+        'lead' => 'OPS combines day planning, optimal sequencing and the mobility profile into one operational decision: which assignment fits best, when, where and by which mode of travel?',
+        'planning' => 'Intelligent planning',
+        'planning_text' => 'Appointments, time windows, priorities and regional clusters are considered together.',
+        'route' => 'Optimal route',
+        'route_text' => 'OPS evaluates sequence and travel so unnecessary dead mileage is reduced and working days become denser.',
+        'mobility' => 'Mobility profile',
+        'mobility_text' => 'Car, public transport or mixed travel can be considered as part of operational suitability.',
+        'decision' => 'Next best action',
+        'decision_text' => 'Planning, route and mobility are combined into a concrete recommendation for the next useful assignment.',
+    ],
+    'nl' => [
+        'eyebrow' => 'Intelligente inzetplanning',
+        'title' => 'Plannen. Route optimaliseren. Mobiel beslissen.',
+        'lead' => 'OPS combineert dagplanning, optimale volgorde en het mobiliteitsprofiel tot één operationele beslissing: welke opdracht past wanneer, waar en met welk vervoermiddel het best?',
+        'planning' => 'Intelligente planning',
+        'planning_text' => 'Afspraken, tijdvensters, prioriteiten en regionale clusters worden gezamenlijk bekeken.',
+        'route' => 'Optimale route',
+        'route_text' => 'OPS beoordeelt volgorde en reizen om onnodige lege kilometers te verminderen en werkdagen compacter te maken.',
+        'mobility' => 'Mobiliteitsprofiel',
+        'mobility_text' => 'Auto, OV of gecombineerde reizen kunnen worden meegenomen als onderdeel van de operationele geschiktheid.',
+        'decision' => 'Volgende beste actie',
+        'decision_text' => 'Planning, route en mobiliteit vormen samen een concrete aanbeveling voor de volgende zinvolle opdracht.',
+    ],
+][mmLanguage()] ?? [];
 mmHeader($c['title'], $c['lead']);
 ?>
 <section class="hero">
@@ -63,6 +104,46 @@ mmHeader($c['title'], $c['lead']);
         <div class="ops-task-line"><span></span><b>Next</b></div>
         <div class="ops-task-line"><span></span><b>Later</b></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section ops-decision-section">
+  <div class="section-head">
+    <p class="eyebrow"><?= mmEscape($opsDecisionCopy['eyebrow']) ?></p>
+    <h2><?= mmEscape($opsDecisionCopy['title']) ?></h2>
+    <p class="lead"><?= mmEscape($opsDecisionCopy['lead']) ?></p>
+  </div>
+  <div class="ops-decision-visual" aria-label="<?= mmEscape($opsDecisionCopy['title']) ?>">
+    <div class="ops-decision-grid">
+      <article class="ops-decision-card">
+        <span class="ops-decision-icon">01</span>
+        <h3><?= mmEscape($opsDecisionCopy['planning']) ?></h3>
+        <p><?= mmEscape($opsDecisionCopy['planning_text']) ?></p>
+        <div class="ops-mini-calendar"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </article>
+      <article class="ops-decision-card route-card">
+        <span class="ops-decision-icon">02</span>
+        <h3><?= mmEscape($opsDecisionCopy['route']) ?></h3>
+        <p><?= mmEscape($opsDecisionCopy['route_text']) ?></p>
+        <div class="ops-route-map" aria-hidden="true">
+          <span class="route-node route-a"></span><span class="route-node route-b"></span><span class="route-node route-c"></span><span class="route-node route-d"></span>
+          <i></i>
+        </div>
+      </article>
+      <article class="ops-decision-card mobility-card">
+        <span class="ops-decision-icon">03</span>
+        <h3><?= mmEscape($opsDecisionCopy['mobility']) ?></h3>
+        <p><?= mmEscape($opsDecisionCopy['mobility_text']) ?></p>
+        <div class="ops-mobility-profile">
+          <span>CAR</span><span>ÖPNV</span><span>MIX</span>
+        </div>
+      </article>
+    </div>
+    <div class="ops-next-action">
+      <span class="badge"><?= mmEscape($opsDecisionCopy['decision']) ?></span>
+      <strong><?= mmEscape($opsDecisionCopy['decision_text']) ?></strong>
+      <div class="ops-next-arrow" aria-hidden="true">→</div>
     </div>
   </div>
 </section>
