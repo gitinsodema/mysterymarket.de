@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T14:24:00+02:00",
+  "report_generated_at": "2026-08-30T14:39:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "release_candidate_data_hygiene",
+    "lifecycle_phase": "release_candidate_final_smoke",
     "active_branch": "website-v1",
     "default_branch": "main",
     "pull_request": 1,
@@ -43,11 +43,11 @@
     ]
   },
   "release_progress": {
-    "lifecycle_phase": "release_candidate_data_hygiene",
-    "release_readiness_percent": 96,
-    "operational_readiness_percent": 97,
+    "lifecycle_phase": "release_candidate_final_smoke",
+    "release_readiness_percent": 97,
+    "operational_readiness_percent": 98,
     "bootstrap_readiness_percent": 100,
-    "publication_readiness_percent": 95,
+    "publication_readiness_percent": 97,
     "basis": {
       "milestones": [
         {
@@ -130,12 +130,12 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner reported both active credentials pass integrity audit: Vodafone/SKOPOS and HP/BARE.",
-    "Confirmed HP/BARE credential MM-8ACFCSH5 active with correct validity, scope and evidence.",
-    "Added guarded delete-draft operation for inactive personal credential drafts with no project-specific assets.",
-    "Added reproducible production web artifact build/check using git archive export-ignore.",
-    "Added bounded rate-limit cleanup and data-retention status CLI.",
-    "Contact-request retention intentionally remains report-only until an explicit retention policy is approved."
+    "Owner confirmed round 3 credential/data/artifact checks successful.",
+    "Contact POST bodies above 32 KiB now fail early with HTTP 413.",
+    "Contact and Verify surfaces now explicitly use private no-store caching.",
+    "Verify card completed HEAD and no-cache handling.",
+    "Added automated external release smoke test for public routes, internal-source denial, method restrictions, protected Verify endpoints, required headers and oversized form rejection.",
+    "Updated V1 security review and release gates."
   ],
   "blockers": [
     {
@@ -162,8 +162,8 @@
     {
       "id": "MM-BLOCK-DUPLICATE",
       "type": "data_hygiene",
-      "status": "ready_to_resolve",
-      "summary": "Inactive incomplete duplicate HP/BARE draft MM-FRRCK7UX is confirmed by audit and can now be removed using guarded delete-draft."
+      "status": "resolved",
+      "summary": "Inactive duplicate MM-FRRCK7UX removed; only Vodafone/SKOPOS and HP/BARE productive credentials remain."
     },
     {
       "id": "MM-BLOCK-MAIL",
@@ -308,9 +308,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy round 3 tooling, remove the confirmed inactive duplicate MM-FRRCK7UX through guarded delete-draft, run credential audit, rate-limit cleanup/status and production artifact boundary check.",
-    "owner_action_required": "Run the provided production commands and return output.",
-    "blocker": "None expected; duplicate draft cleanup should be guarded and deterministic."
+    "action": "Deploy round 4 and run scripts/release-smoke.sh against production. If it passes, proceed to final visual/legal/contact QA and Owner release approval.",
+    "owner_action_required": "Deploy website-v1 and return release smoke output.",
+    "blocker": "Any failing production smoke-test assertion."
   },
   "evidence": [
     {
@@ -443,6 +443,26 @@
       "type": "commit",
       "id": "91aa29aace661f6f6df721585f344206c1125cd8",
       "summary": "rate-limit cleanup and retention reporting"
+    },
+    {
+      "type": "commit",
+      "id": "bacae289013c6cb94732348a76d43ff2b4014c19",
+      "summary": "contact request-size and no-store hardening"
+    },
+    {
+      "type": "commit",
+      "id": "98b53c5ead4498982b0a688b99e076157724e74f",
+      "summary": "Verify no-store hardening"
+    },
+    {
+      "type": "commit",
+      "id": "96bb47d6381afe81650bf4eb2fe07a65204f1b05",
+      "summary": "Verify card HEAD/no-cache handling"
+    },
+    {
+      "type": "commit",
+      "id": "8c44f0510837c6a4c2a57e9991ad2231e328f2d3",
+      "summary": "external V1 release smoke test"
     }
   ]
 }
