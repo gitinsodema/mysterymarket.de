@@ -42,6 +42,29 @@ function mmBackofficeRequireLogin(?string $role = null): array
         exit;
     }
 
+    $stmt = mmDb()->prepare(
+        'SELECT id, email, role, account_status
+         FROM backoffice_users
+         WHERE id = :id
+         LIMIT 1'
+    );
+    $stmt->execute(['id' => (int)($user['id'] ?? 0)]);
+    $current = $stmt->fetch();
+
+    if (!$current || ($current['account_status'] ?? '') !== 'active') {
+        $_SESSION['mm_backoffice'] = [];
+        session_regenerate_id(true);
+        header('Location: /backoffice/login.php', true, 302);
+        exit;
+    }
+
+    $user = [
+        'id' => (int)$current['id'],
+        'email' => (string)$current['email'],
+        'role' => (string)$current['role'],
+    ];
+    $_SESSION['mm_backoffice']['user'] = $user;
+
     if ($role !== null && ($user['role'] ?? '') !== $role) {
         http_response_code(403);
         header('Cache-Control: private, no-store, max-age=0');
