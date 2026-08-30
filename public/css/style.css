@@ -869,3 +869,36 @@ nav a[aria-current=page],
 .backoffice-dashboard-hero form{margin:0}
 @media(max-width:850px){.backoffice-module-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.backoffice-module-grid{grid-template-columns:1fr}.backoffice-login-mark{width:160px;height:160px}}
+
+
+/* R1.1 operational dashboard + Elite feed */
+.backoffice-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.backoffice-stat-grid article{
+  background:#fff;border:1px solid #d8e5ef;border-radius:14px;padding:20px;
+  box-shadow:0 10px 26px #0019500a
+}
+.backoffice-stat-grid span{display:block;font-size:32px;font-weight:900;color:#001950;line-height:1}
+.backoffice-stat-grid strong{display:block;margin-top:8px;font-size:13px;color:var(--muted)}
+.backoffice-module{text-decoration:none;color:inherit}
+.backoffice-module:hover{border-color:#b9d7f3;transform:translateY(-1px)}
+.backoffice-table-wrap{overflow:auto;border:1px solid #d8e5ef;border-radius:16px;background:#fff}
+.backoffice-table{width:100%;border-collapse:collapse;min-width:900px}
+.backoffice-table th,.backoffice-table td{padding:14px 16px;text-align:left;border-bottom:1px solid #edf2f6;font-size:14px}
+.backoffice-table th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:#f8fbfd}
+.backoffice-table tr:last-child td{border-bottom:0}
+.elite-feed-list{display:grid;gap:18px}
+.elite-feed-post{
+  background:#fff;border:1px solid #d8e5ef;border-radius:18px;padding:26px;
+  box-shadow:0 12px 30px #0019500b;position:relative;overflow:hidden
+}
+.elite-feed-post:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--brand-blue)}
+.elite-feed-post.is-pinned:before{background:var(--brand-orange)}
+.elite-feed-post h2{font-size:28px;margin:.35em 0}
+.elite-feed-post>p{color:var(--muted);max-width:880px}
+.elite-feed-meta{display:flex;gap:8px;flex-wrap:wrap}
+.elite-feed-details{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+.elite-feed-details span{display:flex;flex-direction:column;min-width:150px;padding:10px 12px;border-radius:10px;background:#f7fafc;border:1px solid #e3ebf2}
+.elite-feed-details strong{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.elite-feed-post>small{display:block;margin-top:18px;color:#8a98a8}
+@media(max-width:900px){.backoffice-stat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.backoffice-stat-grid{grid-template-columns:1fr}}
