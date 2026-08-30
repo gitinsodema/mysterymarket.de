@@ -15,6 +15,7 @@ $dashboard = [
     'feed_posts' => 0,
     'new_contacts' => 0,
     'open_approvals' => 0,
+    'membership_requests' => 0,
 ];
 
 if ($role === 'admin') {
@@ -22,6 +23,7 @@ if ($role === 'admin') {
     $dashboard['feed_posts'] = (int)mmDb()->query("SELECT COUNT(*) FROM elite_feed_posts WHERE is_active = 1")->fetchColumn();
     $dashboard['new_contacts'] = (int)mmDb()->query("SELECT COUNT(*) FROM contact_requests WHERE status = 'new'")->fetchColumn();
     $dashboard['open_approvals'] = (int)mmDb()->query("SELECT COUNT(*) FROM agency_approvals WHERE approval_status IN ('draft','requested')")->fetchColumn();
+    $dashboard['membership_requests'] = (int)mmDb()->query("SELECT COUNT(*) FROM elite_membership_requests WHERE request_status = 'open'")->fetchColumn();
 }
 
 mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noindex,nofollow');
@@ -51,6 +53,7 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
     <article><span><?= $dashboard['feed_posts'] ?></span><strong>Feed-Posts</strong></article>
     <article><span><?= $dashboard['new_contacts'] ?></span><strong>Neue Kontakte</strong></article>
     <article><span><?= $dashboard['open_approvals'] ?></span><strong>Offene Freigaben</strong></article>
+    <article><span><?= $dashboard['membership_requests'] ?></span><strong>Mitgliedschaftsanfragen</strong></article>
   </div>
 </section>
 <?php endif; ?>
@@ -59,13 +62,14 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
   <div class="backoffice-module-grid">
     <?php if ($role === 'admin'): ?>
       <a class="backoffice-module" href="/backoffice/members.php"><span>01</span><strong>Elite Shopper</strong><small>Mitglieder & Status</small></a>
+      <a class="backoffice-module" href="/backoffice/membership-requests.php"><span>01B</span><strong>Mitgliedschaft</strong><small>Pause-/Beendigungsanfragen</small></a>
       <article class="backoffice-module"><span>02</span><strong>Credentials</strong><small>Ausweise & QR · R1.2</small></article>
       <a class="backoffice-module" href="/backoffice/approvals.php"><span>03</span><strong>Kommunikation</strong><small>Agentur-Freigaben</small></a>
       <a class="backoffice-module" href="/backoffice/contacts.php"><span>04</span><strong>Kontakte</strong><small>Read-only Anfragen</small></a>
       <a class="backoffice-module" href="/backoffice/feed.php"><span>05</span><strong>Elite Feed</strong><small>Interne Hinweise</small></a>
       <article class="backoffice-module"><span>06</span><strong>Einstellungen</strong><small>Backoffice-Konfiguration</small></article>
     <?php else: ?>
-      <article class="backoffice-module"><span>01</span><strong>Mitgliedschaft</strong><small>Status & Profil</small></article>
+      <a class="backoffice-module" href="/backoffice/profile.php"><span>01</span><strong>Mitgliedschaft</strong><small>Status & Profil</small></a>
       <article class="backoffice-module"><span>02</span><strong>Mein Ausweis</strong><small>QR · Wallet · Karte folgt</small></article>
       <a class="backoffice-module" href="/backoffice/feed.php"><span>03</span><strong>Elite Feed</strong><small>Interne Projekt- und Partnerinfos</small></a>
       <article class="backoffice-module"><span>04</span><strong>ShopperMatch</strong><small>Eigenständige Job-/Matching-Plattform</small></article>
