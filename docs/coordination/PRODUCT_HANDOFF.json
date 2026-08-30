@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T20:49:00+02:00",
+  "report_generated_at": "2026-08-30T20:57:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,13 +134,11 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner corrected R1.2 scope: MysteryMarket must not create an additional generic MysteryMarket identity card.",
-    "R1.2 is now defined as an output/fulfilment service for existing project-specific personal Verify credentials such as Vodafone/SKOPOS NEXT and HP/BARE.",
-    "audit_verifications remains the authoritative credential record and already contains person, agency, project, brand, validity, protected assets, scope and Verify reference.",
-    "Removed the mistaken parallel credential_subjects/credentials/credential_orders lifecycle from the active design.",
-    "Added verify_credential_outputs linked directly to audit_verifications for Apple Wallet and physical output/fulfilment requests.",
-    "Rebuilt /backoffice/credentials.php as an Admin Verify-Ausweis-Service listing existing personal Verify credentials with Verify, print-card, Wallet and physical-output actions.",
-    "Elite dashboard no longer implies a separate generic personal credential."
+    "Owner confirmed the corrected Verify credential-service direction and requested a less compressed credential UI.",
+    "Each project credential is now presented as a certificate-style summary card showing project, person, agency, Verify reference, validity and status.",
+    "Credential functions are hidden by default behind a single 'Ausweis öffnen' action.",
+    "Opening a credential reveals Verify, print-card and output/fulfilment functions beneath that specific certificate.",
+    "Apple Wallet and physical output choices are therefore contextual actions on one existing Verify credential rather than a dense global action grid."
   ],
   "blockers": [
     {
@@ -417,9 +415,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the corrected R1.2 migration and Verify-Ausweis-Service. Confirm that the two existing HP/BARE and Vodafone/SKOPOS personal Verify credentials appear as the service source records. Then add controlled creation/editing of new personal Verify credentials in the Backoffice before implementing Apple Wallet signing.",
-    "owner_action_required": "Deploy, run migration/review, and visually confirm the two existing project credentials are listed.",
-    "blocker": "none for credential-service UI; real Apple Wallet signing later requires Apple Developer credentials."
+    "action": "Deploy and visually verify the expandable certificate-style credential service. If approved, continue with controlled Backoffice creation/editing of personal Verify credentials using the existing HP/BARE and Vodafone/SKOPOS records as reference templates.",
+    "owner_action_required": "Quick visual test of collapsed and expanded credential cards.",
+    "blocker": "none"
   },
   "evidence": [
     {
