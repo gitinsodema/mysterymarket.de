@@ -27,6 +27,18 @@ $content = [
         'p1' => ['01','Kurz vorstellen','Erfahrung, Regionen, typische Projektarten und vorhandene Plattformprofile.'],
         'p2' => ['02','Qualifizieren','Abgleich von Erfahrung, Verfügbarkeit und – wenn sinnvoll – interne Einweisung für bestimmte Projektarten.'],
         'p3' => ['03','Projektbezogen arbeiten','Zusammenarbeit bei passenden Projekten, transparenten Konditionen und klaren operativen Anforderungen.'],
+        'login_title' => 'Elite Shopper Login',
+        'login_text' => 'Der geschützte Partnerzugang wird nach V1 schrittweise freigeschaltet.',
+        'login_status' => 'Coming soon',
+        'login_button' => 'Login folgt',
+        'login_title' => 'Elite Shopper Login',
+        'login_text' => 'The protected partner access will be enabled progressively after V1.',
+        'login_status' => 'Coming soon',
+        'login_button' => 'Login coming soon',
+        'login_title' => 'Elite Shopper Login',
+        'login_text' => 'De beveiligde partneromgeving wordt na V1 stapsgewijs beschikbaar gemaakt.',
+        'login_status' => 'Binnenkort',
+        'login_button' => 'Login volgt',
         'mail' => 'eliteshopper@mysterymarket.de',
     ],
     'en' => [
@@ -81,14 +93,37 @@ $c = $content[$lang] ?? $content['de'];
 mmHeader($c['title'], $c['description']);
 ?>
 <section class="hero elite-hero">
-  <div>
+  <div class="elite-hero-copy">
     <p class="eyebrow"><?= mmEscape($c['eyebrow']) ?></p>
     <h1><?= mmEscape($c['headline']) ?></h1>
     <p class="lead"><?= mmEscape($c['lead']) ?></p>
     <div class="actions">
-      <a class="button" href="mailto:<?= mmEscape($c['mail']) ?>?subject=Elite%20Shopper%20Partner"><?= mmEscape($c['cta']) ?></a>
+      <?= mmEmailLink('eliteshopper', $c['cta']) ?>
       <a class="button secondary" href="<?= mmEscape(mmLangUrl('/tools.php')) ?>">OPS</a>
     </div>
+  </div>
+  <div class="elite-hero-graphic" aria-hidden="true">
+    <div class="elite-orbit elite-orbit-a"></div>
+    <div class="elite-orbit elite-orbit-b"></div>
+    <div class="elite-graphic-core">
+      <span class="elite-core-mark">MM</span>
+      <strong>Elite Shopper</strong>
+      <small>Qualified Field Partner</small>
+    </div>
+    <div class="elite-graphic-card elite-graphic-blue"><span>01</span><strong>Experience</strong></div>
+    <div class="elite-graphic-card elite-graphic-orange"><span>02</span><strong>Reliability</strong></div>
+    <div class="elite-graphic-card elite-graphic-green"><span>03</span><strong>Qualification</strong></div>
+  </div>
+</section>
+
+<section class="section elite-login-section">
+  <div class="elite-login-card">
+    <div>
+      <span class="badge"><?= mmEscape($c['login_status']) ?></span>
+      <h2><?= mmEscape($c['login_title']) ?></h2>
+      <p><?= mmEscape($c['login_text']) ?></p>
+    </div>
+    <button type="button" class="button secondary" disabled aria-disabled="true"><?= mmEscape($c['login_button']) ?></button>
   </div>
 </section>
 
@@ -120,7 +155,7 @@ mmHeader($c['title'], $c['description']);
       <span class="badge">Agency Partner Signal</span>
       <h2><?= mmEscape($c['agency_title']) ?></h2>
       <p><?= mmEscape($c['agency_text']) ?></p>
-      <a href="mailto:agency@mysterymarket.de">agency@mysterymarket.de</a>
+      <?= mmEmailLink('agency', 'Agentur-Kontakt') ?>
     </article>
   </div>
 </section>
