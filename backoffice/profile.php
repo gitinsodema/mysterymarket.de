@@ -1,0 +1,228 @@
+<?php
+declare(strict_types=1);
+require_once dirname(__DIR__) . '/includes/backoffice-auth.php';
+
+header('Cache-Control: private, no-store, max-age=0');
+header('Pragma: no-cache');
+header('X-Robots-Tag: noindex, noarchive');
+
+$user = mmBackofficeRequireLogin('elite');
+$error = '';
+$success = '';
+
+$stmt = mmDb()->prepare(
+    'SELECT m.*, u.email
+     FROM elite_members m
+     JOIN backoffice_users u ON u.id = m.user_id
+     WHERE m.user_id = :user_id
+     LIMIT 1'
+);
+$stmt->execute(['user_id'=>(int)$user['id']]);
+$member = $stmt->fetch();
+if (!$member) {
+    http_response_code(404);
+    exit('Member profile not found');
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
+        http_response_code(400);
+        $error = 'Ungültige Sitzung.';
+    } else {
+        $action = (string)($_POST['action'] ?? 'profile');
+
+        if ($action === 'profile') {
+            $displayName = trim((string)($_POST['display_name'] ?? ''));
+            $organisation = trim((string)($_POST['organisation'] ?? ''));
+            $phone = trim((string)($_POST['phone'] ?? ''));
+            $address1 = trim((string)($_POST['address_line1'] ?? ''));
+            $address2 = trim((string)($_POST['address_line2'] ?? ''));
+            $postal = trim((string)($_POST['postal_code'] ?? ''));
+            $city = trim((string)($_POST['city'] ?? ''));
+            $country = strtoupper(trim((string)($_POST['country_code'] ?? '')));
+            $regions = trim((string)($_POST['preferred_regions'] ?? ''));
+            $mobility = trim((string)($_POST['mobility_profile'] ?? ''));
+            $shopperMatch = trim((string)($_POST['shoppermatch_profile_url'] ?? ''));
+
+            if ($displayName === '') {
+                $error = 'Name ist erforderlich.';
+            } elseif ($country !== '' && !preg_match('/^[A-Z]{2}$/', $country)) {
+                $error = 'Ländercode bitte zweistellig angeben, z. B. DE.';
+            } elseif ($shopperMatch !== '' && !filter_var($shopperMatch, FILTER_VALIDATE_URL)) {
+                $error = 'Der ShopperMatch-Profillink ist ungültig.';
+            } else {
+                $update = mmDb()->prepare(
+                    'UPDATE elite_members
+                     SET display_name = :display_name,
+                         organisation = :organisation,
+                         phone = :phone,
+                         address_line1 = :address1,
+                         address_line2 = :address2,
+                         postal_code = :postal,
+                         city = :city,
+                         country_code = :country,
+                         preferred_regions = :regions,
+                         mobility_profile = :mobility,
+                         shoppermatch_profile_url = :shoppermatch,
+                         updated_at = NOW()
+                     WHERE id = :id'
+                );
+                $update->execute([
+                    'display_name'=>$displayName,
+                    'organisation'=>$organisation !== '' ? $organisation : null,
+                    'phone'=>$phone !== '' ? $phone : null,
+                    'address1'=>$address1 !== '' ? $address1 : null,
+                    'address2'=>$address2 !== '' ? $address2 : null,
+                    'postal'=>$postal !== '' ? $postal : null,
+                    'city'=>$city !== '' ? $city : null,
+                    'country'=>$country !== '' ? $country : null,
+                    'regions'=>$regions !== '' ? $regions : null,
+                    'mobility'=>$mobility !== '' ? $mobility : null,
+                    'shoppermatch'=>$shopperMatch !== '' ? $shopperMatch : null,
+                    'id'=>(int)$member['id'],
+                ]);
+                mmBackofficeAudit((int)$user['id'], 'elite_profile.updated', 'elite_member', (int)$member['id']);
+                header('Location: /backoffice/profile.php?saved=1', true, 303);
+                exit;
+            }
+        } elseif ($action === 'membership_request') {
+            $requestType = (string)($_POST['request_type'] ?? '');
+            $note = trim((string)($_POST['note'] ?? ''));
+            if (!in_array($requestType, ['pause','end'], true)) {
+                $error = 'Ungültige Anfrage.';
+            } else {
+                $openCheck = mmDb()->prepare(
+                    'SELECT COUNT(*) FROM elite_membership_requests
+                     WHERE member_id = :member_id AND request_status = \'open\''
+                );
+                $openCheck->execute(['member_id'=>(int)$member['id']]);
+                if ((int)$openCheck->fetchColumn() > 0) {
+                    $error = 'Es gibt bereits eine offene Mitgliedschaftsanfrage.';
+                } else {
+                    $insert = mmDb()->prepare(
+                        'INSERT INTO elite_membership_requests
+                         (member_id, request_type, request_status, note, created_at)
+                         VALUES (:member_id, :request_type, \'open\', :note, NOW())'
+                    );
+                    $insert->execute([
+                        'member_id'=>(int)$member['id'],
+                        'request_type'=>$requestType,
+                        'note'=>$note !== '' ? $note : null,
+                    ]);
+                    $requestId = (int)mmDb()->lastInsertId();
+                    mmBackofficeAudit((int)$user['id'], 'elite_membership_request.created', 'elite_membership_request', $requestId, ['type'=>$requestType]);
+                    header('Location: /backoffice/profile.php?requested=1', true, 303);
+                    exit;
+                }
+            }
+        }
+    }
+}
+
+$stmt->execute(['user_id'=>(int)$user['id']]);
+$member = $stmt->fetch();
+
+$requestStmt = mmDb()->prepare(
+    'SELECT id, request_type, request_status, note, created_at, resolved_at
+     FROM elite_membership_requests
+     WHERE member_id = :member_id
+     ORDER BY created_at DESC
+     LIMIT 10'
+);
+$requestStmt->execute(['member_id'=>(int)$member['id']]);
+$requests = $requestStmt->fetchAll();
+
+mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nofollow');
+?>
+<section class="hero backoffice-dashboard-hero">
+  <div>
+    <p class="eyebrow">Elite Shopper · <?= mmEscape((string)$member['member_code']) ?></p>
+    <h1>Mein Profil.</h1>
+    <p class="lead">Mitgliedschaft, Einsatzprofil und Kontaktdaten verwalten.</p>
+    <div class="actions"><a class="button secondary" href="/backoffice/">Dashboard</a></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="grid two">
+    <article class="card">
+      <span class="badge">Mitgliedschaft</span>
+      <h2><?= mmEscape((string)$member['membership_status']) ?></h2>
+      <p><strong>E-Mail:</strong> <?= mmEscape((string)$member['email']) ?></p>
+      <p><strong>Mitglied seit:</strong> <?= mmEscape((string)($member['joined_at'] ?: '—')) ?></p>
+    </article>
+    <article class="card">
+      <span class="badge">ShopperMatch</span>
+      <h3>Eigenständige Job-/Matching-Plattform</h3>
+      <p>MysteryMarket Elite und ShopperMatch bleiben getrennte Systeme.</p>
+      <?php if (!empty($member['shoppermatch_profile_url'])): ?>
+        <a href="<?= mmEscape((string)$member['shoppermatch_profile_url']) ?>" target="_blank" rel="noopener noreferrer">Profil öffnen →</a>
+      <?php endif; ?>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="form-card">
+    <?php if (isset($_GET['saved'])): ?><div class="alert success"><strong>Profil gespeichert.</strong></div><?php endif; ?>
+    <?php if (isset($_GET['requested'])): ?><div class="alert success"><strong>Mitgliedschaftsanfrage gespeichert.</strong></div><?php endif; ?>
+    <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
+    <h2>Profil & Einsatz</h2>
+    <form method="post" action="/backoffice/profile.php">
+      <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+      <input type="hidden" name="action" value="profile">
+      <label>Name<input name="display_name" maxlength="150" required value="<?= mmEscape((string)$member['display_name']) ?>"></label>
+      <label>Organisation<input name="organisation" maxlength="200" value="<?= mmEscape((string)($member['organisation'] ?? '')) ?>"></label>
+      <label>Telefon<input name="phone" maxlength="60" value="<?= mmEscape((string)($member['phone'] ?? '')) ?>"></label>
+      <div class="form-grid">
+        <label>Straße / Hausnummer<input name="address_line1" maxlength="200" value="<?= mmEscape((string)($member['address_line1'] ?? '')) ?>"></label>
+        <label>Adresszusatz<input name="address_line2" maxlength="200" value="<?= mmEscape((string)($member['address_line2'] ?? '')) ?>"></label>
+        <label>PLZ<input name="postal_code" maxlength="24" value="<?= mmEscape((string)($member['postal_code'] ?? '')) ?>"></label>
+        <label>Ort<input name="city" maxlength="120" value="<?= mmEscape((string)($member['city'] ?? '')) ?>"></label>
+        <label>Ländercode<input name="country_code" maxlength="2" placeholder="DE" value="<?= mmEscape((string)($member['country_code'] ?? '')) ?>"></label>
+        <label>Mobilitätsprofil
+          <select name="mobility_profile">
+            <?php
+            $mobilityOptions = ['','Auto','ÖPNV','Bahn','Fahrrad','Zu Fuß','Flexibel / kombiniert'];
+            foreach ($mobilityOptions as $option):
+            ?>
+              <option value="<?= mmEscape($option) ?>"<?= ($member['mobility_profile'] ?? '') === $option ? ' selected' : '' ?>><?= mmEscape($option === '' ? 'Noch nicht gewählt' : $option) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </label>
+      </div>
+      <label>Bevorzugte Regionen<textarea name="preferred_regions" placeholder="z. B. Düsseldorf, Ruhrgebiet, NRW"><?= mmEscape((string)($member['preferred_regions'] ?? '')) ?></textarea></label>
+      <label>ShopperMatch-Profillink<input type="url" name="shoppermatch_profile_url" maxlength="500" value="<?= mmEscape((string)($member['shoppermatch_profile_url'] ?? '')) ?>"></label>
+      <button type="submit">Profil speichern</button>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  <div class="form-card">
+    <h2>Mitgliedschaft</h2>
+    <p class="partner-note">Pause oder Beendigung wird als Anfrage an den Admin übergeben. Dein Account bleibt bis zur Bearbeitung unverändert.</p>
+    <form method="post" action="/backoffice/profile.php">
+      <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+      <input type="hidden" name="action" value="membership_request">
+      <label>Aktion
+        <select name="request_type">
+          <option value="pause">Mitgliedschaft pausieren</option>
+          <option value="end">Mitgliedschaft beenden</option>
+        </select>
+      </label>
+      <label>Hinweis an Admin<textarea name="note"></textarea></label>
+      <button type="submit" class="button secondary">Anfrage senden</button>
+    </form>
+
+    <?php if ($requests): ?>
+      <div class="backoffice-request-history">
+        <h3>Letzte Anfragen</h3>
+        <?php foreach ($requests as $request): ?>
+          <div><strong><?= mmEscape((string)$request['request_type']) ?></strong><span><?= mmEscape((string)$request['request_status']) ?></span><small><?= mmEscape((string)$request['created_at']) ?></small></div>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
+  </div>
+</section>
+<?php mmFooter(); ?>
