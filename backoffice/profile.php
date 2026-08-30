@@ -41,6 +41,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $city = trim((string)($_POST['city'] ?? ''));
             $country = strtoupper(trim((string)($_POST['country_code'] ?? '')));
             $adminAtlasId = trim((string)($_POST['administrative_unit_atlas_id'] ?? ''));
+            $adminName = trim((string)($_POST['administrative_unit_name'] ?? ''));
             $postalAtlasId = trim((string)($_POST['postal_area_atlas_id'] ?? ''));
             $localityAtlasId = trim((string)($_POST['locality_atlas_id'] ?? ''));
             $localityName = trim((string)($_POST['locality_name'] ?? $city));
@@ -69,6 +70,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                          city = :city,
                          country_code = :country,
                          administrative_unit_atlas_id = :admin_atlas_id,
+                         administrative_unit_name = :admin_name,
                          postal_area_atlas_id = :postal_atlas_id,
                          locality_atlas_id = :locality_atlas_id,
                          locality_name = :locality_name,
@@ -91,6 +93,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'city'=>$city !== '' ? $city : null,
                     'country'=>$country !== '' ? $country : null,
                     'admin_atlas_id'=>$adminAtlasId !== '' ? $adminAtlasId : null,
+                    'admin_name'=>$adminName !== '' ? $adminName : null,
                     'postal_atlas_id'=>$postalAtlasId !== '' ? $postalAtlasId : null,
                     'locality_atlas_id'=>$localityAtlasId !== '' ? $localityAtlasId : null,
                     'locality_name'=>$localityName !== '' ? $localityName : null,
@@ -189,13 +192,14 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
     <?php if (isset($_GET['requested'])): ?><div class="alert success"><strong>Mitgliedschaftsanfrage gespeichert.</strong></div><?php endif; ?>
     <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
     <h2>Profil & Einsatz</h2>
-    <form method="post" action="/backoffice/profile.php">
+    <form method="post" action="/backoffice/profile.php" data-atlas-address-form>
       <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
       <input type="hidden" name="action" value="profile">
-      <input type="hidden" name="administrative_unit_atlas_id" value="<?= mmEscape((string)($member['administrative_unit_atlas_id'] ?? '')) ?>">
-      <input type="hidden" name="postal_area_atlas_id" value="<?= mmEscape((string)($member['postal_area_atlas_id'] ?? '')) ?>">
-      <input type="hidden" name="locality_atlas_id" value="<?= mmEscape((string)($member['locality_atlas_id'] ?? '')) ?>">
-      <input type="hidden" name="locality_name" value="<?= mmEscape((string)($member['locality_name'] ?? $member['city'] ?? '')) ?>">
+      <input type="hidden" name="administrative_unit_atlas_id" data-atlas-admin-id value="<?= mmEscape((string)($member['administrative_unit_atlas_id'] ?? '')) ?>">
+      <input type="hidden" name="administrative_unit_name" data-atlas-admin-name value="<?= mmEscape((string)($member['administrative_unit_name'] ?? '')) ?>">
+      <input type="hidden" name="postal_area_atlas_id" data-atlas-postal-id value="<?= mmEscape((string)($member['postal_area_atlas_id'] ?? '')) ?>">
+      <input type="hidden" name="locality_atlas_id" data-atlas-locality-id value="<?= mmEscape((string)($member['locality_atlas_id'] ?? '')) ?>">
+      <input type="hidden" name="locality_name" data-atlas-locality-name value="<?= mmEscape((string)($member['locality_name'] ?? $member['city'] ?? '')) ?>">
       <input type="hidden" name="street_atlas_id" value="<?= mmEscape((string)($member['street_atlas_id'] ?? '')) ?>">
       <input type="hidden" name="street_name" value="<?= mmEscape((string)($member['street_name'] ?? '')) ?>">
       <input type="hidden" name="house_number" value="<?= mmEscape((string)($member['house_number'] ?? '')) ?>">
@@ -205,9 +209,25 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
       <div class="form-grid">
         <label>Straße / Hausnummer<input name="address_line1" maxlength="200" value="<?= mmEscape((string)($member['address_line1'] ?? '')) ?>"></label>
         <label>Adresszusatz<input name="address_line2" maxlength="200" value="<?= mmEscape((string)($member['address_line2'] ?? '')) ?>"></label>
-        <label>PLZ<input name="postal_code" maxlength="24" value="<?= mmEscape((string)($member['postal_code'] ?? '')) ?>"></label>
-        <label>Ort<input name="city" maxlength="120" value="<?= mmEscape((string)($member['city'] ?? '')) ?>"></label>
-        <label>Ländercode<input name="country_code" maxlength="2" placeholder="DE" value="<?= mmEscape((string)($member['country_code'] ?? '')) ?>"></label>
+        <label>Land
+          <select name="country_code" data-atlas-country data-current-country="<?= mmEscape((string)($member['country_code'] ?? '')) ?>">
+            <option value="">Land wird geladen …</option>
+          </select>
+        </label>
+        <label>Region / Bundesland
+          <select data-atlas-subdivision data-current-admin="<?= mmEscape((string)($member['administrative_unit_atlas_id'] ?? '')) ?>">
+            <option value="">Bitte zuerst Land wählen</option>
+          </select>
+        </label>
+        <label>PLZ
+          <input name="postal_code" maxlength="24" data-atlas-postal value="<?= mmEscape((string)($member['postal_code'] ?? '')) ?>" autocomplete="postal-code">
+          <small class="field-hint" data-atlas-postal-status>PLZ wird über ATLAS geprüft.</small>
+        </label>
+        <label>Ort
+          <select name="city" data-atlas-locality data-current-locality="<?= mmEscape((string)($member['locality_atlas_id'] ?? '')) ?>">
+            <option value="<?= mmEscape((string)($member['city'] ?? '')) ?>"><?= mmEscape((string)($member['city'] ?? 'Bitte PLZ eingeben')) ?></option>
+          </select>
+        </label>
         <label>Mobilitätsprofil
           <select name="mobility_profile">
             <?php
