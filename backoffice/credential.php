@@ -40,86 +40,178 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         http_response_code(400);
         $error = 'Ungültige Sitzung.';
     } elseif ((int)$credential['is_active'] === 1) {
-        $error = 'Aktive Verify-Ausweise sind in dieser ersten Editor-Stufe schreibgeschützt. Änderungen erfolgen erst mit dem kontrollierten Aktivierungs-/Revisionsworkflow.';
+        $error = 'Aktive Verify-Ausweise sind schreibgeschützt. Änderungen erfolgen erst über einen kontrollierten Revisionsworkflow.';
     } else {
+        $action = (string)($_POST['action'] ?? 'save_details');
+
         try {
-            $personName = trim((string)($_POST['person_name'] ?? ''));
-            $roleLabel = trim((string)($_POST['role_label'] ?? ''));
-            $agencyName = trim((string)($_POST['agency_name'] ?? ''));
-            $projectName = trim((string)($_POST['project_name'] ?? ''));
-            $brandName = trim((string)($_POST['brand_name'] ?? ''));
-            $validFrom = mmCredentialDateOrNull((string)($_POST['valid_from'] ?? ''));
-            $validUntil = mmCredentialDateOrNull((string)($_POST['valid_until'] ?? ''));
-            $confidentiality = trim((string)($_POST['confidentiality_mode'] ?? 'public'));
-            $publicNote = trim((string)($_POST['public_note'] ?? ''));
+            if ($action === 'save_details') {
+                $personName = trim((string)($_POST['person_name'] ?? ''));
+                $roleLabel = trim((string)($_POST['role_label'] ?? ''));
+                $agencyName = trim((string)($_POST['agency_name'] ?? ''));
+                $projectName = trim((string)($_POST['project_name'] ?? ''));
+                $brandName = trim((string)($_POST['brand_name'] ?? ''));
+                $validFrom = mmCredentialDateOrNull((string)($_POST['valid_from'] ?? ''));
+                $validUntil = mmCredentialDateOrNull((string)($_POST['valid_until'] ?? ''));
+                $confidentiality = trim((string)($_POST['confidentiality_mode'] ?? 'public'));
+                $publicNote = trim((string)($_POST['public_note'] ?? ''));
 
-            if ($personName === '' || mb_strlen($personName) > 150) {
-                throw new InvalidArgumentException('Person ist erforderlich.');
-            }
-            if ($roleLabel === '' || mb_strlen($roleLabel) > 120) {
-                throw new InvalidArgumentException('Rolle ist erforderlich.');
-            }
-            foreach (['agency'=>$agencyName,'project'=>$projectName,'brand'=>$brandName] as $field=>$value) {
-                if ($value === '' || mb_strlen($value) > 200) {
-                    throw new InvalidArgumentException('Agentur, Projekt und Marke/Kunde sind erforderlich.');
+                if ($personName === '' || mb_strlen($personName) > 150) {
+                    throw new InvalidArgumentException('Person ist erforderlich.');
                 }
-            }
-            if (!in_array($confidentiality, ['public','confidential'], true)) {
-                throw new InvalidArgumentException('Ungültiger Vertraulichkeitsstatus.');
-            }
-            if ($validFrom !== null && $validUntil !== null && $validUntil < $validFrom) {
-                throw new InvalidArgumentException('Das Gültigkeitsende liegt vor dem Beginn.');
+                if ($roleLabel === '' || mb_strlen($roleLabel) > 120) {
+                    throw new InvalidArgumentException('Rolle ist erforderlich.');
+                }
+                foreach ([$agencyName,$projectName,$brandName] as $value) {
+                    if ($value === '' || mb_strlen($value) > 200) {
+                        throw new InvalidArgumentException('Agentur, Projekt und Marke/Kunde sind erforderlich.');
+                    }
+                }
+                if (!in_array($confidentiality, ['public','confidential'], true)) {
+                    throw new InvalidArgumentException('Ungültiger Vertraulichkeitsstatus.');
+                }
+                if ($validFrom !== null && $validUntil !== null && $validUntil < $validFrom) {
+                    throw new InvalidArgumentException('Das Gültigkeitsende liegt vor dem Beginn.');
+                }
+
+                $stmt = mmDb()->prepare(
+                    'UPDATE audit_verifications
+                     SET public_title = :public_title,
+                         public_partner = :public_partner,
+                         public_client = :public_client,
+                         valid_from = :valid_from,
+                         valid_until = :valid_until,
+                         confidentiality_mode = :confidentiality_mode,
+                         public_note = :public_note,
+                         person_name = :person_name,
+                         role_label = :role_label,
+                         agency_name = :agency_name,
+                         project_name = :project_name,
+                         brand_name = :brand_name,
+                         updated_at = NOW()
+                     WHERE id = :id
+                       AND is_personal_verification = 1
+                       AND is_active = 0'
+                );
+                $stmt->execute([
+                    'public_title'=>$projectName,
+                    'public_partner'=>$agencyName,
+                    'public_client'=>$brandName,
+                    'valid_from'=>$validFrom,
+                    'valid_until'=>$validUntil,
+                    'confidentiality_mode'=>$confidentiality,
+                    'public_note'=>$publicNote !== '' ? $publicNote : null,
+                    'person_name'=>$personName,
+                    'role_label'=>$roleLabel,
+                    'agency_name'=>$agencyName,
+                    'project_name'=>$projectName,
+                    'brand_name'=>$brandName,
+                    'id'=>$id,
+                ]);
+
+                mmBackofficeAudit((int)$user['id'], 'verify_credential.updated', 'audit_verification', $id, [
+                    'reference_code'=>(string)$credential['reference_code']
+                ]);
+                header('Location: /backoffice/credential.php?id=' . $id . '&saved=1', true, 303);
+                exit;
             }
 
-            $stmt = mmDb()->prepare(
-                'UPDATE audit_verifications
-                 SET public_title = :public_title,
-                     public_partner = :public_partner,
-                     public_client = :public_client,
-                     valid_from = :valid_from,
-                     valid_until = :valid_until,
-                     confidentiality_mode = :confidentiality_mode,
-                     public_note = :public_note,
-                     person_name = :person_name,
-                     role_label = :role_label,
-                     agency_name = :agency_name,
-                     project_name = :project_name,
-                     brand_name = :brand_name,
-                     updated_at = NOW()
-                 WHERE id = :id
-                   AND is_personal_verification = 1
-                   AND is_active = 0'
-            );
-            $stmt->execute([
-                'public_title'=>$projectName,
-                'public_partner'=>$agencyName,
-                'public_client'=>$brandName,
-                'valid_from'=>$validFrom,
-                'valid_until'=>$validUntil,
-                'confidentiality_mode'=>$confidentiality,
-                'public_note'=>$publicNote !== '' ? $publicNote : null,
-                'person_name'=>$personName,
-                'role_label'=>$roleLabel,
-                'agency_name'=>$agencyName,
-                'project_name'=>$projectName,
-                'brand_name'=>$brandName,
-                'id'=>$id,
-            ]);
+            if ($action === 'scope_update') {
+                $scopeKey = trim((string)($_POST['scope_key'] ?? ''));
+                $allowedScopes = ['', 'vodafone_skopos_2026', 'hp_bare_retail_2025_2026'];
+                if (!in_array($scopeKey, $allowedScopes, true)) {
+                    throw new InvalidArgumentException('Unbekannter Scope.');
+                }
 
-            mmBackofficeAudit(
-                (int)$user['id'],
-                'verify_credential.updated',
-                'audit_verification',
-                $id,
-                ['reference_code'=>(string)$credential['reference_code']]
-            );
+                $stmt = mmDb()->prepare(
+                    'UPDATE audit_verifications
+                     SET scope_key = :scope_key, updated_at = NOW()
+                     WHERE id = :id AND is_personal_verification = 1 AND is_active = 0'
+                );
+                $stmt->execute([
+                    'scope_key'=>$scopeKey !== '' ? $scopeKey : null,
+                    'id'=>$id,
+                ]);
+                mmBackofficeAudit((int)$user['id'], 'verify_credential.scope_updated', 'audit_verification', $id, [
+                    'scope_key'=>$scopeKey !== '' ? $scopeKey : null
+                ]);
+                header('Location: /backoffice/credential.php?id=' . $id . '&scope_saved=1', true, 303);
+                exit;
+            }
 
-            header('Location: /backoffice/credential.php?id=' . $id . '&saved=1', true, 303);
-            exit;
-        } catch (InvalidArgumentException $e) {
+            if ($action === 'asset_upload') {
+                $type = trim((string)($_POST['asset_type'] ?? ''));
+                $columns = [
+                    'photo'=>'photo_asset',
+                    'brand_logo'=>'brand_logo_asset',
+                    'agency_logo'=>'agency_logo_asset',
+                    'document'=>'document_asset',
+                ];
+                if (!isset($columns[$type])) {
+                    throw new InvalidArgumentException('Ungültiger Asset-Typ.');
+                }
+
+                $filename = mmCredentialStoreUploadedAsset($_FILES['asset_file'] ?? [], $id, $type);
+                $column = $columns[$type];
+
+                $sql = "UPDATE audit_verifications SET {$column} = :filename, updated_at = NOW()";
+                $params = ['filename'=>$filename,'id'=>$id];
+
+                if ($type === 'document') {
+                    $label = trim((string)($_POST['document_label'] ?? 'Offizielles Legitimationsschreiben'));
+                    if ($label === '' || mb_strlen($label) > 200) {
+                        throw new InvalidArgumentException('Dokumentbezeichnung ist erforderlich.');
+                    }
+                    $sql .= ', document_label = :document_label, document_enabled = 1';
+                    $params['document_label'] = $label;
+                }
+
+                $sql .= ' WHERE id = :id AND is_personal_verification = 1 AND is_active = 0';
+                $stmt = mmDb()->prepare($sql);
+                $stmt->execute($params);
+
+                mmBackofficeAudit((int)$user['id'], 'verify_credential.asset_uploaded', 'audit_verification', $id, [
+                    'asset_type'=>$type,
+                    'filename'=>$filename
+                ]);
+                header('Location: /backoffice/credential.php?id=' . $id . '&asset_saved=1', true, 303);
+                exit;
+            }
+
+            if ($action === 'asset_unbind') {
+                $type = trim((string)($_POST['asset_type'] ?? ''));
+                $columns = [
+                    'photo'=>'photo_asset',
+                    'brand_logo'=>'brand_logo_asset',
+                    'agency_logo'=>'agency_logo_asset',
+                    'document'=>'document_asset',
+                ];
+                if (!isset($columns[$type])) {
+                    throw new InvalidArgumentException('Ungültiger Asset-Typ.');
+                }
+
+                $column = $columns[$type];
+                $sql = "UPDATE audit_verifications SET {$column} = NULL, updated_at = NOW()";
+                if ($type === 'document') {
+                    $sql .= ', document_label = NULL, document_enabled = 0';
+                }
+                $sql .= ' WHERE id = :id AND is_personal_verification = 1 AND is_active = 0';
+
+                $stmt = mmDb()->prepare($sql);
+                $stmt->execute(['id'=>$id]);
+
+                mmBackofficeAudit((int)$user['id'], 'verify_credential.asset_unbound', 'audit_verification', $id, [
+                    'asset_type'=>$type
+                ]);
+                header('Location: /backoffice/credential.php?id=' . $id . '&asset_removed=1', true, 303);
+                exit;
+            }
+
+            throw new InvalidArgumentException('Unbekannte Aktion.');
+        } catch (InvalidArgumentException|RuntimeException $e) {
             $error = $e->getMessage();
         } catch (Throwable $e) {
-            $error = 'Der Ausweis konnte nicht gespeichert werden.';
+            $error = 'Die Ausweisänderung konnte nicht gespeichert werden.';
         }
     }
 }
@@ -151,6 +243,9 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
 <section class="section">
   <?php if (isset($_GET['created'])): ?><div class="alert success"><strong>Ausweis-Draft angelegt.</strong> Die Verify-Referenz wurde automatisch erzeugt.</div><?php endif; ?>
   <?php if (isset($_GET['saved'])): ?><div class="alert success"><strong>Ausweis gespeichert.</strong></div><?php endif; ?>
+  <?php if (isset($_GET['scope_saved'])): ?><div class="alert success"><strong>Scope gespeichert.</strong></div><?php endif; ?>
+  <?php if (isset($_GET['asset_saved'])): ?><div class="alert success"><strong>Asset sicher gespeichert und gebunden.</strong></div><?php endif; ?>
+  <?php if (isset($_GET['asset_removed'])): ?><div class="alert success"><strong>Asset-Bindung entfernt.</strong></div><?php endif; ?>
   <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
 
   <div class="grid two">
@@ -181,6 +276,78 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
 <section class="section">
   <div class="form-card credential-editor">
     <div class="section-head">
+      <p class="eyebrow">Geschützte Ausstattung</p>
+      <h2>Assets & Scope.</h2>
+      <p>Dateien werden ausschließlich in den privaten Verify-Speicher geschrieben. Aktive Ausweise bleiben schreibgeschützt.</p>
+    </div>
+
+    <div class="credential-asset-manager">
+      <?php
+      $assetConfig = [
+          'photo'=>['Foto','photo_asset','Bild bis 5 MB'],
+          'brand_logo'=>['Markenlogo','brand_logo_asset','PNG/JPG/WebP bis 5 MB'],
+          'agency_logo'=>['Agenturlogo','agency_logo_asset','PNG/JPG/WebP bis 5 MB'],
+          'document'=>['Dokument','document_asset','PDF bis 10 MB'],
+      ];
+      foreach ($assetConfig as $assetType=>[$label,$column,$hint]):
+          $bound = trim((string)($credential[$column] ?? ''));
+      ?>
+        <article class="credential-asset-item">
+          <div>
+            <strong><?= mmEscape($label) ?></strong>
+            <small><?= mmEscape($bound !== '' ? $bound : $hint) ?></small>
+          </div>
+
+          <?php if ($bound !== ''): ?>
+            <div class="credential-asset-actions">
+              <a class="button secondary" target="_blank" rel="noopener" href="/backoffice/credential-asset.php?id=<?= $id ?>&type=<?= rawurlencode($assetType) ?>">Anzeigen</a>
+              <?php if ((int)$credential['is_active'] !== 1): ?>
+                <form method="post" action="/backoffice/credential.php?id=<?= $id ?>">
+                  <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+                  <input type="hidden" name="id" value="<?= $id ?>">
+                  <input type="hidden" name="action" value="asset_unbind">
+                  <input type="hidden" name="asset_type" value="<?= mmEscape($assetType) ?>">
+                  <button type="submit" class="button secondary">Bindung lösen</button>
+                </form>
+              <?php endif; ?>
+            </div>
+          <?php elseif ((int)$credential['is_active'] !== 1): ?>
+            <form method="post" action="/backoffice/credential.php?id=<?= $id ?>" enctype="multipart/form-data" class="credential-asset-upload">
+              <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+              <input type="hidden" name="id" value="<?= $id ?>">
+              <input type="hidden" name="action" value="asset_upload">
+              <input type="hidden" name="asset_type" value="<?= mmEscape($assetType) ?>">
+              <input type="file" name="asset_file" required accept="<?= $assetType === 'document' ? 'application/pdf' : 'image/png,image/jpeg,image/webp' ?>">
+              <?php if ($assetType === 'document'): ?>
+                <input name="document_label" maxlength="200" value="<?= mmEscape((string)($credential['document_label'] ?: 'Offizielles Legitimationsschreiben')) ?>" placeholder="Dokumentbezeichnung">
+              <?php endif; ?>
+              <button type="submit">Hochladen</button>
+            </form>
+          <?php endif; ?>
+        </article>
+      <?php endforeach; ?>
+    </div>
+
+    <div class="credential-editor-section credential-scope-editor">
+      <div class="credential-editor-head"><span>04</span><div><strong>Projekt-Scope</strong><small>Nur bereits definierte Verify-Regeln auswählen</small></div></div>
+      <form method="post" action="/backoffice/credential.php?id=<?= $id ?>" class="credential-scope-form">
+        <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+        <input type="hidden" name="id" value="<?= $id ?>">
+        <input type="hidden" name="action" value="scope_update">
+        <select name="scope_key"<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>>
+          <option value=""<?= empty($credential['scope_key']) ? ' selected' : '' ?>>Kein Scope / noch nicht festgelegt</option>
+          <option value="vodafone_skopos_2026"<?= $credential['scope_key'] === 'vodafone_skopos_2026' ? ' selected' : '' ?>>Vodafone / SKOPOS NEXT 2026</option>
+          <option value="hp_bare_retail_2025_2026"<?= $credential['scope_key'] === 'hp_bare_retail_2025_2026' ? ' selected' : '' ?>>HP / BARE Retail 2025/2026</option>
+        </select>
+        <?php if ((int)$credential['is_active'] !== 1): ?><button type="submit">Scope speichern</button><?php endif; ?>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="form-card credential-editor">
+    <div class="section-head">
       <p class="eyebrow"><?= (int)$credential['is_active'] === 1 ? 'Aktiver Ausweis' : 'Draft bearbeiten' ?></p>
       <h2>Ausweisdaten.</h2>
       <?php if ((int)$credential['is_active'] === 1): ?>
@@ -191,6 +358,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
     <form method="post" action="/backoffice/credential.php?id=<?= $id ?>">
       <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
       <input type="hidden" name="id" value="<?= $id ?>">
+      <input type="hidden" name="action" value="save_details">
 
       <div class="credential-editor-section">
         <div class="credential-editor-head"><span>01</span><div><strong>Person & Rolle</strong></div></div>
