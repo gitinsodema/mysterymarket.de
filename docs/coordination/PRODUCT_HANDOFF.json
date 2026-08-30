@@ -1,0 +1,353 @@
+{
+  "schema_version": "1.0",
+  "product_key": "mysterymarket",
+  "repository": "gitinsodema/mysterymarket.de",
+  "report_generated_at": "2026-08-30T13:36:13+02:00",
+  "report_type": "historical_baseline_and_current_handoff",
+  "knowledge_classification": {
+    "overall": "CURRENT_AUTHORITY",
+    "historical_baseline": "HISTORICAL_CONTEXT",
+    "owner_directives": "CURRENT_OWNER_CONFIRMED",
+    "production_head": "CURRENT_REPORTED_PENDING_VERIFICATION"
+  },
+  "history_import_status": {
+    "status": "completed",
+    "instruction_classification": "OWNER_DIRECTIVE",
+    "source_authority": "Owner + repository evidence + production chat",
+    "verification_status": "repository evidence verified; production runtime items separated where not rechecked",
+    "summary": "One-time historical import reconstructed the website foundation, public positioning, Verify system, V1 release candidate, production hardening and current release blockers."
+  },
+  "current_state": {
+    "current_version": "1.0.0",
+    "target_release": "1.0.0 production",
+    "lifecycle_phase": "release_candidate_hardening",
+    "active_branch": "website-v1",
+    "default_branch": "main",
+    "pull_request": 1,
+    "pull_request_state": "open_draft",
+    "production_domain": "mysterymarket.de",
+    "runtime": "PHP 8.5 + MariaDB + Plesk",
+    "positioning": "Operational audit and fieldwork partner for agencies and direct clients; not positioned as a competing full-service evaluation/reporting agency.",
+    "major_capabilities": [
+      "DE/EN/NL public website",
+      "Services, Current Audits, About, Contact, OPS and Elite Shopper areas",
+      "Legal/privacy/cookie handling",
+      "Hardened contact form with CSRF, honeypot and persistent throttling",
+      "Audit/authorisation Verify with DE/EN/NL/TR/AR",
+      "Direct mobile QR verification",
+      "Personal auditor credentials with project validity",
+      "Protected private identity/logo/document assets outside webroot",
+      "Project-specific authorisation scopes",
+      "iPhone-compatible protected PDF delivery with byte-range support",
+      "Printable CR80 auditor ID with local QR generation"
+    ]
+  },
+  "release_progress": {
+    "lifecycle_phase": "release_candidate_hardening",
+    "release_readiness_percent": 92,
+    "operational_readiness_percent": 95,
+    "bootstrap_readiness_percent": 100,
+    "publication_readiness_percent": 94,
+    "basis": {
+      "milestones": [
+        {
+          "name": "Public website foundation and localisation",
+          "weight": 20,
+          "status": "complete"
+        },
+        {
+          "name": "Security/session/contact hardening",
+          "weight": 15,
+          "status": "complete"
+        },
+        {
+          "name": "Verify core and mobile QR flow",
+          "weight": 20,
+          "status": "complete"
+        },
+        {
+          "name": "Vodafone/SKOPOS production credential",
+          "weight": 15,
+          "status": "complete"
+        },
+        {
+          "name": "HP/BARE second credential",
+          "weight": 10,
+          "status": "in_progress"
+        },
+        {
+          "name": "Release documentation/preflight",
+          "weight": 10,
+          "status": "complete"
+        },
+        {
+          "name": "Final production QA and Owner release approval",
+          "weight": 10,
+          "status": "pending"
+        }
+      ],
+      "remaining_blockers": [
+        "Finish/bind/activate and real-device test HP/BARE credential",
+        "Remove or intentionally retain inactive duplicate HP/BARE draft",
+        "Final legal/privacy/contact visual QA",
+        "Owner approval required before merge to main"
+      ]
+    }
+  },
+  "milestones": [
+    {
+      "id": "MM-V1-FOUNDATION",
+      "status": "complete",
+      "classification": "HISTORICAL_CONTEXT",
+      "summary": "Public MysteryMarket website built as operational audit and field-service presence."
+    },
+    {
+      "id": "MM-V1-VERIFY",
+      "status": "complete",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "summary": "Reusable Verify system implemented with QR scanning, protected assets, personal credentials, validity, scopes and printable cards.",
+      "instruction_classification": "OWNER_DECISION",
+      "source_authority": "Owner",
+      "verification_status": "Vodafone credential tested successfully with a real iPhone QR scan."
+    },
+    {
+      "id": "MM-V1-VODAFONE",
+      "status": "complete",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "summary": "Vodafone/SKOPOS personal credential active with photo, logos, scope, official evidence and validity 2026-03-11 through 2026-09-30."
+    },
+    {
+      "id": "MM-V1-HP",
+      "status": "in_progress",
+      "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
+      "summary": "HP/BARE credential MM-8ACFCSH5 created with validity 2025-11-01 through 2026-10-31 and hp_bare_retail_2025_2026 scope. Private assets reported uploaded; final DB binding/activation and mobile test remain."
+    },
+    {
+      "id": "MM-V1-RELEASE",
+      "status": "in_progress",
+      "classification": "CURRENT_AUTHORITY",
+      "summary": "V1.0.0 release candidate established; PR #1 remains draft until release gates and explicit Owner approval."
+    }
+  ],
+  "completed_since_last_report": [
+    "Created VERSION 1.0.0 and V1 release checklist.",
+    "Hardened Permissions-Policy while preserving first-party camera scanning.",
+    "Added no-store/noindex handling for personal Verify results.",
+    "Added persistent contact throttling and Post/Redirect/Get.",
+    "Added mobile/iPhone PDF byte-range delivery.",
+    "Changed printed card QR to direct #credential anchor.",
+    "Added Verify record CLI for validity, activation, scope and personal credential cloning.",
+    "Added HP/BARE project-specific scope from the supplied HP authorisation letter.",
+    "Added DOS coordination baseline and historical handoff."
+  ],
+  "blockers": [
+    {
+      "id": "MM-BLOCK-HP-CREDENTIAL",
+      "type": "technical_and_owner_test",
+      "status": "open",
+      "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
+      "summary": "HP/BARE credential assets must be confirmed bound, record activated and tested on iPhone."
+    },
+    {
+      "id": "MM-BLOCK-DUPLICATE",
+      "type": "data_hygiene",
+      "status": "open",
+      "summary": "Inactive duplicate HP/BARE draft MM-FRRCK7UX remains and should be removed or explicitly archived after confirming it has no bound assets."
+    },
+    {
+      "id": "MM-BLOCK-MAIL",
+      "type": "external_operational",
+      "status": "open_non_release_gate",
+      "summary": "PHP mail handoff does not prove final inbox delivery; production mail deliverability remains a follow-up."
+    },
+    {
+      "id": "MM-BLOCK-RELEASE-APPROVAL",
+      "type": "owner_approval",
+      "status": "open",
+      "summary": "PR #1 must not be merged to main without explicit Owner release approval."
+    }
+  ],
+  "owner_actions": [
+    {
+      "id": "MM-OWNER-HP-TEST",
+      "status": "required",
+      "instruction_classification": "APPROVAL_REQUEST",
+      "action": "After HP/BARE activation, test direct QR, identity card, protected HP letter and CR80 view on iPhone."
+    },
+    {
+      "id": "MM-OWNER-V1-APPROVAL",
+      "status": "required_later",
+      "instruction_classification": "APPROVAL_REQUEST",
+      "action": "Explicitly approve V1 merge/release after final QA."
+    }
+  ],
+  "approval_requests": [
+    {
+      "category": "deployment",
+      "status": "owner_executes_production_pulls",
+      "summary": "Production deploys are executed by Owner from website-v1 during release-candidate work."
+    },
+    {
+      "category": "product_publication",
+      "status": "pending",
+      "summary": "Merge/release of Website V1.0.0 from website-v1 to main."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "MM-DEC-POSITIONING",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DECISION",
+      "summary": "MysteryMarket is presented as operational audit/fieldwork execution, not as a full-service competing evaluation/reporting agency."
+    },
+    {
+      "id": "MM-DEC-VERIFY-REUSE",
+      "classification": "APPROVED_FUTURE_DIRECTION",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "confirmed",
+      "summary": "The Verify system is strategically reusable and should be preserved for reuse in other INSODEMA products/projects."
+    },
+    {
+      "id": "MM-DEC-PUBLIC-CONFIDENTIALITY",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "summary": "Public customer/partner relationships are only named in approved factual contexts; sensitive credential details may be code-gated."
+    },
+    {
+      "id": "MM-DEC-ASSET-SECURITY",
+      "classification": "CURRENT_AUTHORITY",
+      "summary": "Credential photos, logos and evidence documents live outside the public webroot and are served only through authenticated/verified asset delivery."
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "OPS",
+      "relationship": "Publicly presented INSODEMA operations tool; separate product/infrastructure."
+    },
+    {
+      "name": "ShopperMatch",
+      "relationship": "Separate INSODEMA product linked from product family strip."
+    },
+    {
+      "name": "DOS",
+      "relationship": "Consumes this PRODUCT_HANDOFF.json for Owner Command Center coordination."
+    },
+    {
+      "name": "NEXUS",
+      "relationship": "May compare this handoff with code/repository state for inconsistency detection."
+    }
+  ],
+  "deployment": {
+    "production_document_root": "/var/www/vhosts/mysterymarket.de/httpdocs",
+    "verify_asset_dir": "/var/www/vhosts/mysterymarket.de/private/verify-assets",
+    "source_branch": "website-v1",
+    "production_status": "live_release_candidate",
+    "exact_current_production_head": {
+      "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
+      "summary": "Owner has repeatedly deployed website-v1; exact HEAD after the latest HP scope/coordination commits has not yet been reconfirmed."
+    },
+    "migrations": {
+      "status": "reported_applied_for_existing_V1_tables",
+      "pending_known_schema_migration": false,
+      "note": "HP/BARE credential changes use existing audit_verifications schema."
+    }
+  },
+  "api_state": {
+    "status": "none_public",
+    "current_interfaces": [
+      "Internal PHP/MariaDB Verify flow",
+      "CLI verify-asset-bind.php",
+      "CLI verify-record.php"
+    ],
+    "future_direction": "DOS initially retrieves PRODUCT_HANDOFF.json via GitHub; signed product status/event API may be added later under DOS protocol."
+  },
+  "public_state": {
+    "website_status": "live_release_candidate",
+    "public_languages": [
+      "de",
+      "en",
+      "nl"
+    ],
+    "verify_languages": [
+      "de",
+      "en",
+      "nl",
+      "tr",
+      "ar"
+    ],
+    "current_public_named_contexts": [
+      "Vodafone / SKOPOS NEXT in approved Verify/project context"
+    ],
+    "confidentiality_note": "BARE/HP broad homepage/current-audits relationship was anonymised pending approved public context; code-gated credential may display factual authorisation details."
+  },
+  "next_recommended_action": {
+    "priority": 1,
+    "action": "Complete HP/BARE credential bindings and activation, perform real iPhone QR/PDF/card test, then update this handoff before final V1 QA.",
+    "owner_action_required": "Run/confirm production commands and mobile test.",
+    "blocker": "none after assets are correctly bound."
+  },
+  "evidence": [
+    {
+      "type": "repository",
+      "path": "AGENTS.md"
+    },
+    {
+      "type": "repository",
+      "path": "docs/RELEASE_V1.md"
+    },
+    {
+      "type": "repository",
+      "path": "VERSION"
+    },
+    {
+      "type": "repository",
+      "path": "verify.php"
+    },
+    {
+      "type": "repository",
+      "path": "verify-asset.php"
+    },
+    {
+      "type": "repository",
+      "path": "verify-card.php"
+    },
+    {
+      "type": "repository",
+      "path": "scripts/verify-record.php"
+    },
+    {
+      "type": "repository",
+      "path": "scripts/verify-asset-bind.php"
+    },
+    {
+      "type": "commit",
+      "id": "1a523002a8a697aa17f70cea7eedc5b7b06c6cf1",
+      "summary": "first-party Verify camera/security headers"
+    },
+    {
+      "type": "commit",
+      "id": "a390f5e1fbcb79186ca8b683e08b73f0ed4527fe",
+      "summary": "iPhone PDF byte-range support"
+    },
+    {
+      "type": "commit",
+      "id": "751cd6538991d07674ae4b2b2a79ad5f7a6c09df",
+      "summary": "QR direct credential anchor"
+    },
+    {
+      "type": "commit",
+      "id": "868e34180e75945ce26c6f8ed8dda9202d3506f9",
+      "summary": "HP/BARE credential scope"
+    },
+    {
+      "type": "owner_statement",
+      "date": "2026-08-30",
+      "summary": "Verify system must be remembered because it will be needed elsewhere."
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-28",
+      "summary": "Real iPhone scan of the printed/direct QR flow reported as working very well."
+    }
+  ]
+}
