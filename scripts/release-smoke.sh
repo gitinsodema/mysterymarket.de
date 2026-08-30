@@ -47,6 +47,7 @@ else
   fail=1
 fi
 
+check_status 200 "$BASE/verify"
 check_status 405 "$BASE/contact.php" PUT
 check_status 405 "$BASE/verify.php" DELETE
 check_status 403 "$BASE/verify-asset.php?code=MM-K4AD8HQR&type=document" GET
