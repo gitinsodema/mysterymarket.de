@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T15:36:00+02:00",
+  "report_generated_at": "2026-08-30T15:48:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -130,10 +130,11 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner approved a non-destructive second CSS experiment based on the preferred dark visual concept.",
-    "Added public/css/style-concept.css as an override-only theme using the existing markup and MysteryMarket navy/teal/red palette.",
-    "Added query-controlled preview loading with ?theme=concept; default V1 stylesheet remains unchanged.",
-    "Concept theme applies dark layered background, glass-like panels, high-contrast header/footer and dark OPS surfaces while preserving content and structure."
+    "Owner requested the isolated concept theme be significantly brighter and closer to the preferred visual mockup.",
+    "Concept background now uses layered bright blue light fields and blurred structural bands instead of near-black navy.",
+    "Panels were lightened with more transparent blue glass treatment.",
+    "OPS visual cards now deliberately use blue, orange and green as eye-catcher colors, with an additional violet accent for the fourth benefit card.",
+    "Hero CTA, alternating section glow and product-strip accents were strengthened to better match the preferred visual concept."
   ],
   "blockers": [
     {
@@ -330,9 +331,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the preview stylesheet and compare default V1 against ?theme=concept visually on desktop and iPhone. Keep default unchanged until Owner chooses.",
-    "owner_action_required": "Visually compare the two themes and decide whether the concept should replace, influence or remain separate from the default V1 style.",
-    "blocker": "none; experiment is isolated behind query parameter."
+    "action": "Deploy the updated concept stylesheet and visually compare ?theme=concept on desktop and iPhone. Keep default V1 untouched until Owner explicitly selects the concept direction.",
+    "owner_action_required": "Review brightness, background depth and blue/orange/green eye-catcher balance.",
+    "blocker": "none; experiment remains isolated behind ?theme=concept."
   },
   "evidence": [
     {
@@ -565,6 +566,16 @@
       "type": "owner_statement",
       "date": "2026-08-30",
       "summary": "Owner requested a second CSS closely matching the preferred generated visual concept without replacing the current design yet."
+    },
+    {
+      "type": "commit",
+      "id": "194fcf3ba095d907e24fc5158dddb27f505c33af",
+      "summary": "brighter concept background and blue/orange/green eye-catchers"
+    },
+    {
+      "type": "owner_statement",
+      "date": "2026-08-30",
+      "summary": "Owner explicitly approved blue/orange/green concept colors and asked for brighter background and mockup-like eye-catcher boxes."
     }
   ]
 }
