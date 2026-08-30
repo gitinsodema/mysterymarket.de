@@ -244,3 +244,46 @@ Post‑V1 work happens only on dedicated branches and is released incrementally 
 - security review
 - owner test
 - explicit owner approval
+
+
+## Shared location/address integration
+
+Approved direction:
+- do not build a second global postal/city database inside MysteryMarket
+- prefer the existing ATLAS location dataset/API as the central source
+- MysteryMarket stores normalized address values needed by the product
+- UI should use search/autocomplete for postal code and city, not giant global dropdowns
+
+Minimal normalized address contract:
+- `country_iso`
+- `postal_code`
+- `city`
+- `region` / state / Bundesland
+- optional stable ATLAS location identifier
+
+Desired ATLAS API capabilities:
+- country list
+- postal-code / city search
+- region/state resolution
+- normalized ISO country code
+- ideally stable IDs for returned locations
+
+This abstraction should later be reusable in:
+- Elite profile
+- Backoffice member editing
+- registration/login-adjacent onboarding forms
+- contact flows where structured location is useful
+
+Implementation waits for the actual ATLAS API contract; no speculative endpoint names or payloads are hard-coded.
+
+## Credential ownership model
+
+Credentials must belong to a person/identity, not to a login role.
+
+Reason:
+- an admin may also hold personal MysteryMarket credentials
+- Elite members hold credentials
+- Verify / QR / Apple Wallet / printed cards should all refer to the same subject identity
+- admin vs Elite is an access role, not credential ownership
+
+R1.2 will therefore introduce a credential subject/identity relationship that can be linked to a backoffice account independently of whether that account is `admin` or `elite`.
