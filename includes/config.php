@@ -20,6 +20,12 @@ function mmConfig(): array
                 'rate_limit_salt' => '',
                 'verify_asset_dir' => '',
             ],
+            'atlas' => [
+                'base_url' => 'https://atlas.insodema.com/api/v1',
+                'token' => '',
+                'product' => 'MYSTERYMARKET',
+                'timeout_seconds' => 8,
+            ],
             'legal' => [
                 'brand' => 'MysteryMarket',
                 'legal_form' => 'Einzelunternehmen',
