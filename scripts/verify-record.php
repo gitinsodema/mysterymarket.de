@@ -11,10 +11,12 @@ if (PHP_SAPI !== 'cli') {
 function vrUsage(): never
 {
     fwrite(STDERR, "Usage:\n");
+    fwrite(STDERR, "  php scripts/verify-record.php list-personal\n");
     fwrite(STDERR, "  php scripts/verify-record.php status <reference>\n");
     fwrite(STDERR, "  php scripts/verify-record.php validity <reference> <YYYY-MM-DD|-> <YYYY-MM-DD|->\n");
     fwrite(STDERR, "  php scripts/verify-record.php activate <reference>\n");
     fwrite(STDERR, "  php scripts/verify-record.php deactivate <reference>\n");
+    fwrite(STDERR, "  php scripts/verify-record.php scope <reference> <scope-key|->\n");
     fwrite(STDERR, "  php scripts/verify-record.php clone-personal <source-reference> <agency> <project> <brand> <YYYY-MM-DD|-> <YYYY-MM-DD|->\n");
     exit(2);
 }
@@ -49,12 +51,39 @@ $args = $_SERVER['argv'] ?? [];
 $action = strtolower(trim((string)($args[1] ?? '')));
 $reference = strtoupper(trim((string)($args[2] ?? '')));
 
-if (!in_array($action, ['status','validity','activate','deactivate','clone-personal'], true)
-    || !preg_match('/^[A-Z0-9-]{4,64}$/', $reference)) {
+if (!in_array($action, ['list-personal','status','validity','activate','deactivate','scope','clone-personal'], true)) {
     vrUsage();
 }
 
 $pdo = mmDb();
+
+if ($action === 'list-personal') {
+    $stmt = $pdo->query(
+        'SELECT reference_code, person_name, agency_name, project_name, brand_name,
+                valid_from, valid_until, scope_key, document_enabled, is_active
+         FROM audit_verifications
+         WHERE is_personal_verification = 1
+         ORDER BY id DESC'
+    );
+    foreach ($stmt->fetchAll() ?: [] as $row) {
+        echo implode(' | ', [
+            (string)$row['reference_code'],
+            (string)($row['person_name'] ?: '—'),
+            (string)($row['agency_name'] ?: '—'),
+            (string)($row['brand_name'] ?: '—'),
+            (string)($row['valid_from'] ?: 'open'),
+            (string)($row['valid_until'] ?: 'open'),
+            (string)($row['scope_key'] ?: '—'),
+            'document=' . ((int)$row['document_enabled'] === 1 ? 'yes' : 'no'),
+            'active=' . ((int)$row['is_active'] === 1 ? 'yes' : 'no'),
+        ]) . PHP_EOL;
+    }
+    exit(0);
+}
+
+if (!preg_match('/^[A-Z0-9-]{4,64}$/', $reference)) {
+    vrUsage();
+}
 
 if ($action === 'clone-personal') {
     $agency = trim((string)($args[3] ?? ''));
@@ -155,6 +184,26 @@ if ($action === 'status') {
     foreach ($stmt->fetch() ?: [] as $key => $value) {
         echo $key . ': ' . ($value === null || $value === '' ? '—' : (string)$value) . PHP_EOL;
     }
+    exit(0);
+}
+
+if ($action === 'scope') {
+    $scopeKey = trim((string)($args[3] ?? ''));
+    $allowedScopes = ['vodafone_skopos_2026','hp_bare_retail_2025_2026'];
+
+    if ($scopeKey === '-') {
+        $scopeKey = null;
+    } elseif (!in_array($scopeKey, $allowedScopes, true)) {
+        fwrite(STDERR, "[FAIL] Unknown scope key. Allowed: " . implode(', ', $allowedScopes) . " or -\n");
+        exit(1);
+    }
+
+    $stmt = $pdo->prepare(
+        'UPDATE audit_verifications SET scope_key = :scope_key WHERE reference_code = :reference'
+    );
+    $stmt->execute(['scope_key' => $scopeKey, 'reference' => $reference]);
+
+    echo "[PASS] Scope updated for {$reference}: " . ($scopeKey ?? 'none') . PHP_EOL;
     exit(0);
 }
 
