@@ -3,7 +3,8 @@
 
 ALTER TABLE elite_members
     ADD COLUMN IF NOT EXISTS administrative_unit_atlas_id VARCHAR(191) NULL AFTER country_code,
-    ADD COLUMN IF NOT EXISTS postal_area_atlas_id VARCHAR(191) NULL AFTER administrative_unit_atlas_id,
+    ADD COLUMN IF NOT EXISTS administrative_unit_name VARCHAR(160) NULL AFTER administrative_unit_atlas_id,
+    ADD COLUMN IF NOT EXISTS postal_area_atlas_id VARCHAR(191) NULL AFTER administrative_unit_name,
     ADD COLUMN IF NOT EXISTS locality_atlas_id VARCHAR(191) NULL AFTER postal_code,
     ADD COLUMN IF NOT EXISTS locality_name VARCHAR(160) NULL AFTER locality_atlas_id,
     ADD COLUMN IF NOT EXISTS street_atlas_id VARCHAR(191) NULL AFTER locality_name,
