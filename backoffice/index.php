@@ -61,7 +61,7 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
       <a class="backoffice-module" href="/backoffice/members.php"><span>01</span><strong>Elite Shopper</strong><small>Mitglieder & Status</small></a>
       <article class="backoffice-module"><span>02</span><strong>Credentials</strong><small>Ausweise & QR · R1.2</small></article>
       <article class="backoffice-module"><span>03</span><strong>Kommunikation</strong><small>Agentur-Freigaben</small></article>
-      <article class="backoffice-module"><span>04</span><strong>Kontakte</strong><small>Read-only Anfragen</small></article>
+      <a class="backoffice-module" href="/backoffice/contacts.php"><span>04</span><strong>Kontakte</strong><small>Read-only Anfragen</small></a>
       <a class="backoffice-module" href="/backoffice/feed.php"><span>05</span><strong>Elite Feed</strong><small>Interne Hinweise</small></a>
       <article class="backoffice-module"><span>06</span><strong>Einstellungen</strong><small>Backoffice-Konfiguration</small></article>
     <?php else: ?>
