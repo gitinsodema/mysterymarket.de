@@ -234,3 +234,47 @@ function mmCredentialIntegrityErrors(array $row): array
 
     return array_values(array_unique($errors));
 }
+
+
+function mmAppleWalletReadiness(): array
+{
+    $wallet = mmConfig()['apple_wallet'] ?? [];
+    $issues = [];
+
+    if (empty($wallet['enabled'])) {
+        $issues[] = 'Apple Wallet ist noch nicht aktiviert.';
+    }
+    if (trim((string)($wallet['pass_type_identifier'] ?? '')) === '') {
+        $issues[] = 'Pass Type Identifier fehlt.';
+    }
+    if (trim((string)($wallet['team_identifier'] ?? '')) === '') {
+        $issues[] = 'Apple Team Identifier fehlt.';
+    }
+
+    $certificatePath = trim((string)($wallet['certificate_path'] ?? ''));
+    if ($certificatePath === '' || !is_file($certificatePath) || !is_readable($certificatePath)) {
+        $issues[] = 'Pass-Signaturzertifikat fehlt oder ist nicht lesbar.';
+    }
+
+    $wwdrPath = trim((string)($wallet['wwdr_certificate_path'] ?? ''));
+    if ($wwdrPath === '' || !is_file($wwdrPath) || !is_readable($wwdrPath)) {
+        $issues[] = 'Apple WWDR-Zertifikat fehlt oder ist nicht lesbar.';
+    }
+
+    return [
+        'ready'=>$issues === [],
+        'issues'=>$issues,
+    ];
+}
+
+function mmCredentialOutputIsPhysical(string $type): bool
+{
+    return in_array($type, [
+        'physical_card',
+        'transparent_holder',
+        'mysterymarket_lanyard',
+        'elite_shopper_lanyard',
+        'full_set',
+        'replacement_card',
+    ], true);
+}
