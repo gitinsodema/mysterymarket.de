@@ -516,7 +516,7 @@ $rtl = $verifyLang === 'ar';
         </div>
       <?php endif; ?>
     <?php endif; ?>
-    <form method="post" action="/verify.php?lang=<?= mmEscape(mmLanguage()) ?>&verify_lang=<?= mmEscape($verifyLang) ?>#credential">
+    <form method="post" action="/verify?lang=<?= mmEscape(mmLanguage()) ?>&verify_lang=<?= mmEscape($verifyLang) ?>#credential">
       <label><?= mmEscape($c['label']) ?>
         <input name="code" maxlength="64" autocomplete="off" placeholder="MM-26-XXXX" value="<?= mmEscape($code) ?>" required>
       </label>
