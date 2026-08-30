@@ -35,7 +35,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $displayName = trim((string)($_POST['display_name'] ?? ''));
             $organisation = trim((string)($_POST['organisation'] ?? ''));
             $phone = trim((string)($_POST['phone'] ?? ''));
-            $address1 = trim((string)($_POST['address_line1'] ?? ''));
+            $streetName = trim((string)($_POST['street_name'] ?? ''));
+            $houseNumber = trim((string)($_POST['house_number'] ?? ''));
+            $address1 = trim($streetName . ($streetName !== '' && $houseNumber !== '' ? ' ' : '') . $houseNumber);
+            if ($address1 === '') {
+                $address1 = trim((string)($_POST['address_line1_fallback'] ?? ''));
+            }
             $address2 = trim((string)($_POST['address_line2'] ?? ''));
             $postal = trim((string)($_POST['postal_code'] ?? ''));
             $city = trim((string)($_POST['city_manual'] ?? ''));
@@ -49,8 +54,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $localityAtlasId = trim((string)($_POST['locality_atlas_id'] ?? ''));
             $localityName = trim((string)($_POST['locality_name'] ?? $city));
             $streetAtlasId = trim((string)($_POST['street_atlas_id'] ?? ''));
-            $streetName = trim((string)($_POST['street_name'] ?? ''));
-            $houseNumber = trim((string)($_POST['house_number'] ?? ''));
             $regions = trim((string)($_POST['preferred_regions'] ?? ''));
             $mobility = trim((string)($_POST['mobility_profile'] ?? ''));
             $shopperMatch = trim((string)($_POST['shoppermatch_profile_url'] ?? ''));
@@ -204,14 +207,27 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
       <input type="hidden" name="locality_atlas_id" data-atlas-locality-id value="<?= mmEscape((string)($member['locality_atlas_id'] ?? '')) ?>">
       <input type="hidden" name="locality_name" data-atlas-locality-name value="<?= mmEscape((string)($member['locality_name'] ?? $member['city'] ?? '')) ?>">
       <input type="hidden" name="street_atlas_id" value="<?= mmEscape((string)($member['street_atlas_id'] ?? '')) ?>">
-      <input type="hidden" name="street_name" value="<?= mmEscape((string)($member['street_name'] ?? '')) ?>">
-      <input type="hidden" name="house_number" value="<?= mmEscape((string)($member['house_number'] ?? '')) ?>">
+
       <label>Name<input name="display_name" maxlength="150" required value="<?= mmEscape((string)$member['display_name']) ?>"></label>
       <label>Organisation<input name="organisation" maxlength="200" value="<?= mmEscape((string)($member['organisation'] ?? '')) ?>"></label>
       <label>Telefon<input name="phone" maxlength="60" value="<?= mmEscape((string)($member['phone'] ?? '')) ?>"></label>
       <div class="form-grid">
-        <label>Straße / Hausnummer<input name="address_line1" maxlength="200" value="<?= mmEscape((string)($member['address_line1'] ?? '')) ?>"></label>
+        <label>Straße
+          <input name="street_name" maxlength="200" data-atlas-street list="atlas-street-options" autocomplete="address-line1"
+                 value="<?= mmEscape((string)($member['street_name'] ?? '')) ?>"
+                 placeholder="Straße eingeben">
+          <datalist id="atlas-street-options" data-atlas-street-options></datalist>
+          <small class="field-hint" data-atlas-street-status>ATLAS-Suche ab 2 Zeichen; Freitext bleibt möglich.</small>
+        </label>
+        <label>Hausnummer
+          <input name="house_number" maxlength="40" data-atlas-house-number value="<?= mmEscape((string)($member['house_number'] ?? '')) ?>">
+        </label>
         <label>Adresszusatz<input name="address_line2" maxlength="200" value="<?= mmEscape((string)($member['address_line2'] ?? '')) ?>"></label>
+        <label>Straße / Adresse manuell
+          <input name="address_line1_fallback" maxlength="200" placeholder="Nur falls keine strukturierte Straße verfügbar ist"
+                 value="<?= empty($member['street_name']) ? mmEscape((string)($member['address_line1'] ?? '')) : '' ?>">
+          <small class="field-hint">Fallback ohne erfundene ATLAS-ID.</small>
+        </label>
         <label>Land
           <select name="country_code" data-atlas-country data-current-country="<?= mmEscape((string)($member['country_code'] ?? '')) ?>">
             <?php if (!empty($member['country_code'])): ?>
