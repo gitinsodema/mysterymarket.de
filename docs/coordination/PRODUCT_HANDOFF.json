@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T17:12:00+02:00",
+  "report_generated_at": "2026-08-30T20:18:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,11 +20,11 @@
   "current_state": {
     "current_version": "1.0.0",
     "target_release": "1.0.0 production",
-    "lifecycle_phase": "released",
-    "active_branch": "main",
+    "lifecycle_phase": "post_v1_r1_1_backoffice_foundation",
+    "active_branch": "r1.1-little-backoffice",
     "default_branch": "main",
-    "pull_request": 1,
-    "pull_request_state": "merged",
+    "pull_request": null,
+    "pull_request_state": "not_opened",
     "production_domain": "mysterymarket.de",
     "runtime": "PHP 8.5 + MariaDB 12.3.3 + Plesk",
     "positioning": "Operational audit and fieldwork partner for agencies and direct clients; not positioned as a competing full-service evaluation/reporting agency.",
@@ -39,7 +39,11 @@
       "Protected private identity/logo/document assets outside webroot",
       "Project-specific authorisation scopes",
       "iPhone-compatible protected PDF delivery with byte-range support",
-      "Printable CR80 auditor ID with local QR generation"
+      "Printable CR80 auditor ID with local QR generation",
+      "R1.1 private backoffice authentication foundation",
+      "R1.1 Elite member lifecycle data model",
+      "R1.1 private Elite feed data model",
+      "R1.1 agency approval tracking foundation"
     ]
   },
   "release_progress": {
@@ -130,11 +134,11 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner explicitly approved V1 release/merge.",
-    "PR #1 release candidate head 2c27de4 was promoted to main.",
-    "GitHub now records PR #1 as merged at commit 2c27de4d72cf9a745775c0c012e29c01c4a39a51.",
-    "MysteryMarket V1.0.0 is released on main.",
-    "Known non-release follow-ups remain mail deliverability, contact retention policy and future deployment artifact separation."
+    "Owner ran the R1.1 backoffice integrity review in production twice and confirmed zero warnings/failures.",
+    "Production integrity evidence: 5 active agencies, 1 active Elite shopper, warnings=0, MYSTERYMARKET_BACKOFFICE_REVIEW_OK.",
+    "Added docs/R1_1_RELEASE_REVIEW.md summarizing completed R1.1 scope, production evidence, deferred mobile QA and explicit close criteria.",
+    "Added scripts/r1.1-technical-gate.php to run preflight, backoffice integrity review and ATLAS smoke as one reproducible technical gate.",
+    "Preflight now requires the R1.1 release review document and technical gate script."
   ],
   "blockers": [
     {
@@ -274,6 +278,62 @@
       "source_authority": "Owner",
       "verification_status": "implemented",
       "summary": "MysteryMarket V1 will release with the established light layout; the experimental dark concept theme will not be publicly selectable."
+    },
+    {
+      "id": "MM-DEC-ELITE-SHOPPERMATCH-BOUNDARY",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "documented",
+      "summary": "MysteryMarket Elite provides private member information and may announce project opportunities seen by the admin; ShopperMatch remains a separate job/matching system and is not mixed into each MysteryMarket project post."
+    },
+    {
+      "id": "MM-DEC-APPLE-WALLET-CREDENTIAL",
+      "classification": "APPROVED_FUTURE_DIRECTION",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "technically feasible",
+      "summary": "R1.2 will target a real Apple Wallet pass for Elite Shopper credentials, with MysteryMarket Verify remaining authoritative."
+    },
+    {
+      "id": "MM-DEC-ATLAS-ADDRESS-SOURCE",
+      "classification": "APPROVED_FUTURE_DIRECTION",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "documented",
+      "summary": "Use ATLAS as the central location/address source for country/postal/city/region data rather than duplicating a global dataset inside MysteryMarket."
+    },
+    {
+      "id": "MM-DEC-SEMANTIC-STATUS-COLORS",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "implemented",
+      "summary": "Green means OK/active/approved; amber means open/new/draft/requested/parked; red means rejected/suspended/ended/expired/failed; blue/grey is informational/neutral."
+    },
+    {
+      "id": "MM-DEC-CREDENTIAL-SUBJECT-IDENTITY",
+      "classification": "APPROVED_FUTURE_DIRECTION",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "documented",
+      "summary": "Credentials belong to a person/identity independently of admin/Elite role so admins can also hold and view their own credentials."
+    },
+    {
+      "id": "MM-DEC-WALLET-IN-CREDENTIAL-ORDERING",
+      "classification": "APPROVED_FUTURE_DIRECTION",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "documented",
+      "summary": "Apple Wallet is a first-class issuance option inside 'Ausweis bestellen', using the same credential identity/lifecycle as physical outputs."
+    },
+    {
+      "id": "MM-DEC-ATLAS-V1-CONTRACT",
+      "classification": "CURRENT_AUTHORITY",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "ATLAS approved shared INSODEMA geography contract",
+      "verification_status": "copied_to_active_branch_and_integration_prepared",
+      "summary": "MysteryMarket consumes ATLAS Geography Reference API v1 server-to-server using its own MYSTERYMARKET token and canonical ATLAS IDs."
     }
   ],
   "dependencies": [
@@ -339,8 +399,8 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Treat main as the released V1.0.0 baseline. Start all new functionality in a new post-release branch and preserve Verify as reusable infrastructure.",
-    "owner_action_required": "none",
+    "action": "Deploy and run scripts/r1.1-technical-gate.php. If it returns MYSTERYMARKET_R1_1_TECHNICAL_GATE_OK, R1.1 is technically ready for explicit Owner release approval. Mobile/iPhone visual polish remains deferred and non-blocking.",
+    "owner_action_required": "Run the technical gate and, only if satisfied, provide explicit R1.1 release approval.",
     "blocker": "none"
   },
   "evidence": [
@@ -729,6 +789,311 @@
       "type": "merge",
       "id": "2c27de4d72cf9a745775c0c012e29c01c4a39a51",
       "summary": "PR #1 merged/promoted to main as V1.0.0"
+    },
+    {
+      "type": "commit",
+      "id": "817dcd920e5996e5cd76c6eab599dc6985830c54",
+      "summary": "post-V1 Elite Backoffice roadmap"
+    },
+    {
+      "type": "commit",
+      "id": "ac3a14b1a5083c02768098cea3c820eac3026ad4",
+      "summary": "R1.1 backoffice data model"
+    },
+    {
+      "type": "commit",
+      "id": "fdafe7ca29db8c84c7e8a757f5b3ed71ded9d0b1",
+      "summary": "secure backoffice auth foundation"
+    },
+    {
+      "type": "commit",
+      "id": "76cd6243dbeea8f1df48b4dcb19f6a2df7443559",
+      "summary": "private backoffice login"
+    },
+    {
+      "type": "commit",
+      "id": "77e1ba354430fdab3cb68644f2113f969bad34e7",
+      "summary": "role-aware backoffice shell"
+    },
+    {
+      "type": "commit",
+      "id": "7c5f1bd8ab7933f2769cb41052aa9fbf960f937d",
+      "summary": "secure backoffice logout"
+    },
+    {
+      "type": "commit",
+      "id": "17f85153dc5c0537b0f651f1fc169911890b0f4b",
+      "summary": "backoffice account bootstrap CLI"
+    },
+    {
+      "type": "web_research",
+      "date": "2026-08-30",
+      "summary": "Apple official Wallet documentation confirms signed passes can be distributed from a website and optionally updated through a web service."
+    },
+    {
+      "type": "commit",
+      "id": "50d8189a9a189f68954d06168c3e73ac1caec11d",
+      "summary": "idempotent R1.1 backoffice migration runner"
+    },
+    {
+      "type": "commit",
+      "id": "a411b6613d45b3f126850124c561b9bae710da87",
+      "summary": "Elite member list"
+    },
+    {
+      "type": "commit",
+      "id": "e62b4047ec4718424eef6802a34813cb945d97e4",
+      "summary": "invited Elite member creation"
+    },
+    {
+      "type": "commit",
+      "id": "9fd4e77400c8c095b50ee55890722b8e14603767",
+      "summary": "private Elite feed"
+    },
+    {
+      "type": "commit",
+      "id": "0d18e5017934c852e6412acb2bf8cb46eef9d7b7",
+      "summary": "admin Elite feed editor"
+    },
+    {
+      "type": "commit",
+      "id": "14ee4c501fc521c50e77ba6a287a15afff88465c",
+      "summary": "operational backoffice dashboard"
+    },
+    {
+      "type": "commit",
+      "id": "cb59d3c9bf96a694711d12260fb1136eb08064a1",
+      "summary": "Elite member detail and status management"
+    },
+    {
+      "type": "commit",
+      "id": "93aba259937c2295f5cfd93f2ebf3770aaf2ae29",
+      "summary": "R1.1 operational page preflight coverage"
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "Owner reported successful admin login and successful Dashboard/Elite Feed test."
+    },
+    {
+      "type": "commit",
+      "id": "c4dd4a8459ef87a1d2a1f8b77a602a83ae22a44b",
+      "summary": "compact backoffice footer"
+    },
+    {
+      "type": "commit",
+      "id": "60c77a50e2e70a5184f1af5cc785b2efecd2ca26",
+      "summary": "read-only contact inbox"
+    },
+    {
+      "type": "commit",
+      "id": "c8f91f2915dd493035b580f7fa6156cd8a0dd1f8",
+      "summary": "contact detail and internal status"
+    },
+    {
+      "type": "commit",
+      "id": "338c543c524cc58ac2585acdc47ba1b8b5a863c0",
+      "summary": "backoffice contact/footer styling"
+    },
+    {
+      "type": "commit",
+      "id": "3e082e67c934dfb43742a4b801fd245789d3305d",
+      "summary": "contact inbox preflight coverage"
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "Owner confirmed all six stored contacts are test submissions."
+    },
+    {
+      "type": "commit",
+      "id": "56b1aca219e1ca2a3ff24aa76f331451a438417e",
+      "summary": "agency approval overview"
+    },
+    {
+      "type": "commit",
+      "id": "2c44f3569dd4525bc5c6c7dc33cf1cb82bffe96b",
+      "summary": "agency approval creation"
+    },
+    {
+      "type": "commit",
+      "id": "25863408907e83e315707fb94470d30ceb723337",
+      "summary": "agency approval detail and status tracking"
+    },
+    {
+      "type": "commit",
+      "id": "fd25d61642e60855c09abaac4d5b917f60d7a92f",
+      "summary": "dashboard link to agency approvals"
+    },
+    {
+      "type": "commit",
+      "id": "e658b7bcde64332c0b49b5e44a5c75b25475b687",
+      "summary": "agency approval preflight coverage"
+    },
+    {
+      "type": "commit",
+      "id": "afe4d07e8b8386ae449a8dfc8c24bf7f56d02024",
+      "summary": "Elite activation token table"
+    },
+    {
+      "type": "commit",
+      "id": "b77d2ca1f913fdfb91eafe2503daff7dab6e84e7",
+      "summary": "migration runner applies activation schema"
+    },
+    {
+      "type": "commit",
+      "id": "aa8e35acedf593b4fa450f0c2be8969cb960eb13",
+      "summary": "secure activation-token helpers"
+    },
+    {
+      "type": "commit",
+      "id": "6b55bab3ee3e10aa336dbb16d3da4f9d6cd6a9f5",
+      "summary": "admin manual activation-link generation"
+    },
+    {
+      "type": "commit",
+      "id": "8c82f6f1bac707f283bcbcc1e3a20c7e39850c5a",
+      "summary": "Elite password activation page"
+    },
+    {
+      "type": "commit",
+      "id": "1de75a1301772a128a384f415c861882170a72ed",
+      "summary": "per-request account-state revalidation"
+    },
+    {
+      "type": "commit",
+      "id": "5a9ee560fa9c0184999361b783ffbb5d5506ff31",
+      "summary": "restrict activation link generation to pre-active members"
+    },
+    {
+      "type": "commit",
+      "id": "93f88e36389e45b9eeb5b998d3cbf27943b445cb",
+      "summary": "activation-flow preflight coverage"
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "Owner confirmed successful Elite activation; no email was sent, consistent with the manual-link R1.1 design."
+    },
+    {
+      "type": "owner_ux_feedback",
+      "date": "2026-08-30",
+      "summary": "Password minimum-length feedback was initially too subtle during activation."
+    },
+    {
+      "type": "commit",
+      "id": "f4f46073dd769506a3701f3e48dedd86eac4c5f5",
+      "summary": "visible Elite password requirement"
+    },
+    {
+      "type": "commit",
+      "id": "0b850b004476f07cad832449f2001ab003ce5ccd",
+      "summary": "immediate activation password validation feedback"
+    },
+    {
+      "type": "commit",
+      "id": "8ac67f55c65d3a75d871df31ae2adeacf4e1340e",
+      "summary": "Elite membership request schema"
+    },
+    {
+      "type": "commit",
+      "id": "0846dd2dcf426606c4d51da99932a38aa6063392",
+      "summary": "membership request migration runner"
+    },
+    {
+      "type": "commit",
+      "id": "f343a84e90f3c5d4814d113c7bc48de32d75226b",
+      "summary": "Elite profile and membership self-service"
+    },
+    {
+      "type": "commit",
+      "id": "3c8b18880c087e42e34d7964ccd3c7fe109f9ab4",
+      "summary": "admin membership request workflow"
+    },
+    {
+      "type": "commit",
+      "id": "cbc3dd0dbf53291abff5582125ce083afc7fef4e",
+      "summary": "dashboard links and open request count"
+    },
+    {
+      "type": "commit",
+      "id": "b006c445ac9acd4cea1e779826ab497050b23475",
+      "summary": "Elite profile and validation styling"
+    },
+    {
+      "type": "commit",
+      "id": "99740a41e58c898d88443d918e3c2ae8e870ac18",
+      "summary": "Elite self-service preflight coverage"
+    },
+    {
+      "type": "owner_api_preview",
+      "date": "2026-08-30",
+      "summary": "ATLAS preview includes GET countries, subdivisions, postal areas, postal-area lookup, streets autocomplete and POST geo containment."
+    },
+    {
+      "type": "commit",
+      "id": "94e32609351ee312be6a0d3a3a3d1b5e94f98b78",
+      "summary": "agency master-data schema"
+    },
+    {
+      "type": "commit",
+      "id": "367b88d82350d1feeb50d997413f11c63ebd6a8e",
+      "summary": "agency overview"
+    },
+    {
+      "type": "commit",
+      "id": "6f3fa58f63236b1240e2824f65f131d2486d48df",
+      "summary": "agency creation"
+    },
+    {
+      "type": "commit",
+      "id": "7972c6fc16ca70734bcaa51fa7c7eec18e4589d8",
+      "summary": "agency editing"
+    },
+    {
+      "type": "commit",
+      "id": "d5cfcbb6ca5a57e8f8f7b27cca0579db2a8b2fe6",
+      "summary": "Elite Feed agency selector"
+    },
+    {
+      "type": "commit",
+      "id": "1d017d0653eaf4280c62ef0296a5bdcbcf311f4d",
+      "summary": "agency approval selector binding fix"
+    },
+    {
+      "type": "commit",
+      "id": "1abb1b491e2446d3801f7e3e2a2605a2a72b158a",
+      "summary": "dashboard agency link"
+    },
+    {
+      "type": "commit",
+      "id": "e9952db1e3d3c9f7e2d62499814a7eb1ae10efe4",
+      "summary": "agency module preflight coverage"
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "ATLAS smoke returned status=200, [PASS] authentication and country lookup, countries=249, MYSTERYMARKET_ATLAS_SMOKE_OK."
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "ATLAS street lookup returned status=200 and first street Hohe Straße with stable street/locality/postal ATLAS IDs."
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "Owner reported the full ATLAS address flow 100% successful, including a difficult real-world address."
+    },
+    {
+      "type": "owner_directive",
+      "date": "2026-08-30",
+      "summary": "Owner explicitly deferred mobile review and requested continued R1.1 work in context."
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "R1.1 backoffice integrity review passed with active_agencies=5, active_elite=1, warnings=0 and MYSTERYMARKET_BACKOFFICE_REVIEW_OK."
     }
   ]
 }
