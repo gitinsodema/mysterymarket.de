@@ -76,7 +76,7 @@ mmHeader('Kontaktanfrage', 'Read-only Kontaktanfrage im MysteryMarket Backoffice
 
     <article class="card">
       <span class="badge">Systemstatus</span>
-      <p><strong>Status:</strong> <?= mmEscape((string)$row['status']) ?></p>
+      <p><strong>Status:</strong> <?= mmBackofficeStatusBadge((string)$row['status']) ?></p>
       <p><strong>Notification:</strong> <?= mmEscape((string)($row['notification_sent_at'] ?: $row['notification_failed_at'] ?: '—')) ?></p>
       <p><strong>Bestätigung:</strong> <?= mmEscape((string)($row['confirmation_sent_at'] ?: $row['confirmation_failed_at'] ?: '—')) ?></p>
       <p><strong>Privacy acknowledged:</strong> <?= mmEscape((string)$row['privacy_acknowledged_at']) ?></p>
