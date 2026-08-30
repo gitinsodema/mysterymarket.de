@@ -207,6 +207,40 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
 
+            if ($action === 'activate') {
+                $fresh = mmCredentialAdminFetch($id);
+                if (!$fresh || (int)$fresh['is_active'] === 1) {
+                    throw new RuntimeException('Der Ausweis ist nicht als inaktiver Draft verfügbar.');
+                }
+
+                $integrityErrors = mmCredentialIntegrityErrors($fresh);
+                if ($integrityErrors !== []) {
+                    throw new RuntimeException(
+                        'Aktivierung blockiert: ' . implode('; ', $integrityErrors)
+                    );
+                }
+
+                $stmt = mmDb()->prepare(
+                    'UPDATE audit_verifications
+                     SET is_active = 1, updated_at = NOW()
+                     WHERE id = :id
+                       AND is_personal_verification = 1
+                       AND is_active = 0'
+                );
+                $stmt->execute(['id'=>$id]);
+
+                if ($stmt->rowCount() !== 1) {
+                    throw new RuntimeException('Aktivierung konnte nicht eindeutig gespeichert werden.');
+                }
+
+                mmBackofficeAudit((int)$user['id'], 'verify_credential.activated', 'audit_verification', $id, [
+                    'reference_code'=>(string)$fresh['reference_code']
+                ]);
+
+                header('Location: /backoffice/credential.php?id=' . $id . '&activated=1', true, 303);
+                exit;
+            }
+
             throw new InvalidArgumentException('Unbekannte Aktion.');
         } catch (InvalidArgumentException|RuntimeException $e) {
             $error = $e->getMessage();
@@ -218,6 +252,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
 $credential = mmCredentialAdminFetch($id);
 $state = mmCredentialVerifyState($credential);
+$integrityErrors = mmCredentialIntegrityErrors($credential);
+$activationReady = (int)$credential['is_active'] !== 1 && $integrityErrors === [];
 
 $assets = [
     'Foto'=>$credential['photo_asset'] ?? null,
@@ -246,6 +282,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
   <?php if (isset($_GET['scope_saved'])): ?><div class="alert success"><strong>Scope gespeichert.</strong></div><?php endif; ?>
   <?php if (isset($_GET['asset_saved'])): ?><div class="alert success"><strong>Asset sicher gespeichert und gebunden.</strong></div><?php endif; ?>
   <?php if (isset($_GET['asset_removed'])): ?><div class="alert success"><strong>Asset-Bindung entfernt.</strong></div><?php endif; ?>
+  <?php if (isset($_GET['activated'])): ?><div class="alert success"><strong>Verify-Ausweis aktiviert.</strong> Der Datensatz ist jetzt produktiv und über Verify gültig, sofern er im Gültigkeitszeitraum liegt.</div><?php endif; ?>
   <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
 
   <div class="grid two">
@@ -342,6 +379,43 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
         <?php if ((int)$credential['is_active'] !== 1): ?><button type="submit">Scope speichern</button><?php endif; ?>
       </form>
     </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="form-card credential-activation-card">
+    <div class="section-head">
+      <p class="eyebrow">Freigabe</p>
+      <h2>Verify-Aktivierung.</h2>
+      <?php if ((int)$credential['is_active'] === 1): ?>
+        <p>Dieser Ausweis ist aktiv und produktiv.</p>
+      <?php elseif ($activationReady): ?>
+        <p>Alle Integritätsbedingungen sind erfüllt. Der Ausweis kann jetzt produktiv aktiviert werden.</p>
+      <?php else: ?>
+        <p>Die Aktivierung bleibt gesperrt, bis alle Pflichtbestandteile vollständig und technisch gültig sind.</p>
+      <?php endif; ?>
+    </div>
+
+    <?php if ((int)$credential['is_active'] !== 1): ?>
+      <?php if ($integrityErrors !== []): ?>
+        <div class="credential-integrity-block">
+          <strong>Noch offen:</strong>
+          <ul>
+            <?php foreach ($integrityErrors as $integrityError): ?>
+              <li><?= mmEscape($integrityError) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      <?php else: ?>
+        <div class="alert success"><strong>Integritätsprüfung vollständig.</strong> Foto, Logos, Scope, Dokument, Laufzeit und private Dateien sind gültig.</div>
+        <form method="post" action="/backoffice/credential.php?id=<?= $id ?>" class="credential-activate-form" onsubmit="return confirm('Verify-Ausweis <?= mmEscape((string)$credential['reference_code']) ?> wirklich produktiv aktivieren?');">
+          <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+          <input type="hidden" name="id" value="<?= $id ?>">
+          <input type="hidden" name="action" value="activate">
+          <button type="submit">Ausweis produktiv aktivieren</button>
+        </form>
+      <?php endif; ?>
+    <?php endif; ?>
   </div>
 </section>
 
