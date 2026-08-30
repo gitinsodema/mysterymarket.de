@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $root = dirname(__DIR__);
 $required = [
-    '.htaccess','VERSION','AI_START_HERE.md','docs/RELEASE_V1.md','docs/coordination/README.md','docs/coordination/PRODUCT_HANDOFF.json',
+    '.htaccess','VERSION','AI_START_HERE.md','docs/RELEASE_V1.md','docs/SECURITY_REVIEW_V1.md','docs/coordination/README.md','docs/coordination/PRODUCT_HANDOFF.json',
     'index.php','404.php','services.php','audits.php','verify.php','verify-asset.php','verify-card.php','tools.php','elite-shopper.php','about.php','contact.php',
     'legal-notice.php','privacy.php',
     'includes/site.php','includes/config.php','includes/db.php','includes/i18n.php','includes/content.php',
@@ -26,6 +26,27 @@ if (str_contains($htaccess, 'Permissions-Policy "camera=(self), microphone=(), g
     echo "[PASS] first-party Verify camera permission is configured\n";
 } else {
     fwrite(STDERR, "[FAIL] Verify camera Permissions-Policy is missing or too restrictive\n");
+    $failures++;
+}
+
+if (str_contains($htaccess, 'config|database|docs|includes|internal|lang|scripts')) {
+    echo "[PASS] internal coordination web access is blocked\n";
+} else {
+    fwrite(STDERR, "[FAIL] docs/ or another internal directory is not blocked by .htaccess\n");
+    $failures++;
+}
+
+if (str_contains($htaccess, 'Content-Security-Policy')) {
+    echo "[PASS] Content-Security-Policy is configured\n";
+} else {
+    fwrite(STDERR, "[FAIL] Content-Security-Policy is missing\n");
+    $failures++;
+}
+
+if (str_contains($htaccess, 'Cross-Origin-Opener-Policy "same-origin"')) {
+    echo "[PASS] Cross-Origin-Opener-Policy is configured\n";
+} else {
+    fwrite(STDERR, "[FAIL] Cross-Origin-Opener-Policy is missing\n");
     $failures++;
 }
 
