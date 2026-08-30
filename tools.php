@@ -61,6 +61,9 @@ mmHeader($c['title'], $c['lead']);
 <section class="section ops-preview-section">
   <div class="section-head"><p class="eyebrow"><?= mmEscape($c['preview']) ?></p><h2><?= mmEscape($c['preview_title']) ?></h2><p class="lead"><?= mmEscape($c['preview_lead']) ?></p></div>
   <div class="ops-preview-stage" aria-label="<?= mmEscape($c['preview_title']) ?>">
+    <div class="concept-only concept-ops-chip concept-ops-chip-a">+ Route Match</div>
+    <div class="concept-only concept-ops-chip concept-ops-chip-b">Mobility Profile</div>
+    <div class="concept-only concept-ops-chip concept-ops-chip-c">Next Best Action</div>
     <div class="ops-desktop">
       <div class="ops-window-bar"><span></span><span></span><span></span><strong><?= mmEscape($c['desktop_label']) ?></strong></div>
       <div class="ops-window-body">
