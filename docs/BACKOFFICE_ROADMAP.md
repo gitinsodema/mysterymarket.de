@@ -1,8 +1,8 @@
 # MysteryMarket Post‑V1 Backoffice Roadmap
 
 Status: Owner-approved direction
-Baseline: MysteryMarket V1.0.0 on `main`
-Active development branch: `r1.1-little-backoffice`
+Baseline: MysteryMarket R1.1.0 on `main`
+Active development branch: `r1.2-credentials`
 
 ## Product boundary
 
@@ -132,6 +132,20 @@ Track items such as logo/brand usage approval:
 No full email client in R1.1.
 
 ## R1.2 — Credentials
+
+Implementation status: started on `r1.2-credentials`.
+
+First foundation implemented:
+- role-independent `credential_subjects`
+- personal `credentials` lifecycle records
+- central `credential_orders` for Apple Wallet and physical issuance/equipment
+- Elite members are seeded as credential subjects
+- Admins create/use their own personal credential subject independently of Admin role
+- authenticated `/backoffice/credentials.php` self-service/admin overview
+- "Ausweis bestellen" includes Apple Wallet as first-class digital channel
+- no real `.pkpass` is generated until Apple Pass Type ID/signing certificate are configured server-side
+- Verify binding remains explicit through `verify_reference_code`; no duplicate validation authority is introduced
+
 
 ### Credential lifecycle
 Suggested states:
