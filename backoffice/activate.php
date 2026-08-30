@@ -57,15 +57,17 @@ mmHeader('Elite Shopper aktivieren', 'Elite-Shopper-Zugang aktivieren.', 'noinde
       <a class="button" href="/backoffice/login.php">Zum Login</a>
     <?php elseif ($record): ?>
       <p><strong><?= mmEscape((string)$record['member_code']) ?></strong><br><?= mmEscape((string)$record['email']) ?></p>
-      <form method="post" action="/backoffice/activate.php">
+      <form method="post" action="/backoffice/activate.php" data-elite-activation-form novalidate>
         <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
         <input type="hidden" name="token" value="<?= mmEscape($token) ?>">
         <label>Neues Passwort
-          <input type="password" name="password" autocomplete="new-password" minlength="12" required>
+          <input type="password" name="password" autocomplete="new-password" minlength="12" required data-elite-password>
+          <small class="field-hint">Mindestens 12 Zeichen.</small>
         </label>
         <label>Passwort wiederholen
-          <input type="password" name="password_repeat" autocomplete="new-password" minlength="12" required>
+          <input type="password" name="password_repeat" autocomplete="new-password" minlength="12" required data-elite-password-repeat>
         </label>
+        <div class="field-error" data-elite-password-error hidden aria-live="polite"></div>
         <button type="submit">Zugang aktivieren</button>
       </form>
     <?php else: ?>
