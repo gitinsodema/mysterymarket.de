@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T19:32:00+02:00",
+  "report_generated_at": "2026-08-30T19:38:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,12 +134,13 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner provided live ATLAS response shapes for countries, DE subdivisions, postal area 50667 and Köln locality; all returned HTTP 200.",
-    "Bound Elite profile UX to exact ATLAS country/subdivision/postal/locality field names from live responses.",
-    "Elite profile now loads the 249-country reference list, country subdivisions, validates postal codes and loads matching localities through the authenticated MysteryMarket backend proxy.",
-    "Canonical ATLAS IDs and readable administrative/locality snapshots are persisted alongside existing profile address values.",
-    "Added explicit manual locality fallback that clears canonical locality identity rather than fabricating an ATLAS ID.",
-    "Added a compact one-record street inspector so the remaining Street item schema can be confirmed without large diagnostic output."
+    "Owner provided the exact live ATLAS street payload for Köln/50667/Hohe Straße with HTTP 200.",
+    "Street payload fields confirmed: atlas_id, country_code, postal_code, locality_id, city, name, postal_area_id, source_address_count and revision.",
+    "Enabled ATLAS street autocomplete in the Elite profile using the authenticated MysteryMarket backend proxy.",
+    "Street name and house number are stored separately while address_line1 remains a readable compatibility snapshot.",
+    "Street free-text fallback remains supported without fabricating an ATLAS ID.",
+    "Added safe invalidation of stale street/locality ATLAS IDs when users manually change street or locality values.",
+    "Fixed hidden street ATLAS-ID binding so a selected ATLAS street persists its canonical identity correctly."
   ],
   "blockers": [
     {
@@ -400,9 +401,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the ATLAS-backed Elite profile UX and test country/subdivision/postal/locality selection. Run the compact street inspector once; then bind exact street autocomplete and finish the reusable ATLAS address component for other MysteryMarket forms.",
-    "owner_action_required": "Test the Elite profile ATLAS fields and paste the short output of scripts/atlas-street-inspect.php.",
-    "blocker": "Only exact Street item field names remain to finish street autocomplete."
+    "action": "Deploy and test the complete Elite ATLAS address flow including street autocomplete and profile save. If successful, extract the ATLAS address controls into a reusable component for other MysteryMarket forms where structured location is needed.",
+    "owner_action_required": "Test country -> subdivision -> postal code -> locality -> street -> house number in the Elite profile and save/reload the profile.",
+    "blocker": "none"
   },
   "evidence": [
     {
@@ -1075,6 +1076,11 @@
       "type": "owner_runtime_test",
       "date": "2026-08-30",
       "summary": "ATLAS smoke returned status=200, [PASS] authentication and country lookup, countries=249, MYSTERYMARKET_ATLAS_SMOKE_OK."
+    },
+    {
+      "type": "owner_runtime_test",
+      "date": "2026-08-30",
+      "summary": "ATLAS street lookup returned status=200 and first street Hohe Straße with stable street/locality/postal ATLAS IDs."
     }
   ]
 }
