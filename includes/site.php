@@ -120,7 +120,7 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="MM Backoffice">
-    <link rel="apple-touch-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/media/mm-backoffice-180.png">
     <link rel="manifest" href="/backoffice.webmanifest">
     <?php endif; ?>
     <link rel="canonical" href="<?= mmEscape($canonicalUrl) ?>">
