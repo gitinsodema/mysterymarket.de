@@ -3,6 +3,17 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/credentials.php';
 
+/*
+ * Printer-independent credential output workflow.
+ *
+ * Output requests reference audit_verifications.id and never create a second
+ * identity. Physical fulfilment is vendor-neutral; device-specific printer
+ * integration is intentionally deferred until hardware is selected.
+ *
+ * Apple Wallet is treated as a digital output and can only enter processing
+ * when the real signing configuration passes mmAppleWalletReadiness().
+ */
+
 header('Cache-Control: private, no-store, max-age=0');
 header('Pragma: no-cache');
 header('X-Robots-Tag: noindex, noarchive');
