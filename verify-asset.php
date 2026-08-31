@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/site.php';
-require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/credentials.php';
 
 header('X-Robots-Tag: noindex, noarchive');
 header('Cache-Control: private, no-store, max-age=0');
@@ -26,10 +25,7 @@ if (!preg_match('/^[A-Z0-9-]{4,64}$/', $code) || !in_array($type, ['photo','bran
 }
 
 $verifiedAt = (int)($_SESSION['mm_verified_records'][$code] ?? 0);
-if ($verifiedAt < time() - 900) {
-    http_response_code(403);
-    exit;
-}
+$backofficeUser = mmBackofficeUser();
 
 $column = match ($type) {
     'photo' => 'photo_asset',
@@ -40,7 +36,7 @@ $column = match ($type) {
 
 try {
     $stmt = mmDb()->prepare(
-        "SELECT {$column} AS asset, document_enabled
+        "SELECT {$column} AS asset, document_enabled, subject_user_id
          FROM audit_verifications
          WHERE reference_code = :code
            AND is_active = 1
@@ -57,6 +53,13 @@ try {
 
 if (!$row || empty($row['asset']) || ($type === 'document' && empty($row['document_enabled']))) {
     http_response_code(404);
+    exit;
+}
+
+$publicVerified = $verifiedAt >= time() - 900;
+$privateAllowed = is_array($backofficeUser) && mmCredentialUserCanAccess($backofficeUser, $row);
+if (!$publicVerified && !$privateAllowed) {
+    http_response_code(403);
     exit;
 }
 
