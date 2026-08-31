@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-31T14:14:00+02:00",
+  "report_generated_at": "2026-08-31T14:24:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,12 +134,12 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner explicitly requested thorough documentation because the Verify/Credential/Wallet subsystem will be reused in other systems.",
-    "Added docs/VERIFY_CREDENTIAL_WALLET_ARCHITECTURE.md covering source-of-truth, lifecycle, protected assets, output model, Wallet generation, fulfilment and porting boundaries.",
-    "Added docs/APPLE_WALLET_RUNBOOK.md covering private server layout, Apple provisioning, local config, readiness verification, first-pass test, failure handling, security and reuse.",
-    "Annotated includes/credentials.php, backoffice/credential-wallet.php, backoffice/credential-output.php and config/local.example.php with reusable architecture/security intent.",
-    "Updated AI_START_HERE.md and coordination README so future chats must read the reusable subsystem documentation.",
-    "Preflight now requires the architecture and Wallet runbook so the documentation cannot silently disappear during later refactoring."
+    "Owner confirmed the reusable subsystem documentation deployment succeeded and requested continuation.",
+    "Added authenticated Apple Wallet technical preview for an Apple Wallet output request without producing an unsigned/fake pkpass.",
+    "Preview renders the actual credential-to-pass mapping including project, person, agency, validity, Verify reference, QR/Verify URL, serial number and date fields.",
+    "Added signed pkpass structural review CLI that checks required package members, pass.json contract, manifest digests and detached signature payload presence.",
+    "Wallet preview/review surfaces are covered by preflight and documented in the reusable architecture/runbook.",
+    "Real Apple signing remains the only path that can produce a pkpass."
   ],
   "blockers": [
     {
@@ -432,9 +432,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy documentation/preflight updates. Apple Wallet code is ready up to the external provisioning boundary; next technical action is provisioning the private wallet directory and Apple Pass Type signing material when available, followed by first real signed pass testing on iPhone.",
-    "owner_action_required": "none until Apple Developer Pass Type ID/signing material is available",
-    "blocker": "Real Apple Wallet generation requires external Apple Developer Pass Type ID, signing certificate/private key and WWDR certificate."
+    "action": "Deploy and open Pass-Vorschau on an Apple Wallet output request to visually verify the credential mapping. After preview confirmation, no further Wallet generator work is needed before Apple Developer signing material is provisioned; continue with remaining R1.2 credential-service release hardening/review.",
+    "owner_action_required": "Open one Apple Wallet output request and inspect Pass-Vorschau; no Apple certificate is required for this preview.",
+    "blocker": "Real Apple Wallet import remains blocked only by external Apple signing material."
   },
   "evidence": [
     {
