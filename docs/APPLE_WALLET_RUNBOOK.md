@@ -279,3 +279,59 @@ Not required for first R1.2 pass:
 - self-service Wallet download for credential holders
 
 Verify remains authoritative even if those update capabilities are added later.
+
+
+## 13. Pre-signing technical preview
+
+Before Apple signing material exists, the Backoffice can already display the exact
+credential-to-pass mapping without generating an unsigned pass.
+
+Route:
+
+```text
+/backoffice/credential-wallet-preview.php?output_id=<OUTPUT_ID>
+```
+
+The preview shows:
+
+- Generic Pass layout mapping
+- project
+- person
+- agency
+- valid-until date
+- Verify reference
+- QR/Verify URL
+- serial number
+- configured Pass Type Identifier / Team Identifier
+- relevant/expiration dates
+- current Wallet readiness blockers
+
+This is deliberately not a fake Wallet pass and does not create a `.pkpass`.
+
+## 14. Signed package structural review
+
+Once a real signed pass exists, review its package structure before device testing:
+
+```bash
+PHP=/opt/plesk/php/8.5/bin/php
+"$PHP" scripts/wallet-package-review.php /path/to/MM-REFERENCE.pkpass
+```
+
+Expected marker:
+
+```text
+MYSTERYMARKET_APPLE_WALLET_PACKAGE_OK
+```
+
+The review checks:
+
+- required package members
+- valid `pass.json`
+- required pass contract keys
+- manifest JSON
+- manifest SHA-1 digests against packaged files
+- detached signature payload presence
+- serial number / Pass Type / expiration metadata reporting
+
+This is a structural package check. Final Apple signature acceptance is still proven by
+real iPhone Wallet import; do not treat this tool as a replacement for Apple validation.
