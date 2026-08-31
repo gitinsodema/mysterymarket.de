@@ -12,9 +12,12 @@ Required reading order for a product chat:
 1. `/AGENTS.md`
 2. `/AI_START_HERE.md`
 3. `/docs/RELEASE_V1.md`
-4. this file
-5. `PRODUCT_HANDOFF.json`
-6. current branch/code relevant to the active task
+4. `/docs/BACKOFFICE_ROADMAP.md`
+5. `/docs/VERIFY_CREDENTIAL_WALLET_ARCHITECTURE.md` for credential/output work
+6. `/docs/APPLE_WALLET_RUNBOOK.md` for Wallet/provisioning work
+7. this file
+8. `PRODUCT_HANDOFF.json`
+9. current branch/code relevant to the active task
 
 Protocol:
 - Repository: `gitinsodema/DOS`
@@ -27,7 +30,9 @@ deployment/migration state, architecture, public state, major capability, approv
 product relationship or next recommended action materially changes.
 
 Important preserved capability:
-The MysteryMarket Verify system is a reusable INSODEMA capability pattern and must not
-be lost during later website refactoring. It includes code/reference verification,
-mobile QR scanning, personal credentials, protected evidence assets, validity windows,
-project-specific scopes and printable CR80 identity cards.
+The MysteryMarket Verify/Credential/Wallet subsystem is a reusable INSODEMA capability
+pattern and must not be lost during later refactoring. It includes code/reference
+verification, mobile QR scanning, project-specific personal credentials, protected
+evidence assets, validity windows, scopes, revision lineage, printer-independent
+fulfilment and signed Apple Wallet output. Its reusable architecture is documented in
+`/docs/VERIFY_CREDENTIAL_WALLET_ARCHITECTURE.md`.
