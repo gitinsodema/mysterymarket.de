@@ -1411,3 +1411,84 @@ nav a[aria-current=page],
   .credential-wallet-mapping{grid-template-columns:1fr}
   .credential-wallet-mapping>div.wide{grid-column:auto}
 }
+
+
+/* Backoffice mobile PWA shell */
+.backoffice-app-shell{background:#f4f7fb}
+.backoffice-app-header{
+  position:sticky;
+  top:0;
+  z-index:40;
+  min-height:64px;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:saturate(150%) blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.backoffice-app-nav{display:flex;gap:8px;align-items:center}
+.backoffice-app-nav a{
+  text-decoration:none;
+  color:var(--ink);
+  font-weight:800;
+  font-size:13px;
+  padding:9px 11px;
+  border-radius:9px;
+}
+.backoffice-app-nav a:hover{background:#eef4fa}
+.backoffice-install-hint{padding-top:0;padding-bottom:0}
+.backoffice-install-hint .notice{margin:0}
+
+@media(max-width:700px){
+  .backoffice-app-shell .site-header{
+    padding:10px 14px;
+    gap:10px;
+  }
+  .backoffice-app-shell .brand-copy small{font-size:9px}
+  .backoffice-app-shell .brand-mark{width:38px;height:38px}
+  .backoffice-app-nav a{padding:8px;font-size:12px}
+  .backoffice-app-shell .hero{
+    padding-top:34px;
+    padding-bottom:26px;
+  }
+  .backoffice-app-shell .hero h1{font-size:clamp(32px,10vw,46px)}
+  .backoffice-app-shell .section{padding-top:22px;padding-bottom:22px}
+  .backoffice-app-shell .form-card,
+  .backoffice-app-shell .card,
+  .backoffice-app-shell .backoffice-contact-message{padding:18px}
+  .backoffice-app-shell .backoffice-module{
+    min-height:112px;
+    padding:18px;
+  }
+  .backoffice-app-shell .backoffice-module>span{
+    top:10px;
+    right:14px;
+    font-size:24px;
+  }
+  .backoffice-app-shell .backoffice-stat-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+  .backoffice-app-shell .backoffice-stat-grid article{padding:16px}
+  .backoffice-app-shell .backoffice-stat-grid span{font-size:28px}
+  .backoffice-app-shell .backoffice-table-wrap{
+    margin-left:-6px;
+    margin-right:-6px;
+    border-radius:12px;
+  }
+  .backoffice-app-shell button,
+  .backoffice-app-shell .button{
+    min-height:44px;
+  }
+  .backoffice-app-shell input,
+  .backoffice-app-shell select,
+  .backoffice-app-shell textarea{
+    font-size:16px;
+  }
+  .backoffice-app-shell .backoffice-footer{padding-bottom:max(22px,env(safe-area-inset-bottom))}
+}
+@media(max-width:420px){
+  .backoffice-app-shell .backoffice-stat-grid{grid-template-columns:1fr 1fr}
+  .backoffice-app-nav a:last-child{display:none}
+}
+@media(display-mode:standalone){
+  .backoffice-app-header{padding-top:max(10px,env(safe-area-inset-top))}
+}
