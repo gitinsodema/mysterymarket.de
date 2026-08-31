@@ -1,6 +1,6 @@
 # MysteryMarket R1.2 Credentials / Verify / Wallet — Technical Release Review
 
-Status: technical gate passed in production; Owner release approval pending
+Status: released; Owner-approved R1.2
 
 Branch: `r1.2-credentials`
 
@@ -247,6 +247,4 @@ Before Owner release approval:
 
 ## Release approval
 
-Technical readiness is confirmed. Explicit Owner release approval has not yet been granted for R1.2.
-
-Do not merge/release R1.2 solely because the technical gate passes.
+Owner explicitly approved MysteryMarket R1.2 release on 2026-08-31 after the production technical gate passed. R1.2 was promoted to `main` with the released application tree identical to the production-verified `r1.2-credentials` tree.
