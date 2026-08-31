@@ -129,6 +129,9 @@
     }
   ],
   "completed_since_last_report": [
+    "Unnecessary Backoffice service-worker registration removed; prior experimental registration is explicitly unregistered because private Backoffice data must remain network/server authoritative.",
+    "Backoffice PWA hardened with dedicated 180/192/512 PNG icons, explicit manifest id, and PNG-only icon declarations.",
+    "Device comparison confirmed MysteryMarket PWA metadata, not iOS itself, caused Add to Home Screen failure.",
     "Native iOS/Face ID requirement remains parked and unchanged for the later Swift app.",
     "Private Backoffice PWA deliberately does not cache authenticated pages or credential data offline.",
     "Backoffice now has a dedicated mobile/standalone app shell, web app manifest and iPhone Home Screen installation hint.",
@@ -491,7 +494,7 @@
   },
   "next_recommended_action": {
     "classification": "PROPOSAL",
-    "summary": "Deploy main, run preflight, open /backoffice/ in iPhone Safari and add it to the Home Screen. Verify standalone launch, login, Dashboard, Credentials and Elite navigation on device."
+    "summary": "Deploy main, run preflight, reload /backoffice/ once in Safari, then retry Add to Home Screen. If iOS cached the old metadata, close the Safari tab and reopen the Backoffice before retrying."
   },
   "evidence": [
     {
