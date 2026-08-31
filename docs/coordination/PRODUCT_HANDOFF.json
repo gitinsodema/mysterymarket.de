@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.2.0",
     "target_release": "1.2.0",
-    "lifecycle_phase": "r1_2_released",
+    "lifecycle_phase": "r1_2_released_future_integrations_parked_native_ios_experiment_planned",
     "active_branch": "main",
     "default_branch": "main",
     "pull_request": 3,
@@ -129,6 +129,11 @@
     }
   ],
   "completed_since_last_report": [
+    "Next active experiment approved in principle: a small native iOS app focused only on the authenticated MysteryMarket Backoffice.",
+    "OPS integration deferred until OPS 1.0 is stable; no speculative integration while Dispatcher work is still ongoing.",
+    "Future geography direction corrected: ATLAS should host a reusable personal region/geography profile that other products can import via transfer code/API rather than asking repeatedly.",
+    "Qualification/certificate ownership corrected: ShopperMatch remains authoritative for detailed profiling and certificates, including non-Elite shoppers; MysteryMarket may later consume successful certificates via API.",
+    "Owner parked active R1.3 development; MysteryMarket R1.2.0 remains the final productive baseline for now.",
     "MysteryMarket current released version is 1.2.0.",
     "R1.2 production-verified application tree promoted to main without force-push; main history was preserved.",
     "Owner explicitly approved MysteryMarket R1.2 release on 2026-08-31.",
@@ -480,7 +485,7 @@
   },
   "next_recommended_action": {
     "classification": "PROPOSAL",
-    "summary": "Begin post-R1.2 planning from main. Apple Developer enrollment/signing remains intentionally deferred; Wallet code stays in safe NOT_READY state until external provisioning is activated."
+    "summary": "Design the smallest native iOS Backoffice experiment and choose the initial legal test-distribution path. Keep MysteryMarket R1.2 web product otherwise unchanged."
   },
   "evidence": [
     {
