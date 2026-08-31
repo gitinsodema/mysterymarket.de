@@ -175,6 +175,17 @@ $requestStmt = mmDb()->prepare(
 $requestStmt->execute(['member_id'=>(int)$member['id']]);
 $requests = $requestStmt->fetchAll();
 
+$credentialStmt = mmDb()->prepare(
+    'SELECT v.reference_code, v.project_name, v.role_label, v.valid_until, v.is_active
+     FROM audit_verifications v
+     JOIN credential_subjects s ON s.id = v.credential_subject_id
+     WHERE s.backoffice_user_id = :user_id
+       AND v.is_personal_verification = 1
+     ORDER BY v.is_active DESC, v.valid_until DESC, v.reference_code'
+);
+$credentialStmt->execute(['user_id'=>(int)$user['id']]);
+$credentials = $credentialStmt->fetchAll();
+
 mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nofollow');
 ?>
 <section class="hero backoffice-dashboard-hero">
@@ -202,6 +213,32 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
         <a href="<?= mmEscape((string)$member['shoppermatch_profile_url']) ?>" target="_blank" rel="noopener noreferrer">Profil öffnen →</a>
       <?php endif; ?>
     </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="form-card">
+    <p class="eyebrow">Geschützter Bereich</p>
+    <h2>Meine Ausweise</h2>
+    <p class="partner-note">Ausweisansichten und spätere Wallet-/Bestellfunktionen sind nicht öffentlich. Öffentlich bleibt ausschließlich die Verifikation.</p>
+    <?php if ($credentials): ?>
+      <div class="grid two">
+        <?php foreach ($credentials as $credential): ?>
+          <article class="card">
+            <span class="badge"><?= !empty($credential['is_active']) ? 'Aktiv' : 'Inaktiv' ?></span>
+            <h3><?= mmEscape((string)($credential['project_name'] ?: $credential['reference_code'])) ?></h3>
+            <?php if (!empty($credential['role_label'])): ?><p><?= mmEscape((string)$credential['role_label']) ?></p><?php endif; ?>
+            <p><strong>Referenz:</strong> <?= mmEscape((string)$credential['reference_code']) ?></p>
+            <p><strong>Gültig bis:</strong> <?= mmEscape((string)($credential['valid_until'] ?: '—')) ?></p>
+            <?php if (!empty($credential['is_active'])): ?>
+              <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Ausweisansicht öffnen</a>
+            <?php endif; ?>
+          </article>
+        <?php endforeach; ?>
+      </div>
+    <?php else: ?>
+      <p>Noch kein Ausweis mit diesem Elite-Profil verknüpft.</p>
+    <?php endif; ?>
   </div>
 </section>
 
