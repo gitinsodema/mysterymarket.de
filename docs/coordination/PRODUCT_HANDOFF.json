@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-30T21:48:00+02:00",
+  "report_generated_at": "2026-08-31T12:54:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,15 +134,10 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner understood the inactive Vodafone revision draft and requested continuation.",
-    "Added Admin fulfilment workflow for verify_credential_outputs.",
-    "Output requests now progress through requested, approved, processing, ready, shipped or cancelled using controlled transitions.",
-    "Physical outputs require a shipping reference before they can be marked shipped.",
-    "Apple Wallet requests are treated as digital outputs and cannot enter processing/ready until real Apple signing prerequisites are configured.",
-    "Added private Apple Wallet configuration placeholders for Pass Type Identifier, Team Identifier, organization name, signing certificate, certificate password and Apple WWDR certificate.",
-    "Added server-side Apple Wallet readiness checks without exposing secret configuration values.",
-    "Credential service now shows Wallet readiness and links each output request to its own fulfilment detail workflow.",
-    "Credential review validates shipped-output tracking data and reports Apple Wallet readiness as informational until Apple credentials are provisioned."
+    "Owner decided not to implement Zebra-specific printing because the production printer is not yet selected.",
+    "R1.2 keeps printer-independent CR80/card output and fulfilment only.",
+    "No Canon-, Zebra-, tray-, driver- or printer-command-specific implementation will be added until the exact printer and feed/tray setup are known.",
+    "Printer integration is explicitly deferred and is not an R1.2 blocker."
   ],
   "blockers": [
     {
@@ -354,6 +349,14 @@
       "source_authority": "Owner",
       "verification_status": "implemented_pending_owner_runtime_test",
       "summary": "R1.2 is a creation/output/fulfilment service for project-specific personal audit_verifications credentials. Verify remains authoritative; Wallet, print and physical cards are representations of the same project credential."
+    },
+    {
+      "id": "MM-DEC-R1-2-PRINTER-ADAPTER-DEFERRED",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DECISION",
+      "source_authority": "Owner",
+      "verification_status": "documented",
+      "summary": "R1.2 remains printer-independent. Zebra is not selected; a Canon or other printer with card/tray feed may be used later. Device-specific printing will only be designed after the actual printer model is chosen."
     }
   ],
   "dependencies": [
@@ -419,9 +422,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy and test one physical output request through requested -> approved -> processing -> ready -> shipped with a test shipping reference. Separately confirm Apple Wallet remains blocked at processing until real Apple Pass Type ID and signing certificates are configured. Then implement CR80/Zebra print-ready output and, once Apple credentials exist, real signed pkpass generation.",
-    "owner_action_required": "Run migration/preflight/review and test one physical fulfilment request status flow.",
-    "blocker": "Real Apple Wallet generation requires Apple Developer Pass Type ID, Pass Type signing certificate/private key and WWDR certificate."
+    "action": "Skip printer-specific integration and continue R1.2 with printer-independent credential outputs and Apple Wallet. Revisit the printer adapter only after hardware selection.",
+    "owner_action_required": "none",
+    "blocker": "Real Apple Wallet generation still requires Apple Developer Pass Type ID and signing certificates; printer hardware selection is deferred and non-blocking."
   },
   "evidence": [
     {
