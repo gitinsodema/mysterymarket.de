@@ -35,3 +35,10 @@ cancels them. Reuse guidance is documented in
 
 Backoffice continuity:
 MysteryMarket owns Elite membership, identity, credentials, private member information and lightweight administration. ShopperMatch remains a separate job/matching product and must not be duplicated inside MysteryMarket.
+
+
+Current continuation point:
+- R1.2 Credentials/Verify/Wallet is in release review on branch `r1.2-credentials`, version `1.2.0`.
+- Wallet code and preview are implemented; real signing is blocked only by external Apple Developer provisioning.
+- Next chat must first read `docs/APPLE_WALLET_RUNBOOK.md` and `docs/coordination/PRODUCT_HANDOFF.json`, then resolve the long-term INSODEMA Apple Developer Account Holder/team structure before creating Pass Type IDs or certificates.
+- R1.2 still requires final technical gate evidence and explicit Owner release approval before merge to `main`.
