@@ -20,11 +20,11 @@
   "current_state": {
     "current_version": "1.2.0",
     "target_release": "1.2.0",
-    "lifecycle_phase": "r1_2_technical_gate_passed_owner_release_pending",
-    "active_branch": "r1.2-credentials",
+    "lifecycle_phase": "r1_2_released",
+    "active_branch": "main",
     "default_branch": "main",
-    "pull_request": null,
-    "pull_request_state": "not_opened",
+    "pull_request": 3,
+    "pull_request_state": "superseded_by_controlled_promotion",
     "production_domain": "mysterymarket.de",
     "runtime": "PHP 8.5 + MariaDB 12.3.3 + Plesk",
     "positioning": "Operational audit and fieldwork partner for agencies and direct clients; not positioned as a competing full-service evaluation/reporting agency.",
@@ -47,7 +47,7 @@
     ]
   },
   "release_progress": {
-    "lifecycle_phase": "technical_gate_passed_owner_release_pending",
+    "lifecycle_phase": "released",
     "release_readiness_percent": 100,
     "operational_readiness_percent": 100,
     "bootstrap_readiness_percent": 100,
@@ -90,9 +90,7 @@
           "status": "pending"
         }
       ],
-      "remaining_blockers": [
-        "Explicit Owner approval required before R1.2 promotion/release to main"
-      ]
+      "remaining_blockers": []
     }
   },
   "milestones": [
@@ -131,6 +129,9 @@
     }
   ],
   "completed_since_last_report": [
+    "MysteryMarket current released version is 1.2.0.",
+    "R1.2 production-verified application tree promoted to main without force-push; main history was preserved.",
+    "Owner explicitly approved MysteryMarket R1.2 release on 2026-08-31.",
     "R1.2 technical readiness is confirmed; Apple Wallet remains intentionally NOT_READY only because external Apple provisioning is deferred.",
     "Owner reported the complete scripts/r1.2-technical-gate.php successful in production with all checks OK.",
     "Owner reported scripts/preflight.php successful after private credential ownership binding.",
@@ -210,8 +211,8 @@
     {
       "id": "MM-BLOCK-R1_2-OWNER-RELEASE-APPROVAL",
       "type": "approval",
-      "status": "pending_owner",
-      "classification": "APPROVAL_REQUEST",
+      "status": "resolved_owner_approved",
+      "classification": "CURRENT_OWNER_CONFIRMED",
       "summary": "R1.2 technical gate is green; explicit Owner approval is required before promotion/release to main."
     }
   ],
@@ -478,10 +479,16 @@
     "confidentiality_note": "BARE/HP broad homepage/current-audits relationship was anonymised pending approved public context; code-gated credential may display factual authorisation details."
   },
   "next_recommended_action": {
-    "classification": "APPROVAL_REQUEST",
-    "summary": "Perform the final Owner release decision for MysteryMarket R1.2. If approved, promote r1.2-credentials to main without changing the already-verified release revision."
+    "classification": "PROPOSAL",
+    "summary": "Begin post-R1.2 planning from main. Apple Developer enrollment/signing remains intentionally deferred; Wallet code stays in safe NOT_READY state until external provisioning is activated."
   },
   "evidence": [
+    {
+      "type": "release_promotion",
+      "id": "fc7d67904d56e8ac5be327df0b19a02665f35a61",
+      "date": "2026-08-31",
+      "summary": "Owner-approved R1.2 promotion to main using the production-verified r1.2-credentials tree while preserving prior main history."
+    },
     {
       "type": "repository",
       "path": "AGENTS.md"
