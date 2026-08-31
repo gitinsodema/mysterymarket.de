@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-31T16:15:00+02:00",
+  "report_generated_at": "2026-08-31T17:32:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,6 +134,8 @@
     }
   ],
   "completed_since_last_report": [
+    "R1.2 credential review now gates the public/private boundary and checks subject_user_id plus absence of public printable-card links.",
+    "Owner successfully runtime-tested the private credential boundary: unauthenticated card access blocked, Admin access allowed, assigned Elite access allowed, non-owner access denied.",
     "Production: existing HP/BARE credential successfully bound to the intended Backoffice subject through the private access assignment.",
     "Protected verify assets can be served either after a recent public Verify session or through an authenticated permitted private credential context.",
     "New credential drafts require an explicit private subject; revisions inherit the binding.",
@@ -470,7 +472,7 @@
   },
   "next_recommended_action": {
     "classification": "PROPOSAL",
-    "summary": "Verify the private access boundary in production: unauthenticated direct card access must require login, Admin must retain access, assigned Elite must access own card, and any non-owner Elite must receive 403."
+    "summary": "Pull the latest r1.2-credentials changes and run scripts/credentials-review.php followed by scripts/r1.2-technical-gate.php. If an active personal credential is reported without subject_user_id, bind it in Backoffice and rerun."
   },
   "evidence": [
     {
