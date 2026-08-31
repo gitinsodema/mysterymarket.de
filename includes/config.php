@@ -34,6 +34,9 @@ function mmConfig(): array
                 'certificate_path' => '',
                 'certificate_password' => '',
                 'wwdr_certificate_path' => '',
+                'icon_path' => '',
+                'icon_2x_path' => '',
+                'logo_path' => '',
             ],
             'legal' => [
                 'brand' => 'MysteryMarket',
