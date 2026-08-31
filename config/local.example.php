@@ -21,6 +21,22 @@ return [
         'product' => 'MYSTERYMARKET',
         'timeout_seconds' => 8,
     ],
+    // Apple Wallet signing material belongs in private server storage only.
+    // Never commit real certificate passwords, private keys, P12/PFX files or
+    // production artwork that is intended to remain private.
+    // See docs/APPLE_WALLET_RUNBOOK.md.
+    'apple_wallet' => [
+        'enabled' => false,
+        'pass_type_identifier' => 'pass.REPLACE_WITH_PASS_TYPE_ID',
+        'team_identifier' => 'REPLACE_WITH_APPLE_TEAM_ID',
+        'organization_name' => 'MysteryMarket',
+        'certificate_path' => '/var/www/vhosts/mysterymarket.de/private/wallet/pass-signing.p12',
+        'certificate_password' => 'REPLACE_WITH_PRIVATE_CERTIFICATE_PASSWORD',
+        'wwdr_certificate_path' => '/var/www/vhosts/mysterymarket.de/private/wallet/AppleWWDRCA.cer',
+        'icon_path' => '/var/www/vhosts/mysterymarket.de/private/wallet/icon.png',
+        'icon_2x_path' => '/var/www/vhosts/mysterymarket.de/private/wallet/icon@2x.png',
+        'logo_path' => '/var/www/vhosts/mysterymarket.de/private/wallet/logo.png',
+    ],
     'legal' => [
         'brand' => 'MysteryMarket',
         'legal_form' => 'Einzelunternehmen',

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/backoffice-auth.php';
+require_once __DIR__ . '/includes/credentials.php';
 
 header('X-Robots-Tag: noindex, noarchive');
 header('Cache-Control: private, no-store, max-age=0');
@@ -24,8 +24,7 @@ $user = mmBackofficeRequireLogin();
 
 $stmt = mmDb()->prepare(
     'SELECT reference_code, person_name, role_label, agency_name, project_name, brand_name,
-            valid_until, photo_asset, brand_logo_asset, agency_logo_asset, print_card_enabled,
-            credential_subject_id
+            valid_until, photo_asset, brand_logo_asset, agency_logo_asset, print_card_enabled, subject_user_id
      FROM audit_verifications
      WHERE reference_code = :code
        AND is_active = 1
@@ -43,7 +42,7 @@ if (!$row) {
     exit;
 }
 
-if (!mmBackofficeCanAccessCredential($user, isset($row['credential_subject_id']) ? (int)$row['credential_subject_id'] : null)) {
+if (!mmCredentialUserCanAccess($user, $row)) {
     http_response_code(403);
     exit('Forbidden');
 }
@@ -132,7 +131,7 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
     </section>
     <div class="print-controls">
       <button type="button" onclick="window.print()">Print card</button>
-      <a class="button secondary" href="<?= ($user['role'] ?? '') === 'elite' ? '/backoffice/profile.php' : '/backoffice/' ?>">Back to Backoffice</a>
+      <a class="button secondary" href="<?= ($user['role'] ?? '') === 'elite' ? '/backoffice/profile.php' : '/backoffice/credentials.php' ?>">Back to Backoffice</a>
     </div>
   </div>
 </div>

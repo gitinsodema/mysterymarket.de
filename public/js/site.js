@@ -392,4 +392,20 @@
 
     loadCountries();
   }
+
+
+  document.querySelectorAll('[data-credential-certificate]').forEach((certificate) => {
+    const toggle = certificate.querySelector('[data-credential-toggle]');
+    const details = certificate.querySelector('[data-credential-details]');
+    if (!toggle || !details) return;
+
+    toggle.addEventListener('click', () => {
+      const opening = details.hidden;
+      details.hidden = !opening;
+      toggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
+      toggle.textContent = opening ? 'Ausweis schließen' : 'Ausweis öffnen';
+      certificate.classList.toggle('is-open', opening);
+    });
+  });
+
 })();

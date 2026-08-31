@@ -16,7 +16,9 @@ $files = [
     dirname(__DIR__) . '/database/20260830_agencies.sql',
     dirname(__DIR__) . '/database/20260830_elite_atlas_geography.sql',
     dirname(__DIR__) . '/database/20260830_elite_work_profile.sql',
-    dirname(__DIR__) . '/database/20260831_credential_subjects.sql',
+    dirname(__DIR__) . '/database/20260830_credentials_foundation.sql',
+    dirname(__DIR__) . '/database/20260830_verify_credential_revision.sql',
+    dirname(__DIR__) . '/database/20260831_credential_access_binding.sql',
 ];
 
 $pdo = mmDb();
@@ -47,7 +49,7 @@ $required = [
     'backoffice_activation_tokens',
     'elite_membership_requests',
     'agencies',
-    'credential_subjects',
+    'verify_credential_outputs',
 ];
 
 $check = $pdo->prepare(

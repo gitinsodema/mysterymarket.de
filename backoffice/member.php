@@ -66,17 +66,6 @@ if (!$member) {
     exit('Not found');
 }
 
-$credentialStmt = mmDb()->prepare(
-    'SELECT v.reference_code, v.project_name, v.role_label, v.valid_until, v.is_active
-     FROM audit_verifications v
-     JOIN credential_subjects s ON s.id = v.credential_subject_id
-     WHERE s.backoffice_user_id = :user_id
-       AND v.is_personal_verification = 1
-     ORDER BY v.is_active DESC, v.valid_until DESC, v.reference_code'
-);
-$credentialStmt->execute(['user_id'=>(int)$member['user_id']]);
-$credentials = $credentialStmt->fetchAll();
-
 mmHeader('Elite Shopper', 'Interne Mitgliedsverwaltung.', 'noindex,nofollow');
 ?>
 <section class="hero backoffice-dashboard-hero">
@@ -108,28 +97,6 @@ mmHeader('Elite Shopper', 'Interne Mitgliedsverwaltung.', 'noindex,nofollow');
     </article>
   </div>
 </section>
-<section class="section">
-  <div class="form-card">
-    <p class="eyebrow">Credentials</p>
-    <h2>Ausweise des Mitglieds</h2>
-    <?php if ($credentials): ?>
-      <div class="grid two">
-        <?php foreach ($credentials as $credential): ?>
-          <article class="card">
-            <span class="badge"><?= !empty($credential['is_active']) ? 'Aktiv' : 'Inaktiv' ?></span>
-            <h3><?= mmEscape((string)($credential['project_name'] ?: $credential['reference_code'])) ?></h3>
-            <p><strong>Referenz:</strong> <?= mmEscape((string)$credential['reference_code']) ?></p>
-            <p><strong>Gültig bis:</strong> <?= mmEscape((string)($credential['valid_until'] ?: '—')) ?></p>
-            <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Ausweisansicht öffnen</a>
-          </article>
-        <?php endforeach; ?>
-      </div>
-    <?php else: ?>
-      <p>Noch kein Credential mit dieser Person verknüpft.</p>
-    <?php endif; ?>
-  </div>
-</section>
-
 <section class="section">
   <div class="form-card">
     <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>

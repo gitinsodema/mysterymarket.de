@@ -45,13 +45,15 @@ CREATE TABLE IF NOT EXISTS audit_verifications (
     document_enabled TINYINT(1) NOT NULL DEFAULT 0,
     print_card_enabled TINYINT(1) NOT NULL DEFAULT 0,
     is_personal_verification TINYINT(1) NOT NULL DEFAULT 0,
+    subject_user_id BIGINT UNSIGNED NULL,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY uq_audit_reference_code (reference_code),
     KEY idx_audit_active (is_active),
-    KEY idx_audit_valid_until (valid_until)
+    KEY idx_audit_valid_until (valid_until),
+    KEY idx_audit_subject_user (subject_user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 

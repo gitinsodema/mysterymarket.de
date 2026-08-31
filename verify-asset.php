@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/backoffice-auth.php';
+require_once __DIR__ . '/includes/credentials.php';
 
 header('X-Robots-Tag: noindex, noarchive');
 header('Cache-Control: private, no-store, max-age=0');
@@ -36,7 +36,7 @@ $column = match ($type) {
 
 try {
     $stmt = mmDb()->prepare(
-        "SELECT {$column} AS asset, document_enabled, credential_subject_id
+        "SELECT {$column} AS asset, document_enabled, subject_user_id
          FROM audit_verifications
          WHERE reference_code = :code
            AND is_active = 1
@@ -57,9 +57,8 @@ if (!$row || empty($row['asset']) || ($type === 'document' && empty($row['docume
 }
 
 $publicVerified = $verifiedAt >= time() - 900;
-$backofficeAllowed = is_array($backofficeUser)
-    && mmBackofficeCanAccessCredential($backofficeUser, isset($row['credential_subject_id']) ? (int)$row['credential_subject_id'] : null);
-if (!$publicVerified && !$backofficeAllowed) {
+$privateAllowed = is_array($backofficeUser) && mmCredentialUserCanAccess($backofficeUser, $row);
+if (!$publicVerified && !$privateAllowed) {
     http_response_code(403);
     exit;
 }

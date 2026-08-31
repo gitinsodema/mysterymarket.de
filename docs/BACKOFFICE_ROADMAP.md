@@ -1,8 +1,8 @@
 # MysteryMarket Post‑V1 Backoffice Roadmap
 
 Status: Owner-approved direction
-Baseline: MysteryMarket V1.0.0 on `main`
-Active development branch: `r1.1-little-backoffice`
+Baseline: MysteryMarket R1.1.0 on `main`
+Active development branch: `r1.2-credentials`
 
 ## Product boundary
 
@@ -133,6 +133,21 @@ No full email client in R1.1.
 
 ## R1.2 — Credentials
 
+Implementation status: started on `r1.2-credentials`.
+
+Corrected implementation direction:
+- `audit_verifications` remains the authoritative credential source
+- existing project credentials such as Vodafone / SKOPOS NEXT and HP / BARE are the reference records
+- R1.2 adds an output/fulfilment service around those Verify credentials
+- no separate generic MysteryMarket identity credential is created
+- authenticated Admin `/backoffice/credentials.php` lists existing personal Verify credentials
+- each Verify credential can be opened in Verify, opened as the existing print card, and requested for Apple Wallet or physical fulfilment
+- output requests are stored in `verify_credential_outputs` and reference `audit_verifications.id`
+- "Ausweis bestellen" therefore means producing another representation of an existing Verify credential
+- no real `.pkpass` is generated until Pass Type ID/signing certificate are configured server-side
+- MysteryMarket Verify remains the authoritative validation source
+
+
 ### Credential lifecycle
 Suggested states:
 - draft
@@ -164,24 +179,27 @@ Member capabilities:
 
 ### Apple Wallet
 
-Target: real iPhone Apple Wallet pass (`.pkpass`) for an Elite Shopper credential.
+Target: real iPhone Apple Wallet pass (`.pkpass`) for an existing project-specific Verify credential.
 
-Planned fields:
-- MysteryMarket / Elite Shopper branding
-- member display name
-- Elite Shopper ID
+Implemented pass basis:
+- Apple Generic Pass
+- project/brand context
+- person and agency
 - validity
-- status
-- QR / verification reference
-- direct Verify URL
+- Verify reference
+- QR code to the authoritative Verify URL
+- expiration date from the Verify credential
+- same Verify identity; no separate Wallet credential
 
-Technical requirements:
-- Apple Developer account / Pass Type ID
-- signing certificate
-- signed pass generation
-- secure pass download endpoint
-- optional PassKit web service for updates
-- device registration / push update support later
+Technical requirements/status:
+- Apple Developer account / Pass Type ID: external prerequisite
+- Pass Type signing certificate/private key: external prerequisite
+- Apple WWDR certificate: external prerequisite
+- signed pass generation: implemented server-side, gated by readiness
+- private artwork paths for icon/logo: configured outside repository
+- authenticated .pkpass download endpoint: implemented
+- optional PassKit web service for updates: later
+- device registration / push update support: later
 
 The Wallet pass is a convenience representation. MysteryMarket Verify remains the authoritative validation source.
 
@@ -200,14 +218,24 @@ Potential later accessories:
 
 Principle: professional field equipment, not merchandise.
 
-### Zebra fulfilment
-Long-term:
-- print-ready output
-- admin print queue
-- printed / packed / shipped
+### Printer-independent fulfilment
+
+Current R1.2 scope:
+- printer-independent CR80/card output
+- browser/PDF print-ready representation
+- admin fulfilment queue
+- printed / packed / shipped states
 - shipping date
 - optional tracking
 - replacement workflow
+
+Explicitly deferred:
+- no Zebra-specific implementation
+- no Canon-specific implementation
+- no tray/driver/vendor-specific print adapter
+- no hard-coded printer dimensions or command language beyond the existing CR80 credential format
+
+A concrete printer adapter will only be designed after the actual printer model and card/tray setup are selected and tested.
 
 ## R1.3 — Connected Elite
 
@@ -278,15 +306,13 @@ Implementation waits for the actual ATLAS API contract; no speculative endpoint 
 
 ## Credential ownership model
 
-Credentials must belong to a person/identity, not to a login role.
+Project credentials are represented by personal `audit_verifications` records, not by a generic login-role credential.
 
 Reason:
-- an admin may also hold personal MysteryMarket credentials
-- Elite members hold credentials
-- Verify / QR / Apple Wallet / printed cards should all refer to the same subject identity
-- admin vs Elite is an access role, not credential ownership
-
-R1.2 will therefore introduce a credential subject/identity relationship that can be linked to a backoffice account independently of whether that account is `admin` or `elite`.
+- the real credential is project-specific (for example Vodafone / SKOPOS NEXT or HP / BARE)
+- Verify / QR / Apple Wallet / printed cards must all represent that same project credential
+- Admin/Elite is only a Backoffice access role and must not create a second generic identity card
+- one person may hold multiple project credentials at the same time
 
 
 ## R1.2 Credential ordering and Apple Wallet
@@ -336,18 +362,3 @@ Activation prerequisite:
 - owner installs the dedicated MYSTERYMARKET token in production `config/local.php`
 - run `scripts/atlas-smoke.php`
 - only after successful smoke verification should live autocomplete/select UX be enabled
-
-
-## Public / private credential boundary
-
-Owner-approved security and product boundary:
-
-- `/verify` is a public verification surface only.
-- Public Verify may expose only information required for a third party to validate identity, authorisation, project context, validity and approved evidence.
-- Public Verify must not offer credential creation, card printing, Wallet issuance, physical-card ordering or internal credential administration.
-- Printable/card credential views require an authenticated Backoffice session.
-- Admin may inspect credential views for operational administration.
-- Elite users may inspect only credentials assigned to their own credential subject identity.
-- Credential ownership is represented through a separate `credential_subjects` identity layer; login role is not the credential owner.
-- Public QR codes continue to resolve to authoritative MysteryMarket Verify.
-- MysteryMarket Verify remains authoritative for validity/revocation even when Wallet or physical representations are introduced.

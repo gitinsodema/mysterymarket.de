@@ -74,27 +74,6 @@ function mmBackofficeRequireLogin(?string $role = null): array
     return $user;
 }
 
-
-function mmBackofficeCanAccessCredential(array $user, ?int $credentialSubjectId): bool
-{
-    if (($user['role'] ?? '') === 'admin') {
-        return true;
-    }
-    if (($user['role'] ?? '') !== 'elite' || !$credentialSubjectId) {
-        return false;
-    }
-
-    $stmt = mmDb()->prepare(
-        'SELECT COUNT(*) FROM credential_subjects
-         WHERE id = :subject_id AND backoffice_user_id = :user_id'
-    );
-    $stmt->execute([
-        'subject_id' => $credentialSubjectId,
-        'user_id' => (int)($user['id'] ?? 0),
-    ]);
-    return (int)$stmt->fetchColumn() === 1;
-}
-
 function mmBackofficeIpHash(): string
 {
     $salt = trim((string)(mmConfig()['security']['rate_limit_salt'] ?? ''));
@@ -361,10 +340,10 @@ function mmBackofficeActivateElite(string $plainToken, string $password): bool
 function mmBackofficeStatusTone(string $status): string
 {
     return match (strtolower(trim($status))) {
-        'active', 'approved', 'done', 'success', 'valid', 'completed' => 'ok',
-        'new', 'draft', 'requested', 'pending', 'pending_review', 'invited', 'paused', 'open' => 'warn',
-        'rejected', 'suspended', 'ended', 'expired', 'failed', 'disabled' => 'danger',
-        'seen', 'cancelled' => 'info',
+        'active', 'approved', 'done', 'success', 'valid', 'completed', 'ready', 'shipped' => 'ok',
+        'new', 'draft', 'requested', 'pending', 'pending_review', 'invited', 'paused', 'open', 'processing' => 'warn',
+        'rejected', 'suspended', 'ended', 'expired', 'failed', 'disabled', 'revoked', 'replaced' => 'danger',
+        'seen', 'cancelled', 'inactive' => 'info',
         default => 'neutral',
     };
 }
