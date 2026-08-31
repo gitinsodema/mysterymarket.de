@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-31T14:34:00+02:00",
+  "report_generated_at": "2026-08-31T14:18:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.2.0",
     "target_release": "1.2.0",
-    "lifecycle_phase": "r1_2_release_review",
+    "lifecycle_phase": "r1_2_release_review_and_apple_provisioning",
     "active_branch": "r1.2-credentials",
     "default_branch": "main",
     "pull_request": null,
@@ -134,14 +134,14 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner confirmed Wallet technical preview succeeded and requested continuation.",
-    "R1.2 entered technical release review.",
-    "VERSION was advanced to release-candidate version 1.2.0.",
-    "Added scripts/r1.2-technical-gate.php combining preflight, Backoffice integrity, credential-service integrity, ATLAS smoke and Apple Wallet readiness reporting.",
-    "Credential review now verifies the R1.2 revision schema columns supersedes_verification_id and revision_no.",
-    "Added docs/R1_2_RELEASE_REVIEW.md with completed scope, runtime evidence, security invariants, deferred printer/Apple provisioning items and explicit technical close criteria.",
-    "Apple Wallet NOT_READY remains acceptable while external signing material is absent; this is not a code failure.",
-    "R1.2 release still requires explicit Owner approval after the technical gate passes."
+    "Owner reported successful R1.2 credential/Wallet runtime checks and requested end-of-chat handoff consolidation.",
+    "R1.2 is at release-candidate version 1.2.0 on branch r1.2-credentials.",
+    "Reusable Verify/Credential/Wallet subsystem is implemented and documented.",
+    "Wallet pass preview works without Apple signing material; real pkpass generation remains correctly blocked until Apple provisioning is complete.",
+    "Owner intends to create a clean Apple Developer setup under the INSODEMA organization/domain for both Wallet and future App Store applications.",
+    "Open Apple account design question is whether to use a new dedicated INSODEMA Apple Account or the Owner's existing active Apple Account as the initial Account Holder identity.",
+    "Next chat must resolve Apple account/team structure before creating Pass Type ID or certificates.",
+    "No Apple private key, P12/PFX password or signing secret may be pasted into chat or committed to the repository."
   ],
   "blockers": [
     {
@@ -193,16 +193,16 @@
   ],
   "owner_actions": [
     {
-      "id": "MM-OWNER-HP-TEST",
-      "status": "required",
+      "id": "MM-OWNER-APPLE-ACCOUNT-STRUCTURE",
+      "status": "required_next",
       "instruction_classification": "APPROVAL_REQUEST",
-      "action": "After HP/BARE activation, test direct QR, identity card, protected HP letter and CR80 view on iPhone."
+      "action": "Decide the long-term Apple Developer account/team structure for INSODEMA: dedicated new Apple Account under insodema.com versus using the Owner's existing active Apple Account as the Account Holder. The setup must support Wallet now and App Store publishing later."
     },
     {
-      "id": "MM-OWNER-V1-APPROVAL",
-      "status": "required_later",
+      "id": "MM-OWNER-R1-2-FINAL-GATE",
+      "status": "required_before_release",
       "instruction_classification": "APPROVAL_REQUEST",
-      "action": "Explicitly approve V1 merge/release after final QA."
+      "action": "Reconfirm production HEAD and run scripts/r1.2-technical-gate.php. After a clean gate and final runtime review, explicitly approve R1.2 release before merge to main."
     }
   ],
   "approval_requests": [
@@ -215,6 +215,11 @@
       "category": "product_publication",
       "status": "approved_and_completed",
       "summary": "Website V1.0.0 released to main."
+    },
+    {
+      "category": "r1_2_release",
+      "status": "pending_owner_approval",
+      "summary": "R1.2 must not be merged to main until the consolidated technical gate passes and Owner gives explicit release approval."
     }
   ],
   "decisions": [
@@ -369,6 +374,14 @@
       "source_authority": "Owner",
       "verification_status": "documented_and_preflight_protected",
       "summary": "The project-specific Verify/Credential/Wallet implementation is intentionally a reusable subsystem for later products. Future ports must preserve one authoritative credential, protected assets, shared integrity gating, revision lifecycle, output references and Verify authority while replacing product-specific branding, URLs, scopes, auth/audit adapters and Apple signing identity."
+    },
+    {
+      "id": "MM-DEC-APPLE-LONG-TERM-TEAM",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "direction_confirmed_account_identity_pending",
+      "summary": "Apple Developer setup should be created as a clean long-term INSODEMA foundation, not as a Wallet-only throwaway account. It should support future App Store application publishing as well as PassKit/Wallet."
     }
   ],
   "dependencies": [
@@ -392,16 +405,16 @@
   "deployment": {
     "production_document_root": "/var/www/vhosts/mysterymarket.de/httpdocs",
     "verify_asset_dir": "/var/www/vhosts/mysterymarket.de/private/verify-assets",
-    "source_branch": "website-v1",
-    "production_status": "live_release_candidate",
+    "source_branch": "r1.2-credentials",
+    "production_status": "r1.2_release_candidate_deployed_for_owner_testing",
     "exact_current_production_head": {
       "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
-      "summary": "Owner has repeatedly deployed website-v1; exact HEAD after the latest HP scope/coordination commits has not yet been reconfirmed."
+      "summary": "Owner has deployed the R1.2 credential/Wallet branch repeatedly and reported successful runtime checks; exact current production HEAD should be reconfirmed by the next chat before release."
     },
     "migrations": {
-      "status": "reported_applied_for_existing_V1_tables",
+      "status": "reported_applied_for_R1_2_credentials_and_revision_schema",
       "pending_known_schema_migration": false,
-      "note": "HP/BARE credential changes use existing audit_verifications schema."
+      "note": "R1.2 credential output and revision migrations were reported applied successfully in production."
     }
   },
   "api_state": {
@@ -434,9 +447,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the R1.2 release-candidate version and run the consolidated technical gate. If MYSTERYMARKET_R1_2_TECHNICAL_GATE_OK is reported with no failures, record the production evidence and perform the final R1.2 Owner review before requesting release approval.",
-    "owner_action_required": "Run scripts/backoffice-migrate.php followed by scripts/r1.2-technical-gate.php and report the final marker/output.",
-    "blocker": "none for technical review; Apple signing material is an external post-code prerequisite and printer hardware is explicitly deferred."
+    "action": "Start the next chat by resolving the Apple Developer account/team architecture. Prefer a clean long-term INSODEMA organization setup; decide whether the Account Holder should use a new dedicated INSODEMA Apple Account or the Owner's existing active Apple Account. Then guide the Owner step-by-step through Apple Developer enrollment, Team ID discovery, Pass Type ID creation, CSR/certificate export, WWDR installation, private server placement and Wallet readiness. In parallel, reconfirm R1.2 production HEAD and run the final technical gate before requesting release approval.",
+    "owner_action_required": "Answer the Apple account identity decision first; no secrets required.",
+    "blocker": "Real Apple Wallet signing requires Apple Developer enrollment/Team access and Pass Type signing material. R1.2 code itself has no known technical blocker."
   },
   "evidence": [
     {
@@ -1129,6 +1142,16 @@
       "type": "owner_runtime_test",
       "date": "2026-08-30",
       "summary": "R1.1 backoffice integrity review passed with active_agencies=5, active_elite=1, warnings=0 and MYSTERYMARKET_BACKOFFICE_REVIEW_OK."
+    },
+    {
+      "type": "owner_directive",
+      "date": "2026-08-31",
+      "summary": "Owner requested a clean Apple Developer setup under INSODEMA for Wallet now and future App Store publishing, and asked whether to use a new dedicated Apple Account or the existing active Apple Account."
+    },
+    {
+      "type": "owner_directive",
+      "date": "2026-08-31",
+      "summary": "Owner requested end-of-chat handoff updates so the next product chat can continue immediately."
     }
   ]
 }
