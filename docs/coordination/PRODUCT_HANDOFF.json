@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-31T12:54:00+02:00",
+  "report_generated_at": "2026-08-31T13:05:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,10 +134,14 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner decided not to implement Zebra-specific printing because the production printer is not yet selected.",
-    "R1.2 keeps printer-independent CR80/card output and fulfilment only.",
-    "No Canon-, Zebra-, tray-, driver- or printer-command-specific implementation will be added until the exact printer and feed/tray setup are known.",
-    "Printer integration is explicitly deferred and is not an R1.2 blocker."
+    "Owner chose Apple Wallet as the next R1.2 focus after deferring printer-specific integration.",
+    "Implemented real Apple Generic Pass payload generation from active project-specific audit_verifications credentials.",
+    "Wallet pass contains project, person, agency, validity, Verify reference and QR code pointing to the authoritative MysteryMarket Verify URL.",
+    "Implemented manifest generation, detached CMS signing, WWDR chain inclusion and .pkpass ZIP packaging using PHP OpenSSL and ZipArchive.",
+    "Added authenticated Backoffice .pkpass download endpoint linked to Apple Wallet fulfilment requests.",
+    "Pass generation is blocked unless the Verify credential is active, integrity-valid, and the Apple Wallet signing configuration is complete.",
+    "Added Wallet readiness CLI check and Backoffice readiness reporting.",
+    "Apple signing certificates, password and Wallet artwork paths remain private config outside the repository."
   ],
   "blockers": [
     {
@@ -422,9 +426,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Skip printer-specific integration and continue R1.2 with printer-independent credential outputs and Apple Wallet. Revisit the printer adapter only after hardware selection.",
-    "owner_action_required": "none",
-    "blocker": "Real Apple Wallet generation still requires Apple Developer Pass Type ID and signing certificates; printer hardware selection is deferred and non-blocking."
+    "action": "Deploy the Wallet generator and run scripts/wallet-readiness.php. Expected current state is NOT_READY until Apple Developer Pass Type ID, signing certificate/private key, WWDR certificate and private Wallet icon are provisioned. Once those are installed in private paths and local.php is configured, set apple_wallet.enabled=true and generate the first signed pass from an active Verify credential.",
+    "owner_action_required": "Provision Apple Developer Pass Type ID and Pass Type certificate when ready; do not send certificate password or private key through chat.",
+    "blocker": "External Apple Developer signing material is required before a real .pkpass can be generated."
   },
   "evidence": [
     {
