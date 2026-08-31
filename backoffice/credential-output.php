@@ -169,7 +169,12 @@ mmHeader('Ausgabeanfrage', 'Verify-Ausweis Ausgabe und Fulfilment verwalten.', '
         <h3>Apple Wallet Bereitschaft</h3>
         <?php if (!empty($walletReadiness['ready'])): ?>
           <p><?= mmBackofficeStatusBadge('active', 'bereit') ?></p>
-          <p>Pass Type ID, Team ID und Signaturkette sind serverseitig vorhanden.</p>
+          <p>Pass Type ID, Team ID, Artwork und Signaturkette sind serverseitig vorhanden.</p>
+          <?php if (in_array($current, ['processing','ready'], true) && (int)$output['is_active'] === 1): ?>
+            <div class="actions">
+              <a class="button" href="/backoffice/credential-wallet.php?output_id=<?= $id ?>">Wallet-Pass erzeugen</a>
+            </div>
+          <?php endif; ?>
         <?php else: ?>
           <p><?= mmBackofficeStatusBadge('pending', 'noch nicht bereit') ?></p>
           <ul class="credential-wallet-issues">
