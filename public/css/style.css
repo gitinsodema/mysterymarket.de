@@ -1340,3 +1340,74 @@ nav a[aria-current=page],
   .credential-output-transition{grid-template-columns:1fr}
   .credential-output-transition button{width:100%}
 }
+
+
+/* R1.2 Apple Wallet technical preview */
+.wallet-preview-card{
+  min-height:360px;
+  padding:20px;
+  border-radius:20px;
+  background:#001950;
+  color:#fff;
+  box-shadow:0 12px 28px rgba(0,25,80,.18);
+}
+.wallet-preview-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  margin-bottom:28px;
+}
+.wallet-preview-top span{font-weight:800}
+.wallet-preview-top small{opacity:.7}
+.wallet-preview-primary small,
+.wallet-preview-fields small{
+  display:block;
+  font-size:10px;
+  letter-spacing:.08em;
+  opacity:.7;
+  margin-bottom:3px;
+}
+.wallet-preview-primary strong{
+  display:block;
+  font-size:20px;
+  line-height:1.2;
+}
+.wallet-preview-fields{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-top:24px;
+}
+.wallet-preview-fields strong{display:block;line-height:1.2}
+.wallet-preview-qr{
+  display:flex;
+  gap:12px;
+  align-items:flex-end;
+  margin-top:24px;
+}
+.wallet-preview-qr [data-wallet-qr-target]{
+  padding:6px;
+  border-radius:8px;
+  background:#fff;
+}
+.wallet-preview-qr small{opacity:.8}
+.credential-wallet-mapping{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 18px;
+}
+.credential-wallet-mapping>div{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  padding:10px 0;
+  border-bottom:1px solid #e7ebf0;
+}
+.credential-wallet-mapping>div.wide{grid-column:1 / -1}
+.credential-wallet-mapping span{text-align:right;overflow-wrap:anywhere}
+@media(max-width:760px){
+  .wallet-preview-fields{grid-template-columns:1fr}
+  .credential-wallet-mapping{grid-template-columns:1fr}
+  .credential-wallet-mapping>div.wide{grid-column:auto}
+}
