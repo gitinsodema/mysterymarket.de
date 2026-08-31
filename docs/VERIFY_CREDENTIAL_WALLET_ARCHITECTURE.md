@@ -283,9 +283,17 @@ Authenticated download endpoint:
 
 - `backoffice/credential-wallet.php`
 
+Pre-signing Backoffice mapping preview:
+
+- `backoffice/credential-wallet-preview.php`
+
 Readiness CLI:
 
 - `scripts/wallet-readiness.php`
+
+Signed package structural review:
+
+- `scripts/wallet-package-review.php`
 
 The generator:
 
