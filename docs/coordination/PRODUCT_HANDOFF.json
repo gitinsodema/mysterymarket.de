@@ -134,6 +134,7 @@
     }
   ],
   "completed_since_last_report": [
+    "Production: existing HP/BARE credential successfully bound to the intended Backoffice subject through the private access assignment.",
     "Protected verify assets can be served either after a recent public Verify session or through an authenticated permitted private credential context.",
     "New credential drafts require an explicit private subject; revisions inherit the binding.",
     "Elite profile now shows only explicitly assigned credentials under 'Meine Ausweise'.",
@@ -200,8 +201,8 @@
     {
       "id": "MM-BLOCK-R1_2-CREDENTIAL-ACCESS-MIGRATION",
       "type": "migration",
-      "status": "pending_owner_deployment",
-      "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
+      "status": "resolved_in_production",
+      "classification": "CURRENT_REPORTED_VERIFIED",
       "summary": "database/20260831_credential_access_binding.sql must be applied in production before the new private credential access flow is tested."
     }
   ],
@@ -469,7 +470,7 @@
   },
   "next_recommended_action": {
     "classification": "PROPOSAL",
-    "summary": "Pull r1.2-credentials in production, run scripts/backoffice-migrate.php, bind the existing HP/BARE credential to the correct Backoffice user in Admin > Credentials, then test direct unauthenticated card access, Admin access and Elite own-access."
+    "summary": "Verify the private access boundary in production: unauthenticated direct card access must require login, Admin must retain access, assigned Elite must access own card, and any non-owner Elite must receive 403."
   },
   "evidence": [
     {
