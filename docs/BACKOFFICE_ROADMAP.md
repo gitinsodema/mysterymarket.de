@@ -179,24 +179,27 @@ Member capabilities:
 
 ### Apple Wallet
 
-Target: real iPhone Apple Wallet pass (`.pkpass`) for an Elite Shopper credential.
+Target: real iPhone Apple Wallet pass (`.pkpass`) for an existing project-specific Verify credential.
 
-Planned fields:
-- MysteryMarket / Elite Shopper branding
-- member display name
-- Elite Shopper ID
+Implemented pass basis:
+- Apple Generic Pass
+- project/brand context
+- person and agency
 - validity
-- status
-- QR / verification reference
-- direct Verify URL
+- Verify reference
+- QR code to the authoritative Verify URL
+- expiration date from the Verify credential
+- same Verify identity; no separate Wallet credential
 
-Technical requirements:
-- Apple Developer account / Pass Type ID
-- signing certificate
-- signed pass generation
-- secure pass download endpoint
-- optional PassKit web service for updates
-- device registration / push update support later
+Technical requirements/status:
+- Apple Developer account / Pass Type ID: external prerequisite
+- Pass Type signing certificate/private key: external prerequisite
+- Apple WWDR certificate: external prerequisite
+- signed pass generation: implemented server-side, gated by readiness
+- private artwork paths for icon/logo: configured outside repository
+- authenticated .pkpass download endpoint: implemented
+- optional PassKit web service for updates: later
+- device registration / push update support: later
 
 The Wallet pass is a convenience representation. MysteryMarket Verify remains the authoritative validation source.
 
