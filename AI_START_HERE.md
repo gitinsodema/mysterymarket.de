@@ -5,9 +5,11 @@ Read in this order before product work:
 1. `AGENTS.md`
 2. `docs/RELEASE_V1.md`
 3. `docs/BACKOFFICE_ROADMAP.md`
-4. `docs/coordination/README.md`
-5. `docs/coordination/PRODUCT_HANDOFF.json`
-6. the current branch/code relevant to the requested task
+4. `docs/VERIFY_CREDENTIAL_WALLET_ARCHITECTURE.md`
+5. `docs/APPLE_WALLET_RUNBOOK.md` when credential/Wallet work is involved
+6. `docs/coordination/README.md`
+7. `docs/coordination/PRODUCT_HANDOFF.json`
+8. the current branch/code relevant to the requested task
 
 Mandatory cross-product coordination protocol:
 
@@ -16,7 +18,7 @@ Mandatory cross-product coordination protocol:
 Current repository:
 - `gitinsodema/mysterymarket.de`
 - released baseline: `main` / V1.0.0
-- active post-release development branch: `r1.1-little-backoffice`
+- active post-release development branch: `r1.2-credentials`
 
 Production safety:
 - operate inside `/var/www/vhosts/mysterymarket.de/httpdocs`
@@ -24,8 +26,11 @@ Production safety:
 - private Verify assets are outside webroot at `/var/www/vhosts/mysterymarket.de/private/verify-assets`
 
 Important product continuity:
-The Verify system is a preserved reusable capability. Future refactoring must retain its
-core functions unless the Owner explicitly replaces or cancels them.
+The Verify/Credential/Wallet subsystem is a preserved reusable capability. Future
+refactoring must retain its source-of-truth model, protected-asset boundary, integrity
+gate, revision lifecycle and output semantics unless the Owner explicitly replaces or
+cancels them. Reuse guidance is documented in
+`docs/VERIFY_CREDENTIAL_WALLET_ARCHITECTURE.md`.
 
 
 Backoffice continuity:
