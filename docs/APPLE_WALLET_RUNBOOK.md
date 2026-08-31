@@ -335,3 +335,48 @@ The review checks:
 
 This is a structural package check. Final Apple signature acceptance is still proven by
 real iPhone Wallet import; do not treat this tool as a replacement for Apple validation.
+
+
+## 15. Apple Developer account / team setup
+
+Owner direction:
+
+- Apple setup is a long-term INSODEMA foundation, not a Wallet-only account.
+- The same Apple Developer organization/team should be suitable for future App Store application publishing.
+- INSODEMA domain identity is preferred for organizational consistency.
+- The next setup step is to decide whether the Account Holder uses:
+  1. a new dedicated Apple Account under the INSODEMA domain, or
+  2. the Owner's existing active Apple Account.
+
+Do not create a Pass Type ID or certificate before this account/team structure is decided.
+
+The account/team decision must consider:
+
+- long-term ownership continuity
+- Account Holder recovery
+- two-factor authentication
+- separation of personal device usage from organizational administration
+- future invitation of Admin/Developer/App Manager users
+- future App Store Connect usage
+- future PassKit/Wallet certificate ownership
+
+The email address alone does not define the Apple Developer organization. The important boundary is the Apple Account that becomes Account Holder and the Apple Developer organization/team enrolled around it.
+
+Recommended next-chat sequence:
+
+1. decide Account Holder identity
+2. create/verify Apple Account with two-factor authentication if needed
+3. enroll the INSODEMA organization in the Apple Developer Program
+4. verify organization/legal-entity details requested by Apple
+5. record Team ID
+6. create product Pass Type ID
+7. generate CSR
+8. create Pass Type certificate
+9. export certificate + private key to P12/PFX
+10. install WWDR certificate
+11. place all signing material only in private server storage
+12. configure local.php
+13. run wallet-readiness.php
+14. generate and test first signed pass on iPhone
+
+Never store the Apple Account password, recovery keys, private keys or P12/PFX password in this repository or in product handoff files.
