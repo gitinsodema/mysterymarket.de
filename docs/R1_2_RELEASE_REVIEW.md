@@ -1,6 +1,6 @@
 # MysteryMarket R1.2 Credentials / Verify / Wallet — Technical Release Review
 
-Status: technical review in progress; Owner release approval pending
+Status: technical gate passed in production; Owner release approval pending
 
 Branch: `r1.2-credentials`
 
@@ -181,6 +181,22 @@ Owner confirmed:
   - Wallet is NOT_READY only because external Apple configuration is absent
   - `MYSTERYMARKET_VERIFY_CREDENTIAL_SERVICE_OK`
 
+## Production technical gate evidence
+
+Owner reported the complete R1.2 production technical gate successful on 2026-08-31.
+
+Verified production close checks:
+
+- tracked PHP/preflight successful
+- Backoffice integrity successful
+- credential-service integrity successful
+- private/public credential access regression successful
+- ATLAS smoke successful
+- Apple Wallet readiness executed in expected NOT_READY state because external Apple provisioning is deferred
+- `scripts/r1.2-technical-gate.php` completed with `MYSTERYMARKET_R1_2_TECHNICAL_GATE_OK`
+
+This establishes technical readiness only. It does not replace explicit Owner release approval.
+
 ## Explicitly deferred / non-blocking
 
 ### Printer hardware adapter
@@ -231,6 +247,6 @@ Before Owner release approval:
 
 ## Release approval
 
-Owner approval has not yet been requested/granted for R1.2.
+Technical readiness is confirmed. Explicit Owner release approval has not yet been granted for R1.2.
 
 Do not merge/release R1.2 solely because the technical gate passes.
