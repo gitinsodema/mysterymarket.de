@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.2.0",
     "target_release": "1.2.0",
-    "lifecycle_phase": "r1_2_credentials_private_access_hardening",
+    "lifecycle_phase": "r1_2_technical_gate_passed_owner_release_pending",
     "active_branch": "r1.2-credentials",
     "default_branch": "main",
     "pull_request": null,
@@ -47,7 +47,7 @@
     ]
   },
   "release_progress": {
-    "lifecycle_phase": "released",
+    "lifecycle_phase": "technical_gate_passed_owner_release_pending",
     "release_readiness_percent": 100,
     "operational_readiness_percent": 100,
     "bootstrap_readiness_percent": 100,
@@ -91,10 +91,7 @@
         }
       ],
       "remaining_blockers": [
-        "Finish/bind/activate and real-device test HP/BARE credential",
-        "Remove or intentionally retain inactive duplicate HP/BARE draft",
-        "Final legal/privacy/contact visual QA",
-        "Owner approval required before merge to main"
+        "Explicit Owner approval required before R1.2 promotion/release to main"
       ]
     }
   },
@@ -134,6 +131,9 @@
     }
   ],
   "completed_since_last_report": [
+    "R1.2 technical readiness is confirmed; Apple Wallet remains intentionally NOT_READY only because external Apple provisioning is deferred.",
+    "Owner reported the complete scripts/r1.2-technical-gate.php successful in production with all checks OK.",
+    "Owner reported scripts/preflight.php successful after private credential ownership binding.",
     "R1.2 credential review now gates the public/private boundary and checks subject_user_id plus absence of public printable-card links.",
     "Owner successfully runtime-tested the private credential boundary: unauthenticated card access blocked, Admin access allowed, assigned Elite access allowed, non-owner access denied.",
     "Production: existing HP/BARE credential successfully bound to the intended Backoffice subject through the private access assignment.",
@@ -206,6 +206,13 @@
       "status": "resolved_in_production",
       "classification": "CURRENT_REPORTED_VERIFIED",
       "summary": "database/20260831_credential_access_binding.sql must be applied in production before the new private credential access flow is tested."
+    },
+    {
+      "id": "MM-BLOCK-R1_2-OWNER-RELEASE-APPROVAL",
+      "type": "approval",
+      "status": "pending_owner",
+      "classification": "APPROVAL_REQUEST",
+      "summary": "R1.2 technical gate is green; explicit Owner approval is required before promotion/release to main."
     }
   ],
   "owner_actions": [
@@ -471,8 +478,8 @@
     "confidentiality_note": "BARE/HP broad homepage/current-audits relationship was anonymised pending approved public context; code-gated credential may display factual authorisation details."
   },
   "next_recommended_action": {
-    "classification": "PROPOSAL",
-    "summary": "Pull the latest r1.2-credentials changes and run scripts/credentials-review.php followed by scripts/r1.2-technical-gate.php. If an active personal credential is reported without subject_user_id, bind it in Backoffice and rerun."
+    "classification": "APPROVAL_REQUEST",
+    "summary": "Perform the final Owner release decision for MysteryMarket R1.2. If approved, promote r1.2-credentials to main without changing the already-verified release revision."
   },
   "evidence": [
     {
