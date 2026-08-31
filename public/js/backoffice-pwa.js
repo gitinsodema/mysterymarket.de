@@ -1,18 +1,22 @@
 (() => {
-  if (!('serviceWorker' in navigator)) {
-    return;
-  }
-
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/backoffice-sw.js', { scope: '/backoffice/' }).catch(() => {});
-  });
-
   const standalone =
     window.matchMedia('(display-mode: standalone)').matches ||
     window.navigator.standalone === true;
 
   if (standalone) {
     document.documentElement.classList.add('backoffice-standalone');
+  }
+
+  // This Backoffice intentionally has no offline service worker.
+  // Remove an earlier experimental registration if it exists.
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      registrations.forEach(registration => {
+        if (registration.scope.includes('/backoffice/')) {
+          registration.unregister().catch(() => {});
+        }
+      });
+    }).catch(() => {});
   }
 
   const hint = document.querySelector('[data-backoffice-install-hint]');
