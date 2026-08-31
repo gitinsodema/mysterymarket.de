@@ -46,6 +46,13 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
   </div>
 </section>
 
+<section class="section backoffice-install-hint" data-backoffice-install-hint hidden>
+  <div class="notice">
+    <strong>Auf dem iPhone installieren:</strong>
+    In Safari auf „Teilen“ tippen und „Zum Home-Bildschirm“ wählen. Danach startet das Backoffice wie eine eigene App im Standalone-Modus.
+  </div>
+</section>
+
 <?php if ($role === 'admin'): ?>
 <section class="section backoffice-stat-section">
   <div class="backoffice-stat-grid">
