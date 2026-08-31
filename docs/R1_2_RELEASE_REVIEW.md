@@ -17,6 +17,20 @@ Release candidate version: `1.2.0`
 - person, role, agency, project, brand/client, validity and confidentiality are editable on drafts
 - active credentials are not edited in place
 
+### Public / private credential boundary
+
+- public `/verify` is verification-only
+- public Verify does not expose printable/card preparation actions
+- printable CR80 credential view requires Backoffice authentication
+- Admin retains operational access to all credential representations
+- Elite users may open only credentials explicitly assigned through `audit_verifications.subject_user_id`
+- Elite profile lists only explicitly assigned credentials
+- protected Verify assets remain available to a recent successful public verification context, while private representation access follows the authenticated ownership policy
+- private subject assignment is access metadata on the authoritative Verify credential, not a second credential identity
+- new credentials require a private subject before activation
+- revisions inherit the private subject binding
+- Owner runtime-tested unauthenticated, Admin, assigned-Elite and non-owner access behavior successfully
+
 ### Protected credential assets
 
 - photo upload
@@ -147,6 +161,12 @@ Preflight requires both documents.
 
 Owner confirmed:
 
+- public Verify no longer displays the card-preparation action
+- direct unauthenticated printable-card access is blocked by login
+- Admin printable-card access works
+- assigned Elite holder access works
+- non-owner Elite access is denied
+
 - inactive Verify credential draft creation works
 - protected asset binding works
 - guarded activation behaves as expected
@@ -183,6 +203,9 @@ R1.2 must preserve:
 - CSRF protection
 - active credentials read-only
 - activation integrity gate
+- active personal credentials have an explicit private subject binding
+- public Verify cannot expose printable credential actions
+- printable credential view requires login and ownership/role authorization
 - protected assets outside webroot
 - no private signing material in repository
 - no direct public access to credential files
