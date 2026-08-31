@@ -27,6 +27,24 @@ $check->execute(['table_name'=>'verify_credential_outputs']);
     ? passCredential('verify_credential_outputs exists')
     : failCredential('verify_credential_outputs missing');
 
+$columnCheck = $pdo->prepare(
+    'SELECT COUNT(*)
+     FROM information_schema.columns
+     WHERE table_schema = DATABASE()
+       AND table_name = :table_name
+       AND column_name = :column_name'
+);
+
+foreach (['supersedes_verification_id','revision_no'] as $columnName) {
+    $columnCheck->execute([
+        'table_name'=>'audit_verifications',
+        'column_name'=>$columnName,
+    ]);
+    (int)$columnCheck->fetchColumn() === 1
+        ? passCredential("audit_verifications.{$columnName} exists")
+        : failCredential("audit_verifications.{$columnName} missing");
+}
+
 if ($failures === 0) {
     $personal = (int)$pdo->query(
         'SELECT COUNT(*) FROM audit_verifications WHERE is_personal_verification = 1'
