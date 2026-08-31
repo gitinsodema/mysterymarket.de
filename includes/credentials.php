@@ -3,6 +3,21 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/backoffice-auth.php';
 
+/*
+ * Reusable Verify credential/output subsystem.
+ *
+ * Architecture authority:
+ * - audit_verifications is the credential source of truth.
+ * - Wallet, print and physical fulfilment are representations of that record.
+ * - Never create a parallel Wallet/login-role credential identity.
+ * - Keep private assets/signing material outside the public webroot.
+ * - Reuse mmCredentialIntegrityErrors() as the activation/output gate.
+ *
+ * See:
+ * - docs/VERIFY_CREDENTIAL_WALLET_ARCHITECTURE.md
+ * - docs/APPLE_WALLET_RUNBOOK.md
+ */
+
 function mmCredentialOutputLabel(string $type): string
 {
     return match ($type) {
