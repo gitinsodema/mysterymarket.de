@@ -288,6 +288,8 @@ The next active experiment may be a small native iOS application for the authent
 
 Initial scope should remain deliberately narrow:
 - Backoffice login
+- Face ID / biometric unlock after the first successful server login
+- secure session/token storage in the iOS Keychain; never store the Backoffice password
 - Elite member/admin views needed on mobile
 - own credential/card view
 - relevant private Backoffice actions
@@ -295,6 +297,12 @@ Initial scope should remain deliberately narrow:
 - no public Verify replacement
 - no new qualification/profile data ownership
 - reuse the existing MysteryMarket Backoffice/API authority where possible
+
+Security principle for the app:
+- first authentication remains server-authoritative;
+- biometric login is an optional local unlock of a securely stored app session/refresh credential;
+- Face ID must never create a parallel identity or bypass server-side account status/role checks;
+- logout/revocation removes the local app session.
 
 This app is an experiment after the R1.2 web release, not R1.3 product scope.
 
