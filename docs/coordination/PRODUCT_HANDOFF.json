@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-31T13:05:00+02:00",
+  "report_generated_at": "2026-08-31T14:14:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -134,14 +134,12 @@
     }
   ],
   "completed_since_last_report": [
-    "Owner chose Apple Wallet as the next R1.2 focus after deferring printer-specific integration.",
-    "Implemented real Apple Generic Pass payload generation from active project-specific audit_verifications credentials.",
-    "Wallet pass contains project, person, agency, validity, Verify reference and QR code pointing to the authoritative MysteryMarket Verify URL.",
-    "Implemented manifest generation, detached CMS signing, WWDR chain inclusion and .pkpass ZIP packaging using PHP OpenSSL and ZipArchive.",
-    "Added authenticated Backoffice .pkpass download endpoint linked to Apple Wallet fulfilment requests.",
-    "Pass generation is blocked unless the Verify credential is active, integrity-valid, and the Apple Wallet signing configuration is complete.",
-    "Added Wallet readiness CLI check and Backoffice readiness reporting.",
-    "Apple signing certificates, password and Wallet artwork paths remain private config outside the repository."
+    "Owner explicitly requested thorough documentation because the Verify/Credential/Wallet subsystem will be reused in other systems.",
+    "Added docs/VERIFY_CREDENTIAL_WALLET_ARCHITECTURE.md covering source-of-truth, lifecycle, protected assets, output model, Wallet generation, fulfilment and porting boundaries.",
+    "Added docs/APPLE_WALLET_RUNBOOK.md covering private server layout, Apple provisioning, local config, readiness verification, first-pass test, failure handling, security and reuse.",
+    "Annotated includes/credentials.php, backoffice/credential-wallet.php, backoffice/credential-output.php and config/local.example.php with reusable architecture/security intent.",
+    "Updated AI_START_HERE.md and coordination README so future chats must read the reusable subsystem documentation.",
+    "Preflight now requires the architecture and Wallet runbook so the documentation cannot silently disappear during later refactoring."
   ],
   "blockers": [
     {
@@ -361,6 +359,14 @@
       "source_authority": "Owner",
       "verification_status": "documented",
       "summary": "R1.2 remains printer-independent. Zebra is not selected; a Canon or other printer with card/tray feed may be used later. Device-specific printing will only be designed after the actual printer model is chosen."
+    },
+    {
+      "id": "MM-DEC-R1-2-CREDENTIAL-SUBSYSTEM-REUSABLE",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DIRECTIVE",
+      "source_authority": "Owner",
+      "verification_status": "documented_and_preflight_protected",
+      "summary": "The project-specific Verify/Credential/Wallet implementation is intentionally a reusable subsystem for later products. Future ports must preserve one authoritative credential, protected assets, shared integrity gating, revision lifecycle, output references and Verify authority while replacing product-specific branding, URLs, scopes, auth/audit adapters and Apple signing identity."
     }
   ],
   "dependencies": [
@@ -426,9 +432,9 @@
   },
   "next_recommended_action": {
     "priority": 1,
-    "action": "Deploy the Wallet generator and run scripts/wallet-readiness.php. Expected current state is NOT_READY until Apple Developer Pass Type ID, signing certificate/private key, WWDR certificate and private Wallet icon are provisioned. Once those are installed in private paths and local.php is configured, set apple_wallet.enabled=true and generate the first signed pass from an active Verify credential.",
-    "owner_action_required": "Provision Apple Developer Pass Type ID and Pass Type certificate when ready; do not send certificate password or private key through chat.",
-    "blocker": "External Apple Developer signing material is required before a real .pkpass can be generated."
+    "action": "Deploy documentation/preflight updates. Apple Wallet code is ready up to the external provisioning boundary; next technical action is provisioning the private wallet directory and Apple Pass Type signing material when available, followed by first real signed pass testing on iPhone.",
+    "owner_action_required": "none until Apple Developer Pass Type ID/signing material is available",
+    "blocker": "Real Apple Wallet generation requires external Apple Developer Pass Type ID, signing certificate/private key and WWDR certificate."
   },
   "evidence": [
     {
