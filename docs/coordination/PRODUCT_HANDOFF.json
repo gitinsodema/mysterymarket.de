@@ -193,6 +193,12 @@
       "status": "resolved_historical",
       "instruction_classification": "APPROVAL_REQUEST",
       "action": "Explicitly approve V1 merge/release after final QA."
+    },
+    {
+      "id": "MM-OWNER-APPLE-DEVELOPER-ENROLLMENT",
+      "status": "deferred_by_owner",
+      "instruction_classification": "OWNER_DECISION",
+      "action": "Enroll in the Apple Developer Program when the first app registration is ready; preferred first app is OPS, fallback is a small MysteryMarket Backoffice app."
     }
   ],
   "approval_requests": [
@@ -327,6 +333,14 @@
       "source_authority": "ATLAS approved shared INSODEMA geography contract",
       "verification_status": "copied_to_active_branch_and_integration_prepared",
       "summary": "MysteryMarket consumes ATLAS Geography Reference API v1 server-to-server using its own MYSTERYMARKET token and canonical ATLAS IDs."
+    },
+    {
+      "id": "MM-DEC-APPLE-DEVELOPER-TIMING",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_DECISION",
+      "source_authority": "Owner",
+      "verification_status": "confirmed",
+      "summary": "Apple Developer Program membership will not be purchased immediately. The annual membership will be activated when INSODEMA is ready to register its first app, preferably OPS; alternatively a small MysteryMarket app with Backoffice functions may serve as the first app. Apple Wallet implementation remains planned for MysteryMarket R1.2 once membership and certificates are available."
     }
   ],
   "dependencies": [
@@ -392,7 +406,7 @@
   },
   "next_recommended_action": {
     "classification": "PROPOSAL",
-    "summary": "Begin R1.2 credential lifecycle work from the released R1.1 baseline, preserving MysteryMarket Verify as the authoritative validation source and using the Owner-approved credential identity/order model."
+    "summary": "Continue R1.2 credential lifecycle and Wallet preparation without requiring Apple signing yet; defer Pass Type ID/certificate activation until Apple Developer Program enrollment."
   },
   "evidence": [
     {
