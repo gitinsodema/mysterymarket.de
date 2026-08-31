@@ -336,3 +336,18 @@ Activation prerequisite:
 - owner installs the dedicated MYSTERYMARKET token in production `config/local.php`
 - run `scripts/atlas-smoke.php`
 - only after successful smoke verification should live autocomplete/select UX be enabled
+
+
+## Public / private credential boundary
+
+Owner-approved security and product boundary:
+
+- `/verify` is a public verification surface only.
+- Public Verify may expose only information required for a third party to validate identity, authorisation, project context, validity and approved evidence.
+- Public Verify must not offer credential creation, card printing, Wallet issuance, physical-card ordering or internal credential administration.
+- Printable/card credential views require an authenticated Backoffice session.
+- Admin may inspect credential views for operational administration.
+- Elite users may inspect only credentials assigned to their own credential subject identity.
+- Credential ownership is represented through a separate `credential_subjects` identity layer; login role is not the credential owner.
+- Public QR codes continue to resolve to authoritative MysteryMarket Verify.
+- MysteryMarket Verify remains authoritative for validity/revocation even when Wallet or physical representations are introduced.
