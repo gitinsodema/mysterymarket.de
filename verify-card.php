@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/site.php';
-require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/backoffice-auth.php';
 
 header('X-Robots-Tag: noindex, noarchive');
 header('Cache-Control: private, no-store, max-age=0');
@@ -15,24 +14,18 @@ if (!in_array($method, ['GET','HEAD'], true)) {
     exit;
 }
 
-mmStartSecureSession();
-
 $code = strtoupper(trim((string)($_GET['code'] ?? '')));
 if (!preg_match('/^[A-Z0-9-]{4,64}$/', $code)) {
     http_response_code(404);
     exit;
 }
 
-$verifiedAt = (int)($_SESSION['mm_verified_records'][$code] ?? 0);
-if ($verifiedAt < time() - 900) {
-    http_response_code(403);
-    echo 'Please verify this reference again before opening the print card.';
-    exit;
-}
+$user = mmBackofficeRequireLogin();
 
 $stmt = mmDb()->prepare(
     'SELECT reference_code, person_name, role_label, agency_name, project_name, brand_name,
-            valid_until, photo_asset, brand_logo_asset, agency_logo_asset, print_card_enabled
+            valid_until, photo_asset, brand_logo_asset, agency_logo_asset, print_card_enabled,
+            credential_subject_id
      FROM audit_verifications
      WHERE reference_code = :code
        AND is_active = 1
@@ -48,6 +41,11 @@ $row = $stmt->fetch();
 if (!$row) {
     http_response_code(404);
     exit;
+}
+
+if (!mmBackofficeCanAccessCredential($user, isset($row['credential_subject_id']) ? (int)$row['credential_subject_id'] : null)) {
+    http_response_code(403);
+    exit('Forbidden');
 }
 
 $verifyUrl = 'https://mysterymarket.de/verify?code=' . rawurlencode($code) . '#credential';
@@ -134,7 +132,7 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
     </section>
     <div class="print-controls">
       <button type="button" onclick="window.print()">Print card</button>
-      <a class="button secondary" href="/verify?code=<?= rawurlencode($code) ?>">Back to Verify</a>
+      <a class="button secondary" href="<?= ($user['role'] ?? '') === 'elite' ? '/backoffice/profile.php' : '/backoffice/' ?>">Back to Backoffice</a>
     </div>
   </div>
 </div>
