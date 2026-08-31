@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-31T14:18:00+02:00",
+  "report_generated_at": "2026-08-31T16:15:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.2.0",
     "target_release": "1.2.0",
-    "lifecycle_phase": "r1_2_release_review_and_apple_provisioning",
+    "lifecycle_phase": "r1_2_credentials_private_access_hardening",
     "active_branch": "r1.2-credentials",
     "default_branch": "main",
     "pull_request": null,
@@ -134,6 +134,13 @@
     }
   ],
   "completed_since_last_report": [
+    "Protected verify assets can be served either after a recent public Verify session or through an authenticated permitted private credential context.",
+    "New credential drafts require an explicit private subject; revisions inherit the binding.",
+    "Elite profile now shows only explicitly assigned credentials under 'Meine Ausweise'.",
+    "audit_verifications.subject_user_id added as a private holder/access binding without creating a second credential identity.",
+    "Admin retains operational access to all printable credentials; Elite users are restricted to credentials explicitly bound to their own Backoffice account.",
+    "Printable credential view now requires Backoffice authentication.",
+    "Public /verify no longer exposes the printable credential-card action on the active r1.2-credentials branch.",
     "Owner reported successful R1.2 credential/Wallet runtime checks and requested end-of-chat handoff consolidation.",
     "R1.2 is at release-candidate version 1.2.0 on branch r1.2-credentials.",
     "Reusable Verify/Credential/Wallet subsystem is implemented and documented.",
@@ -189,6 +196,13 @@
       "status": "open_non_release_gate",
       "classification": "APPROVAL_REQUEST",
       "summary": "A retention period for stored contact requests has not yet been explicitly approved. No automatic deletion of contact content is implemented."
+    },
+    {
+      "id": "MM-BLOCK-R1_2-CREDENTIAL-ACCESS-MIGRATION",
+      "type": "migration",
+      "status": "pending_owner_deployment",
+      "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
+      "summary": "database/20260831_credential_access_binding.sql must be applied in production before the new private credential access flow is tested."
     }
   ],
   "owner_actions": [
@@ -382,6 +396,14 @@
       "source_authority": "Owner",
       "verification_status": "direction_confirmed_account_identity_pending",
       "summary": "Apple Developer setup should be created as a clean long-term INSODEMA foundation, not as a Wallet-only throwaway account. It should support future App Store application publishing as well as PassKit/Wallet."
+    },
+    {
+      "id": "MM-DEC-R1_2-PRIVATE-CREDENTIAL-ACCESS",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_APPROVAL",
+      "source_authority": "Owner",
+      "verification_status": "implemented_repository_pending_production_migration",
+      "summary": "Public Verify is verification-only. Private card/Wallet representations require Backoffice authentication. Admin may access all credentials; Elite may access only credentials explicitly bound through audit_verifications.subject_user_id."
     }
   ],
   "dependencies": [
@@ -446,10 +468,8 @@
     "confidentiality_note": "BARE/HP broad homepage/current-audits relationship was anonymised pending approved public context; code-gated credential may display factual authorisation details."
   },
   "next_recommended_action": {
-    "priority": 1,
-    "action": "Start the next chat by resolving the Apple Developer account/team architecture. Prefer a clean long-term INSODEMA organization setup; decide whether the Account Holder should use a new dedicated INSODEMA Apple Account or the Owner's existing active Apple Account. Then guide the Owner step-by-step through Apple Developer enrollment, Team ID discovery, Pass Type ID creation, CSR/certificate export, WWDR installation, private server placement and Wallet readiness. In parallel, reconfirm R1.2 production HEAD and run the final technical gate before requesting release approval.",
-    "owner_action_required": "Answer the Apple account identity decision first; no secrets required.",
-    "blocker": "Real Apple Wallet signing requires Apple Developer enrollment/Team access and Pass Type signing material. R1.2 code itself has no known technical blocker."
+    "classification": "PROPOSAL",
+    "summary": "Pull r1.2-credentials in production, run scripts/backoffice-migrate.php, bind the existing HP/BARE credential to the correct Backoffice user in Admin > Credentials, then test direct unauthenticated card access, Admin access and Elite own-access."
   },
   "evidence": [
     {
