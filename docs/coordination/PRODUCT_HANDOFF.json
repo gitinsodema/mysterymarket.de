@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.1.0",
     "target_release": "1.2.0",
-    "lifecycle_phase": "r1_1_released_r1_2_credentials_planning",
+    "lifecycle_phase": "r1_2_credentials_foundation",
     "active_branch": "main",
     "default_branch": "main",
     "pull_request": null,
@@ -124,6 +124,10 @@
     }
   ],
   "completed_since_last_report": [
+    "Public Verify credential-card action removed; /verify is now verification-only.",
+    "verify-card.php now requires authenticated Backoffice access; admin may access operational credentials and Elite users only their assigned credential subject.",
+    "Protected Verify assets now authorize either a recent public verification context or an authenticated permitted Backoffice credential context.",
+    "Introduced credential_subjects as the R1.2 identity ownership layer, separate from login role.",
     "R1.1 Little Backoffice released to main as version 1.1.0.",
     "Main HEAD verified at a991d993ce46e05088f2a50720598db21cfafd98 (Release R1.1 Little Backoffice).",
     "DOS Product Chat Handoff, Owner Approval and Progress Protocol V1 revision 1.1 re-read on 2026-08-31; local coordination state reconciled with repository.",
@@ -179,6 +183,13 @@
       "status": "open_non_release_gate",
       "classification": "APPROVAL_REQUEST",
       "summary": "A retention period for stored contact requests has not yet been explicitly approved. No automatic deletion of contact content is implemented."
+    },
+    {
+      "id": "MM-BLOCK-R1_2-CREDENTIAL-SUBJECT-MIGRATION",
+      "type": "migration",
+      "status": "pending_owner_deployment",
+      "classification": "CURRENT_REPORTED_PENDING_VERIFICATION",
+      "summary": "database/20260831_credential_subjects.sql must be applied in production before the new authenticated credential views are used."
     }
   ],
   "owner_actions": [
@@ -199,6 +210,12 @@
       "status": "deferred_by_owner",
       "instruction_classification": "OWNER_DECISION",
       "action": "Enroll in the Apple Developer Program when the first app registration is ready; preferred first app is OPS, fallback is a small MysteryMarket Backoffice app."
+    },
+    {
+      "id": "MM-OWNER-R1_2-CREDENTIAL-MIGRATION",
+      "status": "required",
+      "instruction_classification": "APPROVAL_REQUEST",
+      "action": "After pulling the repository in production, run scripts/backoffice-migrate.php and confirm the credential_subjects migration passes."
     }
   ],
   "approval_requests": [
@@ -341,6 +358,14 @@
       "source_authority": "Owner",
       "verification_status": "confirmed",
       "summary": "Apple Developer Program membership will not be purchased immediately. The annual membership will be activated when INSODEMA is ready to register its first app, preferably OPS; alternatively a small MysteryMarket app with Backoffice functions may serve as the first app. Apple Wallet implementation remains planned for MysteryMarket R1.2 once membership and certificates are available."
+    },
+    {
+      "id": "MM-DEC-PUBLIC-PRIVATE-CREDENTIAL-BOUNDARY",
+      "classification": "CURRENT_OWNER_CONFIRMED",
+      "instruction_classification": "OWNER_APPROVAL",
+      "source_authority": "Owner",
+      "verification_status": "implemented_repository_pending_production_migration",
+      "summary": "Public Verify is verification-only. Credential/card preparation, Wallet issuance and credential management are private Admin/Elite functions. Elite access is restricted to credentials assigned to the user's credential subject identity."
     }
   ],
   "dependencies": [
@@ -406,7 +431,7 @@
   },
   "next_recommended_action": {
     "classification": "PROPOSAL",
-    "summary": "Continue R1.2 credential lifecycle and Wallet preparation without requiring Apple signing yet; defer Pass Type ID/certificate activation until Apple Developer Program enrollment."
+    "summary": "Deploy the privacy boundary and credential-subject migration, verify public /verify no longer exposes the card action, then test Admin card access and Elite no-access/own-access behavior."
   },
   "evidence": [
     {
