@@ -21,6 +21,10 @@ return [
         'product' => 'MYSTERYMARKET',
         'timeout_seconds' => 8,
     ],
+    // Apple Wallet signing material belongs in private server storage only.
+    // Never commit real certificate passwords, private keys, P12/PFX files or
+    // production artwork that is intended to remain private.
+    // See docs/APPLE_WALLET_RUNBOOK.md.
     'apple_wallet' => [
         'enabled' => false,
         'pass_type_identifier' => 'pass.REPLACE_WITH_PASS_TYPE_ID',
