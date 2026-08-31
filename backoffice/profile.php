@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require_once dirname(__DIR__) . '/includes/backoffice-auth.php';
+require_once dirname(__DIR__) . '/includes/credentials.php';
 
 header('Cache-Control: private, no-store, max-age=0');
 header('Pragma: no-cache');
@@ -175,6 +175,17 @@ $requestStmt = mmDb()->prepare(
 $requestStmt->execute(['member_id'=>(int)$member['id']]);
 $requests = $requestStmt->fetchAll();
 
+$credentialStmt = mmDb()->prepare(
+    'SELECT id, reference_code, project_name, role_label, brand_name, agency_name,
+            valid_from, valid_until, print_card_enabled, is_active
+     FROM audit_verifications
+     WHERE subject_user_id = :user_id
+       AND is_personal_verification = 1
+     ORDER BY is_active DESC, valid_until DESC, id DESC'
+);
+$credentialStmt->execute(['user_id'=>(int)$user['id']]);
+$credentials = $credentialStmt->fetchAll();
+
 mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nofollow');
 ?>
 <section class="hero backoffice-dashboard-hero">
@@ -202,6 +213,45 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
         <a href="<?= mmEscape((string)$member['shoppermatch_profile_url']) ?>" target="_blank" rel="noopener noreferrer">Profil öffnen →</a>
       <?php endif; ?>
     </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="form-card">
+    <div class="section-head">
+      <p class="eyebrow">Geschützter Bereich</p>
+      <h2>Meine Ausweise.</h2>
+      <p>Hier erscheinen nur Verify-Ausweise, die deinem Login ausdrücklich zugeordnet wurden. Öffentliche Verifikation und private Ausweisfunktionen bleiben getrennt.</p>
+    </div>
+    <?php if (!$credentials): ?>
+      <div class="notice">Aktuell ist deinem Elite-Profil kein Ausweis zugeordnet.</div>
+    <?php else: ?>
+      <div class="credential-certificate-list">
+        <?php foreach ($credentials as $credential): ?>
+          <?php $credentialState = mmCredentialVerifyState($credential); ?>
+          <article class="credential-certificate">
+            <div class="credential-certificate-summary">
+              <div class="credential-certificate-mark">ID</div>
+              <div class="credential-certificate-main">
+                <div class="credential-certificate-topline">
+                  <span class="badge"><?= mmEscape(mmCredentialProjectLabel($credential)) ?></span>
+                  <?= mmBackofficeStatusBadge($credentialState) ?>
+                </div>
+                <h3><?= mmEscape((string)($credential['project_name'] ?: $credential['reference_code'])) ?></h3>
+                <div class="credential-certificate-meta">
+                  <span><strong><?= mmEscape((string)$credential['reference_code']) ?></strong><small>Verify-Referenz</small></span>
+                  <span><strong><?= mmEscape((string)($credential['role_label'] ?: '—')) ?></strong><small>Rolle</small></span>
+                  <span><strong><?= mmEscape((string)($credential['valid_until'] ?: 'offen')) ?></strong><small>Gültig bis</small></span>
+                </div>
+              </div>
+              <?php if ((int)$credential['is_active'] === 1 && (int)$credential['print_card_enabled'] === 1): ?>
+                <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Ausweisansicht öffnen</a>
+              <?php endif; ?>
+            </div>
+          </article>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
   </div>
 </section>
 
