@@ -88,6 +88,7 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
 {
     $nav = mmNav();
     $current = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $isBackoffice = str_starts_with($current, '/backoffice');
     $currentNav = $current === '/verify' ? '/verify.php' : $current;
     $canonicalCurrent = in_array($current, ['/verify','/verify.php'], true) ? '/verify' : $current;
     $lang = mmLanguage();
@@ -114,6 +115,14 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
     <meta name="robots" content="<?= mmEscape($robots) ?>">
     <meta name="theme-color" content="#001950">
     <link rel="icon" href="/favicon.ico" sizes="any">
+    <?php if ($isBackoffice): ?>
+    <meta name="application-name" content="MM Backoffice">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="MM Backoffice">
+    <link rel="apple-touch-icon" href="/favicon.ico">
+    <link rel="manifest" href="/backoffice.webmanifest">
+    <?php endif; ?>
     <link rel="canonical" href="<?= mmEscape($canonicalUrl) ?>">
     <link rel="alternate" hreflang="de" href="<?= mmEscape($baseUrl . mmLangUrl($canonicalCurrent, 'de')) ?>">
     <link rel="alternate" hreflang="en" href="<?= mmEscape($baseUrl . mmLangUrl($canonicalCurrent, 'en')) ?>">
@@ -130,8 +139,20 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
     <meta name="twitter:description" content="<?= mmEscape($description) ?>">
     <link rel="stylesheet" href="/public/css/style.css">
 </head>
-<body>
+<body<?= $isBackoffice ? ' class="backoffice-app-shell"' : '' ?>>
 <a class="skip-link" href="#main-content"><?= mmEscape(mmT('accessibility.skip', 'Zum Hauptinhalt')) ?></a>
+<?php if ($isBackoffice): ?>
+<header class="site-header backoffice-app-header">
+    <a class="brand" href="/backoffice/" aria-label="MysteryMarket Backoffice">
+        <span class="brand-mark">MM</span>
+        <span class="brand-copy"><strong><span>Mystery</span><span class="brand-accent">Market</span></strong><small>Private Backoffice</small></span>
+    </a>
+    <nav class="backoffice-app-nav" aria-label="Backoffice Navigation">
+        <a href="/backoffice/">Dashboard</a>
+        <a href="/">Website</a>
+    </nav>
+</header>
+<?php else: ?>
 <header class="site-header">
     <a class="brand" href="<?= mmEscape(mmLangUrl('/')) ?>" aria-label="MysteryMarket">
         <span class="brand-mark">MM</span>
@@ -162,6 +183,7 @@ function mmHeader(string $title, string $description = '', string $robots = 'ind
         </nav>
     </div>
 </header>
+<?php endif; ?>
 <main id="main-content" tabindex="-1">
 <?php
 }
@@ -181,6 +203,7 @@ function mmFooter(): void
     </div>
 </footer>
 <script src="/public/js/site.js" defer></script>
+<script src="/public/js/backoffice-pwa.js" defer></script>
 </body>
 </html>
 <?php
