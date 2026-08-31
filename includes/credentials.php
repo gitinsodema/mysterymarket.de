@@ -18,6 +18,17 @@ require_once __DIR__ . '/backoffice-auth.php';
  * - docs/APPLE_WALLET_RUNBOOK.md
  */
 
+function mmCredentialUserCanAccess(array $user, array $credential): bool
+{
+    if (($user['role'] ?? '') === 'admin') {
+        return true;
+    }
+
+    return ($user['role'] ?? '') === 'elite'
+        && !empty($credential['subject_user_id'])
+        && (int)$credential['subject_user_id'] === (int)($user['id'] ?? 0);
+}
+
 function mmCredentialOutputLabel(string $type): string
 {
     return match ($type) {
