@@ -1,8 +1,8 @@
 # MysteryMarket Post‑V1 Backoffice Roadmap
 
 Status: Owner-approved direction
-Baseline: MysteryMarket R1.1.0 on `main`
-Active development branch: `r1.2-credentials`
+Baseline: MysteryMarket R1.2.0 released on `main`
+Active development: production feature development paused after R1.2; future concepts documented only until prerequisites are ready
 
 ## Product boundary
 
@@ -237,16 +237,66 @@ Explicitly deferred:
 
 A concrete printer adapter will only be designed after the actual printer model and card/tray setup are selected and tested.
 
-## R1.3 — Connected Elite
+## Post-R1.2 — Future concepts (not an active release)
 
-- OPS connection
-- qualifications
-- regions
-- mobility profile
-- planning support
-- richer member status / readiness
-- ShopperMatch profile link / presence marker
-- no duplicate job marketplace
+MysteryMarket R1.2.0 is the final productive baseline for now.
+
+The earlier R1.3 "Connected Elite" concept is intentionally parked because its prerequisites and data ownership boundaries are not yet ready.
+
+### Qualification / certificate ownership
+
+Do not maintain qualifications in both MysteryMarket and ShopperMatch.
+
+Approved direction:
+
+- ShopperMatch owns detailed shopper profiling and certificates.
+- Certificates are available for all relevant shoppers, not only MysteryMarket Elite members.
+- MysteryMarket may later consume successful/valid certificates from ShopperMatch through an API.
+- MysteryMarket should display only the operational certificate facts it needs and must not recreate the detailed qualification model locally.
+
+### ShopperMatch profile link
+
+Preferred future integration:
+- retrieve/link the ShopperMatch profile through an API or stable transfer/reference code.
+
+Permitted fallback:
+- manually store a ShopperMatch profile URL or code in the Elite profile.
+
+MysteryMarket Elite remains deliberately small and does not become a second full shopper-profile system or job marketplace.
+
+### ATLAS personal geography profile
+
+Do not repeatedly ask the same person for region/geography data in every product.
+
+Target concept:
+- the user creates a personal geography/region profile once through ATLAS;
+- ATLAS remains the canonical geography reference;
+- another INSODEMA product can import that profile through a transfer code/API;
+- each receiving product stores only the product-specific normalized values it actually requires.
+
+The exact transfer contract remains future work and must be defined in ATLAS before implementation.
+
+### OPS connection
+
+MysteryMarket-to-OPS integration is deferred until OPS 1.0 is a stable prerequisite.
+
+Current OPS work is still focused on Dispatcher completion/hardening, therefore no speculative MysteryMarket OPS integration is to be implemented now.
+
+### Native MysteryMarket Backoffice app experiment
+
+The next active experiment may be a small native iOS application for the authenticated MysteryMarket Backoffice only.
+
+Initial scope should remain deliberately narrow:
+- Backoffice login
+- Elite member/admin views needed on mobile
+- own credential/card view
+- relevant private Backoffice actions
+- no duplication of the public website
+- no public Verify replacement
+- no new qualification/profile data ownership
+- reuse the existing MysteryMarket Backoffice/API authority where possible
+
+This app is an experiment after the R1.2 web release, not R1.3 product scope.
 
 ## Security principles
 
