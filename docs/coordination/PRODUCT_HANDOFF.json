@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-31T17:32:00+02:00",
+  "report_generated_at": "2026-08-31T18:32:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -20,7 +20,7 @@
   "current_state": {
     "current_version": "1.2.0",
     "target_release": "1.2.0",
-    "lifecycle_phase": "r1_2_released_future_integrations_parked_native_ios_experiment_planned",
+    "lifecycle_phase": "r1_2_released_mobile_backoffice_pwa_experiment",
     "active_branch": "main",
     "default_branch": "main",
     "pull_request": 3,
@@ -129,6 +129,10 @@
     }
   ],
   "completed_since_last_report": [
+    "Native iOS/Face ID requirement remains parked and unchanged for the later Swift app.",
+    "Private Backoffice PWA deliberately does not cache authenticated pages or credential data offline.",
+    "Backoffice now has a dedicated mobile/standalone app shell, web app manifest and iPhone Home Screen installation hint.",
+    "Owner approved a zero-cost mobile Backoffice PWA experiment while native iOS development is deferred until Mac access is available.",
     "Approved security model: first login remains server-authoritative; biometric unlock releases a Keychain-protected app session/token and never stores the Backoffice password.",
     "Owner made Face ID a required option for the first native MysteryMarket iOS Backoffice app.",
     "Next active experiment approved in principle: a small native iOS app focused only on the authenticated MysteryMarket Backoffice.",
@@ -487,7 +491,7 @@
   },
   "next_recommended_action": {
     "classification": "PROPOSAL",
-    "summary": "Start the native iOS proof of concept with Login -> optional Face ID enablement -> Dashboard using a minimal authenticated MysteryMarket API. First prerequisite is a Mac with current Xcode and an iPhone for device testing."
+    "summary": "Deploy main, run preflight, open /backoffice/ in iPhone Safari and add it to the Home Screen. Verify standalone launch, login, Dashboard, Credentials and Elite navigation on device."
   },
   "evidence": [
     {
