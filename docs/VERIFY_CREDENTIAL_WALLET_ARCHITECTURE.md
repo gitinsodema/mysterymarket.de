@@ -24,6 +24,8 @@ Do not introduce a second credential identity for Wallet, print, login role or f
 
 The Backoffice role (admin / Elite) controls access to management functions only. It is not the credential identity.
 
+Private holder access is bound directly on the authoritative credential through `subject_user_id`. Admin may manage all credentials; an Elite user may open only credentials whose `subject_user_id` equals that user's Backoffice account ID. This binding controls private representations only and does not alter the public Verify identity.
+
 ## 2. Authoritative data model
 
 ### `audit_verifications`
@@ -50,6 +52,7 @@ Important fields used by the reusable subsystem:
 - `document_enabled`
 - `print_card_enabled`
 - `is_personal_verification`
+- `subject_user_id` (private Backoffice holder/access binding; not a second credential identity)
 - `is_active`
 - `supersedes_verification_id`
 - `revision_no`
@@ -349,6 +352,7 @@ When porting this subsystem to another product, preserve:
 - Wallet as representation
 - revision lineage
 - audit trail
+- explicit private subject binding for holder-facing outputs
 - CSRF/authentication on management endpoints
 
 Replace/configure:
