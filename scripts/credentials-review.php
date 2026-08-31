@@ -35,7 +35,7 @@ $columnCheck = $pdo->prepare(
        AND column_name = :column_name'
 );
 
-foreach (['supersedes_verification_id','revision_no'] as $columnName) {
+foreach (['supersedes_verification_id','revision_no','subject_user_id'] as $columnName) {
     $columnCheck->execute([
         'table_name'=>'audit_verifications',
         'column_name'=>$columnName,
@@ -114,6 +114,29 @@ if ($failures === 0) {
         : failCredential("{$invalidShipped} shipped output(s) missing shipping reference");
 
     echo "[INFO] credential_output_requests=" . (int)$pdo->query('SELECT COUNT(*) FROM verify_credential_outputs')->fetchColumn() . "\n";
+
+    $unboundActive = (int)$pdo->query(
+        'SELECT COUNT(*)
+         FROM audit_verifications
+         WHERE is_personal_verification = 1
+           AND is_active = 1
+           AND subject_user_id IS NULL'
+    )->fetchColumn();
+
+    $unboundActive === 0
+        ? passCredential('all active personal credentials have a private subject binding')
+        : failCredential("{$unboundActive} active personal credential(s) missing private subject binding");
+
+    $verifySource = @file_get_contents(dirname(__DIR__) . '/verify.php') ?: '';
+    !str_contains($verifySource, 'href="/verify-card.php?code=')
+        ? passCredential('public Verify does not expose printable credential action')
+        : failCredential('public Verify still exposes printable credential action');
+
+    $cardSource = @file_get_contents(dirname(__DIR__) . '/verify-card.php') ?: '';
+    str_contains($cardSource, 'mmBackofficeRequireLogin()')
+        && str_contains($cardSource, 'mmCredentialUserCanAccess')
+        ? passCredential('printable credential view requires authenticated access policy')
+        : failCredential('printable credential view authentication/access policy is incomplete');
 
     $wallet = mmAppleWalletReadiness();
     if (!empty($wallet['ready'])) {
