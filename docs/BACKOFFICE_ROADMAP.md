@@ -215,14 +215,24 @@ Potential later accessories:
 
 Principle: professional field equipment, not merchandise.
 
-### Zebra fulfilment
-Long-term:
-- print-ready output
-- admin print queue
-- printed / packed / shipped
+### Printer-independent fulfilment
+
+Current R1.2 scope:
+- printer-independent CR80/card output
+- browser/PDF print-ready representation
+- admin fulfilment queue
+- printed / packed / shipped states
 - shipping date
 - optional tracking
 - replacement workflow
+
+Explicitly deferred:
+- no Zebra-specific implementation
+- no Canon-specific implementation
+- no tray/driver/vendor-specific print adapter
+- no hard-coded printer dimensions or command language beyond the existing CR80 credential format
+
+A concrete printer adapter will only be designed after the actual printer model and card/tray setup are selected and tested.
 
 ## R1.3 — Connected Elite
 
