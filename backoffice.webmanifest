@@ -1,0 +1,18 @@
+{
+  "name": "MysteryMarket Backoffice",
+  "short_name": "MM Backoffice",
+  "description": "Privater MysteryMarket Backoffice-Zugang.",
+  "start_url": "/backoffice/",
+  "scope": "/backoffice/",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#001950",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ]
+}
