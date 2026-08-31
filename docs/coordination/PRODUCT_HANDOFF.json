@@ -129,6 +129,8 @@
     }
   ],
   "completed_since_last_report": [
+    "Approved security model: first login remains server-authoritative; biometric unlock releases a Keychain-protected app session/token and never stores the Backoffice password.",
+    "Owner made Face ID a required option for the first native MysteryMarket iOS Backoffice app.",
     "Next active experiment approved in principle: a small native iOS app focused only on the authenticated MysteryMarket Backoffice.",
     "OPS integration deferred until OPS 1.0 is stable; no speculative integration while Dispatcher work is still ongoing.",
     "Future geography direction corrected: ATLAS should host a reusable personal region/geography profile that other products can import via transfer code/API rather than asking repeatedly.",
@@ -485,7 +487,7 @@
   },
   "next_recommended_action": {
     "classification": "PROPOSAL",
-    "summary": "Design the smallest native iOS Backoffice experiment and choose the initial legal test-distribution path. Keep MysteryMarket R1.2 web product otherwise unchanged."
+    "summary": "Start the native iOS proof of concept with Login -> optional Face ID enablement -> Dashboard using a minimal authenticated MysteryMarket API. First prerequisite is a Mac with current Xcode and an iPhone for device testing."
   },
   "evidence": [
     {
