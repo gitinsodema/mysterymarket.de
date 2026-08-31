@@ -33,6 +33,14 @@ if (!$credential) {
     exit;
 }
 
+$subjectStmt = mmDb()->query(
+    "SELECT u.id, u.email, u.role, u.account_status, m.display_name, m.member_code
+     FROM backoffice_users u
+     LEFT JOIN elite_members m ON m.user_id = u.id
+     ORDER BY u.role, COALESCE(m.display_name, u.email), u.email"
+);
+$credentialSubjects = $subjectStmt->fetchAll();
+
 $error = '';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
@@ -41,10 +49,40 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
         http_response_code(400);
         $error = 'Ungültige Sitzung.';
-    } elseif ((int)$credential['is_active'] === 1 && !in_array($action, ['deactivate','create_revision'], true)) {
+    } elseif ((int)$credential['is_active'] === 1 && !in_array($action, ['deactivate','create_revision','set_subject'], true)) {
         $error = 'Aktive Verify-Ausweise sind schreibgeschützt. Änderungen erfolgen über Deaktivierung oder einen kontrollierten Revisions-Draft.';
     } else {
         try {
+            if ($action === 'set_subject') {
+                $subjectUserId = (int)($_POST['subject_user_id'] ?? 0);
+                if ($subjectUserId > 0) {
+                    $checkSubject = mmDb()->prepare(
+                        'SELECT id FROM backoffice_users WHERE id = :id LIMIT 1'
+                    );
+                    $checkSubject->execute(['id'=>$subjectUserId]);
+                    if (!$checkSubject->fetchColumn()) {
+                        throw new InvalidArgumentException('Die ausgewählte Ausweis-Person ist nicht verfügbar.');
+                    }
+                }
+
+                $stmt = mmDb()->prepare(
+                    'UPDATE audit_verifications
+                     SET subject_user_id = :subject_user_id, updated_at = NOW()
+                     WHERE id = :id AND is_personal_verification = 1'
+                );
+                $stmt->execute([
+                    'subject_user_id'=>$subjectUserId > 0 ? $subjectUserId : null,
+                    'id'=>$id,
+                ]);
+
+                mmBackofficeAudit((int)$user['id'], 'verify_credential.subject_bound', 'audit_verification', $id, [
+                    'reference_code'=>(string)$credential['reference_code'],
+                    'subject_user_id'=>$subjectUserId > 0 ? $subjectUserId : null,
+                ]);
+                header('Location: /backoffice/credential.php?id=' . $id . '&subject_saved=1', true, 303);
+                exit;
+            }
+
             if ($action === 'save_details') {
                 $personName = trim((string)($_POST['person_name'] ?? ''));
                 $roleLabel = trim((string)($_POST['role_label'] ?? ''));
@@ -307,7 +345,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                       person_name, role_label, agency_name, project_name, brand_name,
                       photo_asset, brand_logo_asset, agency_logo_asset, scope_key,
                       document_asset, document_label, document_enabled, print_card_enabled,
-                      is_personal_verification, is_active, supersedes_verification_id, revision_no,
+                      subject_user_id, is_personal_verification, is_active, supersedes_verification_id, revision_no,
                       created_at, updated_at)
                      VALUES
                      (:reference_code, :public_title, :public_partner, :public_client,
@@ -315,7 +353,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                       :person_name, :role_label, :agency_name, :project_name, :brand_name,
                       :photo_asset, :brand_logo_asset, :agency_logo_asset, :scope_key,
                       :document_asset, :document_label, :document_enabled, :print_card_enabled,
-                      1, 0, :supersedes_verification_id, :revision_no,
+                      :subject_user_id, 1, 0, :supersedes_verification_id, :revision_no,
                       NOW(), NOW())"
                 );
                 $stmt->execute([
@@ -340,6 +378,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'document_label'=>$credential['document_label'],
                     'document_enabled'=>$credential['document_enabled'],
                     'print_card_enabled'=>$credential['print_card_enabled'],
+                    'subject_user_id'=>$credential['subject_user_id'] ?? null,
                     'supersedes_verification_id'=>$id,
                     'revision_no'=>$nextRevision,
                 ]);
@@ -395,6 +434,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
 <section class="section">
   <?php if (isset($_GET['created'])): ?><div class="alert success"><strong>Ausweis-Draft angelegt.</strong> Die Verify-Referenz wurde automatisch erzeugt.</div><?php endif; ?>
   <?php if (isset($_GET['saved'])): ?><div class="alert success"><strong>Ausweis gespeichert.</strong></div><?php endif; ?>
+  <?php if (isset($_GET['subject_saved'])): ?><div class="alert success"><strong>Private Ausweis-Zuordnung gespeichert.</strong></div><?php endif; ?>
   <?php if (isset($_GET['scope_saved'])): ?><div class="alert success"><strong>Scope gespeichert.</strong></div><?php endif; ?>
   <?php if (isset($_GET['asset_saved'])): ?><div class="alert success"><strong>Asset sicher gespeichert und gebunden.</strong></div><?php endif; ?>
   <?php if (isset($_GET['asset_removed'])): ?><div class="alert success"><strong>Asset-Bindung entfernt.</strong></div><?php endif; ?>
@@ -498,6 +538,41 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
         <?php if ((int)$credential['is_active'] !== 1): ?><button type="submit">Scope speichern</button><?php endif; ?>
       </form>
     </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="form-card credential-editor">
+    <div class="section-head">
+      <p class="eyebrow">Privater Zugriff</p>
+      <h2>Ausweis-Person zuordnen.</h2>
+      <p>Diese Zuordnung steuert ausschließlich private Ausweis-, Druck- und spätere Wallet-Funktionen. Der öffentliche Verify-Inhalt bleibt davon unberührt.</p>
+    </div>
+    <form method="post" action="/backoffice/credential.php?id=<?= $id ?>">
+      <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+      <input type="hidden" name="id" value="<?= $id ?>">
+      <input type="hidden" name="action" value="set_subject">
+      <label>Private Ausweis-Person
+        <select name="subject_user_id">
+          <option value="">Nicht zugeordnet · nur Adminzugriff</option>
+          <?php foreach ($credentialSubjects as $subject): ?>
+            <?php
+              $subjectLabel = trim((string)($subject['display_name'] ?? ''));
+              if ($subjectLabel === '') {
+                  $subjectLabel = (string)$subject['email'];
+              }
+              $subjectMeta = strtoupper((string)$subject['role'])
+                  . (!empty($subject['member_code']) ? ' · ' . (string)$subject['member_code'] : '')
+                  . ' · ' . (string)$subject['email'];
+            ?>
+            <option value="<?= (int)$subject['id'] ?>"<?= (int)($credential['subject_user_id'] ?? 0) === (int)$subject['id'] ? ' selected' : '' ?>>
+              <?= mmEscape($subjectLabel . ' — ' . $subjectMeta) ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+      </label>
+      <div class="elite-profile-actions"><button type="submit">Private Zuordnung speichern</button></div>
+    </form>
   </div>
 </section>
 
