@@ -3,6 +3,17 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/credentials.php';
 
+/*
+ * Signed Apple Wallet output endpoint.
+ *
+ * This endpoint does not define a new credential. It packages the same active,
+ * integrity-valid Verify credential into a signed .pkpass. Generation is also
+ * gated by the verify_credential_outputs workflow.
+ *
+ * Signing keys/certificates are private local configuration and must never be
+ * committed to this repository.
+ */
+
 header('Cache-Control: private, no-store, max-age=0');
 header('Pragma: no-cache');
 header('X-Robots-Tag: noindex, noarchive');
