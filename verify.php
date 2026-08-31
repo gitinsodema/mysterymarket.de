@@ -558,9 +558,6 @@ $rtl = $verifyLang === 'ar';
             <?php if (!empty($result['document_enabled']) && !empty($result['document_asset'])): ?>
               <a class="button" href="/verify-asset.php?code=<?= rawurlencode((string)$result['reference_code']) ?>&type=document" title="<?= mmEscape((string)($result['document_label'] ?: $detailCopy['document'])) ?>"><?= mmEscape((string)($result['document_label'] ?: $detailCopy['document_open'])) ?></a>
             <?php endif; ?>
-            <?php if (!empty($result['print_card_enabled'])): ?>
-              <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$result['reference_code']) ?>"><?= mmEscape($detailCopy['print']) ?></a>
-            <?php endif; ?>
           </div>
         </article>
       <?php else: ?>
