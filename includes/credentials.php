@@ -178,6 +178,9 @@ function mmCredentialIntegrityErrors(array $row): array
     }
 
     $errors = [];
+    if ((int)($row['subject_user_id'] ?? 0) < 1) {
+        $errors[] = 'Private Ausweis-Person fehlt';
+    }
     $required = [
         'person_name'=>'Person fehlt',
         'role_label'=>'Rolle fehlt',
