@@ -354,3 +354,79 @@ function mmBackofficeStatusBadge(string $status, ?string $label = null): string
     return '<span class="status status--' . mmEscape(mmBackofficeStatusTone($status)) . '">'
         . mmEscape($text) . '</span>';
 }
+
+
+function mmBackofficeContactRisk(array $row): array
+{
+    $score = 0;
+    $reasons = [];
+
+    $email = strtolower(trim((string)($row['email'] ?? '')));
+    $organisation = strtolower(trim((string)($row['organisation'] ?? '')));
+    $name = trim((string)($row['name'] ?? ''));
+    $subject = strtolower(trim((string)($row['subject'] ?? '')));
+    $message = strtolower(trim((string)($row['message'] ?? '')));
+    $text = trim($subject . ' ' . $message);
+
+    $brandDomains = [
+        'google' => ['google.com'],
+        'microsoft' => ['microsoft.com'],
+        'apple' => ['apple.com'],
+        'amazon' => ['amazon.com', 'amazon.de'],
+    ];
+
+    foreach ($brandDomains as $brand => $domains) {
+        if ($organisation === $brand) {
+            $matches = false;
+            foreach ($domains as $domain) {
+                if (str_ends_with($email, '@' . $domain)) {
+                    $matches = true;
+                    break;
+                }
+            }
+            if (!$matches) {
+                $score += 2;
+                $reasons[] = 'Organisation und E-Mail-Domain passen nicht zusammen.';
+            }
+            break;
+        }
+    }
+
+    $genericPricePatterns = [
+        '/\bprice\b/u',
+        '/\bpricing\b/u',
+        '/\bpreis\b/u',
+        '/\bkosten\b/u',
+        '/\bçmim(?:in|i)?\b/u',
+    ];
+    foreach ($genericPricePatterns as $pattern) {
+        if (preg_match($pattern, $text) === 1) {
+            $specificService = preg_match('/audit|fieldwork|mystery shopping|verify|elite|inspektion|store check|filial/u', $text) === 1;
+            if (!$specificService) {
+                $score += 2;
+                $reasons[] = 'Sehr allgemeine Preisfrage ohne konkrete Leistung.';
+            }
+            break;
+        }
+    }
+
+    if ($name !== '' && !str_contains($name, ' ') && strlen($name) >= 9) {
+        $score += 1;
+        $reasons[] = 'Name wirkt ungewöhnlich formatiert.';
+    }
+
+    if ($score >= 4) {
+        return ['level'=>'red', 'label'=>'Spam-Verdacht', 'tone'=>'danger', 'score'=>$score, 'reasons'=>$reasons];
+    }
+    if ($score >= 2) {
+        return ['level'=>'yellow', 'label'=>'Prüfen', 'tone'=>'warn', 'score'=>$score, 'reasons'=>$reasons];
+    }
+    return ['level'=>'green', 'label'=>'Unauffällig', 'tone'=>'ok', 'score'=>$score, 'reasons'=>$reasons];
+}
+
+function mmBackofficeContactRiskBadge(array $row): string
+{
+    $risk = mmBackofficeContactRisk($row);
+    return '<span class="status status--' . mmEscape((string)$risk['tone']) . '">'
+        . mmEscape((string)$risk['label']) . '</span>';
+}
