@@ -49,6 +49,8 @@ if (!$row) {
     exit('Not found');
 }
 
+$contactRisk = mmBackofficeContactRisk($row);
+
 mmHeader('Kontaktanfrage', 'Read-only Kontaktanfrage im MysteryMarket Backoffice.', 'noindex,nofollow');
 ?>
 <section class="hero backoffice-dashboard-hero">
@@ -76,6 +78,14 @@ mmHeader('Kontaktanfrage', 'Read-only Kontaktanfrage im MysteryMarket Backoffice
 
     <article class="card">
       <span class="badge">Systemstatus</span>
+      <p><strong>Interner Hinweis:</strong> <?= mmBackofficeContactRiskBadge($row) ?></p>
+      <?php if (!empty($contactRisk['reasons'])): ?>
+        <ul class="contact-risk-reasons">
+          <?php foreach ($contactRisk['reasons'] as $reason): ?>
+            <li><?= mmEscape((string)$reason) ?></li>
+          <?php endforeach; ?>
+        </ul>
+      <?php endif; ?>
       <p><strong>Status:</strong> <?= mmBackofficeStatusBadge((string)$row['status']) ?></p>
       <p><strong>Notification:</strong> <?= mmEscape((string)($row['notification_sent_at'] ?: $row['notification_failed_at'] ?: '—')) ?></p>
       <p><strong>Bestätigung:</strong> <?= mmEscape((string)($row['confirmation_sent_at'] ?: $row['confirmation_failed_at'] ?: '—')) ?></p>
