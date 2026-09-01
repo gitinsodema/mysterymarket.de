@@ -111,7 +111,10 @@ mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Creden
     <p class="eyebrow">Admin · Credential Service</p>
     <h1>Verify-Ausweise.</h1>
     <p class="lead">Projektbezogene Ausweise aus bestehenden Verify-Datensätzen erstellen, prüfen, drucken und künftig in Apple Wallet ausgeben.</p>
-    <div class="actions"><a class="button secondary" href="/backoffice/">Dashboard</a></div>
+    <div class="actions">
+      <a class="button secondary" href="/backoffice/">Dashboard</a>
+      <a class="button secondary" href="/backoffice/card-calibration.php">CR80 kalibrieren</a>
+    </div>
   </div>
 </section>
 
