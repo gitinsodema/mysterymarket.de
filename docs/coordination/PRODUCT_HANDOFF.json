@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "product_key": "mysterymarket",
   "repository": "gitinsodema/mysterymarket.de",
-  "report_generated_at": "2026-08-31T18:32:00+02:00",
+  "report_generated_at": "2026-09-01T14:24:00+02:00",
   "report_type": "historical_baseline_and_current_handoff",
   "knowledge_classification": {
     "overall": "CURRENT_AUTHORITY",
@@ -129,6 +129,9 @@
     }
   ],
   "completed_since_last_report": [
+    "Planned print preparation: exact-size CR80 print CSS plus a calibration/test sheet, with tested production settings documented after hardware validation.",
+    "Credential architecture keeps one canonical CR80 representation and defers Epson-specific tray offsets/scaling until the real printer, tray, driver and card stock are physically tested.",
+    "Owner selected Epson TS705a plus PVC card tray as the future MysteryMarket physical card print path; Zebra is no longer planned.",
     "Unnecessary Backoffice service-worker registration removed; prior experimental registration is explicitly unregistered because private Backoffice data must remain network/server authoritative.",
     "Backoffice PWA hardened with dedicated 180/192/512 PNG icons, explicit manifest id, and PNG-only icon declarations.",
     "Device comparison confirmed MysteryMarket PWA metadata, not iOS itself, caused Add to Home Screen failure.",
@@ -494,7 +497,7 @@
   },
   "next_recommended_action": {
     "classification": "PROPOSAL",
-    "summary": "Deploy main, run preflight, reload /backoffice/ once in Safari, then retry Add to Home Screen. If iOS cached the old metadata, close the Safari tab and reopen the Backoffice before retrying."
+    "summary": "Prepare printer-neutral CR80 exact-size print CSS and a calibration/test sheet in the Backoffice. Keep all Epson tray offsets and driver-specific values unset until the hardware is physically available."
   },
   "evidence": [
     {
