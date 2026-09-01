@@ -1492,3 +1492,13 @@ nav a[aria-current=page],
 @media(display-mode:standalone){
   .backoffice-app-header{padding-top:max(10px,env(safe-area-inset-top))}
 }
+
+
+/* Contact risk guidance */
+.contact-risk-reasons{
+  margin:8px 0 16px;
+  padding-left:18px;
+  color:var(--muted);
+  font-size:12px;
+}
+.contact-risk-reasons li{margin:3px 0}
