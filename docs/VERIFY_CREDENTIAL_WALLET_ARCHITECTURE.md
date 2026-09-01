@@ -315,7 +315,7 @@ The generator:
 
 ## 9. Fulfilment architecture
 
-Physical fulfilment is intentionally printer-independent.
+Physical fulfilment keeps the credential representation printer-independent, while MysteryMarket's selected operational print target is now the Epson TS705a with a PVC card tray.
 
 Current subsystem handles:
 
@@ -330,13 +330,21 @@ Current subsystem handles:
 It deliberately does not encode:
 
 - Zebra commands
-- Canon-specific logic
-- tray selection
-- vendor SDK
-- printer driver
 - printer command language
+- vendor SDK assumptions
+- hard-coded driver internals
 
-A printer adapter should be a later boundary component that consumes the existing print-ready credential representation.
+Approved MysteryMarket print direction:
+
+- Epson TS705a is the future physical card printer.
+- PVC cards are fed through the selected PVC card tray.
+- Zebra is no longer a planned MysteryMarket print target.
+- The credential remains a CR80 print-ready representation; printer-specific mechanics stay outside the credential identity/data model.
+- Prepare exact-size print CSS and a calibration/test page before productive card printing.
+- Do not hard-code tray X/Y offsets or scaling until the real printer, tray, driver and card stock have been physically tested.
+- Browser/PDF output should default to 100% / actual-size semantics and must avoid automatic fit-to-page scaling where possible.
+
+Any future printer adapter or print helper should consume the existing print-ready credential representation rather than creating a second card layout or credential identity.
 
 ## 10. Reuse boundary
 
