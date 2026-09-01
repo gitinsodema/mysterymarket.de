@@ -285,6 +285,7 @@ Reusable functions in `includes/credentials.php`:
 Authenticated download endpoint:
 
 - `backoffice/credential-wallet.php`
+- `backoffice/card-calibration.php`
 
 Pre-signing Backoffice mapping preview:
 
