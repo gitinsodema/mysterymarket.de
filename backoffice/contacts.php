@@ -13,7 +13,7 @@ if (!in_array($status, $allowed, true)) {
     $status = 'all';
 }
 
-$sql = 'SELECT id, reference_code, request_type, name, organisation, email, subject, status, created_at
+$sql = 'SELECT id, reference_code, request_type, name, organisation, email, phone, subject, message, status, created_at
         FROM contact_requests';
 $params = [];
 if ($status !== 'all') {
@@ -61,6 +61,7 @@ mmHeader('Kontakte', 'Read-only Kontaktanfragen im MysteryMarket Backoffice.', '
             <th>Organisation</th>
             <th>Typ</th>
             <th>Betreff</th>
+            <th>Hinweis</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -73,6 +74,7 @@ mmHeader('Kontakte', 'Read-only Kontaktanfragen im MysteryMarket Backoffice.', '
             <td><?= mmEscape((string)($row['organisation'] ?: '—')) ?></td>
             <td><?= mmEscape((string)$row['request_type']) ?></td>
             <td><?= mmEscape((string)$row['subject']) ?></td>
+            <td><?= mmBackofficeContactRiskBadge($row) ?></td>
             <td><?= mmBackofficeStatusBadge((string)$row['status']) ?></td>
           </tr>
         <?php endforeach; ?>
