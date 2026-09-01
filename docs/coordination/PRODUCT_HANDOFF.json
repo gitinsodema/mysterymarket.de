@@ -129,6 +129,9 @@
     }
   ],
   "completed_since_last_report": [
+    "Credential service now links directly to CR80 calibration; preflight requires the calibration page.",
+    "Calibration output uses exact CR80 dimensions 85.60 x 53.98 mm with 2 mm safe frame, center lines, corner crosses, 20 mm reference square and 5 mm measurement ticks.",
+    "Admin-only CR80 calibration page added at /backoffice/card-calibration.php.",
     "Planned print preparation: exact-size CR80 print CSS plus a calibration/test sheet, with tested production settings documented after hardware validation.",
     "Credential architecture keeps one canonical CR80 representation and defers Epson-specific tray offsets/scaling until the real printer, tray, driver and card stock are physically tested.",
     "Owner selected Epson TS705a plus PVC card tray as the future MysteryMarket physical card print path; Zebra is no longer planned.",
@@ -497,7 +500,7 @@
   },
   "next_recommended_action": {
     "classification": "PROPOSAL",
-    "summary": "Prepare printer-neutral CR80 exact-size print CSS and a calibration/test sheet in the Backoffice. Keep all Epson tray offsets and driver-specific values unset until the hardware is physically available."
+    "summary": "Deploy main and run preflight. The calibration page can already be visually reviewed, but productive Epson tray offsets must remain unset until the TS705a, PVC tray and actual card stock are available for a physical test."
   },
   "evidence": [
     {
