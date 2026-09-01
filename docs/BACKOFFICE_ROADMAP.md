@@ -218,9 +218,9 @@ Potential later accessories:
 
 Principle: professional field equipment, not merchandise.
 
-### Printer-independent fulfilment
+### Physical card print path
 
-Current R1.2 scope:
+Current R1.2 scope remains:
 - printer-independent CR80/card output
 - browser/PDF print-ready representation
 - admin fulfilment queue
@@ -229,13 +229,19 @@ Current R1.2 scope:
 - optional tracking
 - replacement workflow
 
-Explicitly deferred:
-- no Zebra-specific implementation
-- no Canon-specific implementation
-- no tray/driver/vendor-specific print adapter
-- no hard-coded printer dimensions or command language beyond the existing CR80 credential format
+Owner-selected future production target:
+- Epson TS705a
+- PVC card tray
+- Zebra is not planned for MysteryMarket
 
-A concrete printer adapter will only be designed after the actual printer model and card/tray setup are selected and tested.
+Preparation before productive physical printing:
+- preserve one canonical CR80 card layout
+- add exact-size print CSS
+- add a printer/card calibration sheet
+- validate front/back orientation, scaling, margins and tray offset on the actual Epson/tray/card-stock combination
+- record the tested driver/print settings after physical validation
+
+Do not invent or hard-code Epson tray offsets before the hardware is available. No vendor-specific print protocol is required at this stage.
 
 ## Post-R1.2 — Future concepts (not an active release)
 
