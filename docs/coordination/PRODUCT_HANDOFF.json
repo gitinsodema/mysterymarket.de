@@ -129,6 +129,10 @@
     }
   ],
   "completed_since_last_report": [
+    "Migration 20260902_contact_moderation.sql adds moderation fields and reviewer binding to contact_requests.",
+    "Automatic risk traffic light remains advisory and is not overwritten by the admin moderation decision.",
+    "Backoffice contact moderation now supports undecided, allow and spam decisions with reviewer/timestamp persistence and audit logging.",
+    "Owner approved explicit contact moderation decisions separate from automatic risk scoring.",
     "CSP and privacy disclosure updated for Cloudflare Turnstile; existing honeypot and rate limiting remain layered underneath.",
     "Turnstile secret remains server-local in config/local.php and is explicitly excluded from repository storage.",
     "MysteryMarket contact form is the first Turnstile pilot: managed widget, server-side Siteverify before database insert, expected action contact_submit, expected hostname mysterymarket.de.",
@@ -507,7 +511,7 @@
   },
   "next_recommended_action": {
     "classification": "OWNER_ACTION_REQUIRED",
-    "summary": "Add the Turnstile site key, secret key and hostname to production config/local.php, then deploy main, run preflight and submit one legitimate contact-form test. Do not paste the secret into chat or Git."
+    "summary": "Deploy main, run backoffice-migrate.php before opening Contacts, then run preflight. Mark known spam DB-IDs 7 and 8 as Spam and verify the decision appears in list/detail views."
   },
   "evidence": [
     {
