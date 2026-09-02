@@ -246,68 +246,6 @@ function mmCredentialStoreUploadedAsset(array $file, int $credentialId, string $
         throw new RuntimeException('Dateiinhalt entspricht keinem erlaubten MIME-Typ.');
     }
 
-    $isDraftCredential = (int)($row['is_active'] ?? 0) !== 1;
-
-    if ($isDraftCredential) {
-        $subjectUserId = (int)($row['subject_user_id'] ?? 0);
-        if ($subjectUserId > 0) {
-            $subjectStmt = mmDb()->prepare(
-                "SELECT m.display_name
-                 FROM backoffice_users u
-                 JOIN elite_members m ON m.user_id = u.id
-                 WHERE u.id = :id
-                   AND u.role = 'elite'
-                   AND u.account_status = 'active'
-                   AND m.membership_status = 'active'
-                 LIMIT 1"
-            );
-            $subjectStmt->execute(['id'=>$subjectUserId]);
-            $subjectName = $subjectStmt->fetchColumn();
-            if (!is_string($subjectName) || trim($subjectName) === '') {
-                $errors[] = 'Ausweis-Person ist nicht als aktiver Elite Shopper verfügbar';
-            } elseif (!hash_equals(trim($subjectName), trim((string)($row['person_name'] ?? '')))) {
-                $errors[] = 'Ausweis-Person stimmt nicht mit dem Elite-Profil überein';
-            }
-        }
-
-        $roleId = (int)($row['credential_role_id'] ?? 0);
-        if ($roleId > 0) {
-            $roleStmt = mmDb()->prepare(
-                'SELECT label FROM credential_roles WHERE id = :id AND is_active = 1 LIMIT 1'
-            );
-            $roleStmt->execute(['id'=>$roleId]);
-            $roleLabel = $roleStmt->fetchColumn();
-            if (!is_string($roleLabel) || !hash_equals(trim($roleLabel), trim((string)($row['role_label'] ?? '')))) {
-                $errors[] = 'Ausweis-Rolle stimmt nicht mit den Stammdaten überein';
-            }
-        }
-
-        $projectId = (int)($row['credential_project_id'] ?? 0);
-        if ($projectId > 0) {
-            $projectStmt = mmDb()->prepare(
-                "SELECT p.agency_id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed, a.name AS agency_name
-                 FROM credential_projects p
-                 JOIN agencies a ON a.id = p.agency_id
-                 WHERE p.id = :id
-                   AND p.is_active = 1
-                   AND a.is_active = 1
-                 LIMIT 1"
-            );
-            $projectStmt->execute(['id'=>$projectId]);
-            $project = $projectStmt->fetch();
-            if (!$project
-                || (int)$project['agency_id'] !== (int)($row['agency_id'] ?? 0)
-                || !hash_equals(trim((string)$project['agency_name']), trim((string)($row['agency_name'] ?? '')))
-                || !hash_equals(trim((string)$project['customer_name']), trim((string)($row['brand_name'] ?? '')))
-                || !hash_equals(trim((string)$project['project_name']), trim((string)($row['project_name'] ?? '')))
-                || !hash_equals(trim((string)($project['scope_key'] ?? '')), trim((string)($row['scope_key'] ?? '')))
-                || (int)($project['photo_allowed'] ?? 0) !== (int)($row['photo_allowed'] ?? 0)) {
-                $errors[] = 'Agentur, Projektkunde und Projekt stimmen nicht mit den Stammdaten überein';
-            }
-        }
-
-    }
-
     $assetDir = rtrim((string)(mmConfig()['security']['verify_asset_dir'] ?? ''), '/');
     $base = $assetDir !== '' ? realpath($assetDir) : false;
     if ($base === false || !is_dir($base) || !is_writable($base)) {
@@ -393,6 +331,67 @@ function mmCredentialIntegrityErrors(array $row): array
     $scope = trim((string)($row['scope_key'] ?? ''));
     if ($scope !== '' && !in_array($scope, $allowedScopes, true)) {
         $errors[] = 'Scope ist unbekannt';
+    }
+
+    $isDraftCredential = (int)($row['is_active'] ?? 0) !== 1;
+
+    if ($isDraftCredential) {
+        $subjectUserId = (int)($row['subject_user_id'] ?? 0);
+        if ($subjectUserId > 0) {
+            $subjectStmt = mmDb()->prepare(
+                "SELECT m.display_name
+                 FROM backoffice_users u
+                 JOIN elite_members m ON m.user_id = u.id
+                 WHERE u.id = :id
+                   AND u.role = 'elite'
+                   AND u.account_status = 'active'
+                   AND m.membership_status = 'active'
+                 LIMIT 1"
+            );
+            $subjectStmt->execute(['id'=>$subjectUserId]);
+            $subjectName = $subjectStmt->fetchColumn();
+            if (!is_string($subjectName) || trim($subjectName) === '') {
+                $errors[] = 'Ausweis-Person ist nicht als aktiver Elite Shopper verfügbar';
+            } elseif (!hash_equals(trim($subjectName), trim((string)($row['person_name'] ?? '')))) {
+                $errors[] = 'Ausweis-Person stimmt nicht mit dem Elite-Profil überein';
+            }
+        }
+
+        $roleId = (int)($row['credential_role_id'] ?? 0);
+        if ($roleId > 0) {
+            $roleStmt = mmDb()->prepare(
+                'SELECT label FROM credential_roles WHERE id = :id AND is_active = 1 LIMIT 1'
+            );
+            $roleStmt->execute(['id'=>$roleId]);
+            $roleLabel = $roleStmt->fetchColumn();
+            if (!is_string($roleLabel) || !hash_equals(trim($roleLabel), trim((string)($row['role_label'] ?? '')))) {
+                $errors[] = 'Ausweis-Rolle stimmt nicht mit den Stammdaten überein';
+            }
+        }
+
+        $projectId = (int)($row['credential_project_id'] ?? 0);
+        if ($projectId > 0) {
+            $projectStmt = mmDb()->prepare(
+                "SELECT p.agency_id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed, a.name AS agency_name
+                 FROM credential_projects p
+                 JOIN agencies a ON a.id = p.agency_id
+                 WHERE p.id = :id
+                   AND p.is_active = 1
+                   AND a.is_active = 1
+                 LIMIT 1"
+            );
+            $projectStmt->execute(['id'=>$projectId]);
+            $project = $projectStmt->fetch();
+            if (!$project
+                || (int)$project['agency_id'] !== (int)($row['agency_id'] ?? 0)
+                || !hash_equals(trim((string)$project['agency_name']), trim((string)($row['agency_name'] ?? '')))
+                || !hash_equals(trim((string)$project['customer_name']), trim((string)($row['brand_name'] ?? '')))
+                || !hash_equals(trim((string)$project['project_name']), trim((string)($row['project_name'] ?? '')))
+                || !hash_equals(trim((string)($project['scope_key'] ?? '')), trim((string)($row['scope_key'] ?? '')))
+                || (int)($project['photo_allowed'] ?? 0) !== (int)($row['photo_allowed'] ?? 0)) {
+                $errors[] = 'Agentur, Projektkunde und Projekt stimmen nicht mit den Stammdaten überein';
+            }
+        }
     }
 
     $assetDir = rtrim((string)(mmConfig()['security']['verify_asset_dir'] ?? ''), '/');
