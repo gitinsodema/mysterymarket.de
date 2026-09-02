@@ -79,7 +79,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
             header('Location: /backoffice/credential-project.php?id=' . $id . '&created=1', true, 303);
             exit;
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException|RuntimeException $e) {
             $error = $e->getMessage();
         } catch (PDOException $e) {
             $error = $e->getCode() === '23000'
