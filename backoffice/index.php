@@ -11,14 +11,15 @@ $user = mmBackofficeRequireLogin();
 $role = (string)$user['role'];
 
 $selfEliteStmt = mmDb()->prepare(
-    "SELECT id
+    "SELECT id, membership_status
      FROM elite_members
      WHERE user_id = :user_id
-       AND membership_status = 'active'
      LIMIT 1"
 );
 $selfEliteStmt->execute(['user_id'=>(int)$user['id']]);
-$selfEliteMemberId = (int)$selfEliteStmt->fetchColumn();
+$selfEliteMember = $selfEliteStmt->fetch() ?: null;
+$selfEliteMemberId = $selfEliteMember ? (int)$selfEliteMember['id'] : 0;
+$selfEliteMembershipStatus = $selfEliteMember ? (string)$selfEliteMember['membership_status'] : '';
 
 $dashboard = [
     'active_members' => 0,
@@ -76,12 +77,14 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
     <?php if ($role === 'admin'): ?>
       <?php if ($selfEliteMemberId > 0): ?>
         <a class="backoffice-module backoffice-module--personal" href="/backoffice/profile.php"><span>00</span><strong>Mein Elite-Profil</strong><small>Eigenes Profil · Ausweisfoto · persönliche Daten</small></a>
+      <?php else: ?>
+        <a class="backoffice-module backoffice-module--personal" href="/backoffice/profile-bootstrap.php"><span>00</span><strong>Mein Elite-Profil anlegen</strong><small>Admin-Account zusätzlich als Elite-Mitglied führen</small></a>
       <?php endif; ?>
       <a class="backoffice-module" href="/backoffice/members.php"><span>01</span><b class="backoffice-module-count"><?= $dashboard['active_members'] ?></b><strong>Elite Shopper</strong><small>Aktive Mitglieder & Status</small></a>
       <a class="backoffice-module" href="/backoffice/membership-requests.php"><span>01B</span><b class="backoffice-module-count"><?= $dashboard['membership_requests'] ?></b><strong>Mitgliedschaft</strong><small>Offene Anfragen</small></a>
       <a class="backoffice-module" href="/backoffice/credentials.php"><span>02</span><b class="backoffice-module-count"><?= $dashboard['credential_count'] ?></b><strong>Ausweis-Service</strong><small>Verify · Druck · Wallet · Karte</small></a>
       <a class="backoffice-module" href="/backoffice/credential-projects.php"><span>02B</span><b class="backoffice-module-count"><?= $dashboard['project_requests'] ?></b><strong>Projekte</strong><small>Stammdaten · offene Vorschläge</small></a>
-      <?php if ($selfEliteMemberId > 0): ?>
+      <?php if ($selfEliteMemberId > 0 && $selfEliteMembershipStatus === 'active'): ?>
         <a class="backoffice-module backoffice-module--personal" href="/backoffice/project-request-new.php"><span>02C</span><strong>Eigenes Projekt vorschlagen</strong><small>Als Elite Shopper · Agentur + Projekt + PDF</small></a>
       <?php endif; ?>
       <a class="backoffice-module" href="/backoffice/approvals.php"><span>03</span><b class="backoffice-module-count"><?= $dashboard['open_approvals'] ?></b><strong>Kommunikation</strong><small>Offene Agentur-Freigaben</small></a>
