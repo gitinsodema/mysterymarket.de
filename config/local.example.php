@@ -15,6 +15,11 @@ return [
         'rate_limit_salt' => 'REPLACE_WITH_A_LONG_RANDOM_SECRET',
         'verify_asset_dir' => '/var/www/vhosts/mysterymarket.de/private/verify-assets',
     ],
+    'turnstile' => [
+        'site_key' => '0x4AAAAAAEkyOLYcyYVdVC_p',
+        'secret_key' => 'REPLACE_WITH_CLOUDFLARE_TURNSTILE_SECRET',
+        'hostname' => 'mysterymarket.de',
+    ],
     'atlas' => [
         'base_url' => 'https://atlas.insodema.com/api/v1',
         'token' => 'REPLACE_WITH_MYSTERYMARKET_ATLAS_TOKEN',
