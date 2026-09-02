@@ -108,7 +108,7 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
         <?php else: ?>
           <div class="id-photo-placeholder">PHOTO<br>TO BE ADDED</div>
         <?php endif; ?>
-        <div class="id-left-bottom">Independent Field Auditor</div>
+        <div class="id-left-bottom">Verified Project Credential</div>
       </div>
       <div class="id-main">
         <div>
