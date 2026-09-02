@@ -1502,3 +1502,8 @@ nav a[aria-current=page],
   font-size:12px;
 }
 .contact-risk-reasons li{margin:3px 0}
+
+
+/* Public form anti-abuse */
+.turnstile-wrap{display:flex;align-items:center;min-height:70px;margin:2px 0 10px}
+@media(max-width:420px){.turnstile-wrap{overflow-x:auto}}
