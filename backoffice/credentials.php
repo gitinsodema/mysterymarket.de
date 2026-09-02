@@ -113,6 +113,7 @@ mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Creden
     <p class="lead">Projektbezogene Ausweise aus bestehenden Verify-Datensätzen erstellen, prüfen, drucken und künftig in Apple Wallet ausgeben.</p>
     <div class="actions">
       <a class="button secondary" href="/backoffice/">Dashboard</a>
+      <a class="button secondary" href="/backoffice/credential-projects.php">Projekt-Stammdaten</a>
       <a class="button secondary" href="/backoffice/card-calibration.php">CR80 kalibrieren</a>
     </div>
   </div>
@@ -128,7 +129,10 @@ mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Creden
       <h2>Verify ist die Quelle.</h2>
       <p>Jeder Eintrag entspricht einem realen projektbezogenen Verify-Ausweis. Keine zusätzliche MysteryMarket-Identität wird erzeugt.</p>
     </div>
-    <a class="button" href="/backoffice/credential-new.php">Neuen Ausweis anlegen</a>
+    <div class="credential-service-actions">
+      <a class="button secondary" href="/backoffice/credential-projects.php">Projekte verwalten</a>
+      <a class="button" href="/backoffice/credential-new.php">Neuen Ausweis anlegen</a>
+    </div>
   </div>
 
   <?php if (!$credentials): ?>
