@@ -162,7 +162,7 @@ mmHeader('Kontaktanfrage', 'Read-only Kontaktanfrage im MysteryMarket Backoffice
 
     <div class="form-card">
       <h2>Status</h2>
-    <p class="partner-note">Nur interner Bearbeitungsstatus. Antworten sind in R1.1 ausdrücklich nicht möglich.</p>
+    <p class="partner-note">Nur interner Bearbeitungsstatus. Antworten werden nicht direkt aus dem Backoffice versendet.</p>
     <form method="post" action="/backoffice/contact.php">
       <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
       <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
