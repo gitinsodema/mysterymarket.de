@@ -10,33 +10,6 @@ header('X-Robots-Tag: noindex, noarchive');
 $user = mmBackofficeRequireLogin('admin');
 $error = '';
 
-if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-    if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
-        http_response_code(400);
-        $error = 'Ungültige Sitzung.';
-    } else {
-        $id = (int)($_POST['id'] ?? 0);
-        $active = ($_POST['active'] ?? '') === '1' ? 1 : 0;
-        if ($id < 1) {
-            $error = 'Ungültiges Projekt.';
-        } else {
-            $stmt = mmDb()->prepare(
-                'UPDATE credential_projects SET is_active = :active, updated_at = NOW() WHERE id = :id'
-            );
-            $stmt->execute(['active'=>$active,'id'=>$id]);
-            mmBackofficeAudit(
-                (int)$user['id'],
-                'credential_project.status_changed',
-                'credential_project',
-                $id,
-                ['is_active'=>$active]
-            );
-            header('Location: /backoffice/credential-projects.php?updated=1', true, 303);
-            exit;
-        }
-    }
-}
-
 $stmt = mmDb()->query(
     "SELECT p.id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed, p.is_active,
             a.name AS agency_name
@@ -80,12 +53,7 @@ mmHeader('Ausweis-Projekte', 'Kontrollierte Projektstammdaten für Verify-Auswei
           <td><?= mmEscape((string)($row['scope_key'] ?: '—')) ?></td>
           <td><?= mmBackofficeStatusBadge((int)$row['is_active'] === 1 ? 'active' : 'inactive') ?></td>
           <td>
-            <form method="post" action="/backoffice/credential-projects.php" class="compact-inline-form">
-              <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
-              <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
-              <input type="hidden" name="active" value="<?= (int)$row['is_active'] === 1 ? '0' : '1' ?>">
-              <button type="submit" class="button secondary"><?= (int)$row['is_active'] === 1 ? 'Deaktivieren' : 'Aktivieren' ?></button>
-            </form>
+            <a class="button secondary" href="/backoffice/credential-project.php?id=<?= (int)$row['id'] ?>">Bearbeiten</a>
           </td>
         </tr>
       <?php endforeach; ?>
