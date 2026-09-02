@@ -110,6 +110,105 @@ function mmCredentialDateOrNull(string $value): ?string
 }
 
 
+function mmCredentialControlledSubjects(): array
+{
+    $stmt = mmDb()->query(
+        "SELECT u.id, u.email, m.display_name, m.member_code
+         FROM backoffice_users u
+         JOIN elite_members m ON m.user_id = u.id
+         WHERE u.role = 'elite'
+           AND u.account_status = 'active'
+           AND m.membership_status = 'active'
+         ORDER BY m.display_name, u.email"
+    );
+    return $stmt->fetchAll();
+}
+
+function mmCredentialControlledRoles(): array
+{
+    $stmt = mmDb()->query(
+        "SELECT id, label
+         FROM credential_roles
+         WHERE is_active = 1
+         ORDER BY sort_order, label"
+    );
+    return $stmt->fetchAll();
+}
+
+function mmCredentialControlledProjects(): array
+{
+    $stmt = mmDb()->query(
+        "SELECT p.id, p.agency_id, p.customer_name, p.project_name, p.scope_key,
+                a.name AS agency_name
+         FROM credential_projects p
+         JOIN agencies a ON a.id = p.agency_id
+         WHERE p.is_active = 1
+           AND a.is_active = 1
+         ORDER BY a.name, p.customer_name, p.project_name"
+    );
+    return $stmt->fetchAll();
+}
+
+function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId, int $projectId): array
+{
+    $subjectStmt = mmDb()->prepare(
+        "SELECT u.id, u.email, m.display_name, m.member_code
+         FROM backoffice_users u
+         JOIN elite_members m ON m.user_id = u.id
+         WHERE u.id = :id
+           AND u.role = 'elite'
+           AND u.account_status = 'active'
+           AND m.membership_status = 'active'
+         LIMIT 1"
+    );
+    $subjectStmt->execute(['id'=>$subjectUserId]);
+    $subject = $subjectStmt->fetch();
+    if (!$subject || trim((string)$subject['display_name']) === '') {
+        throw new InvalidArgumentException('Die ausgewählte Ausweis-Person ist nicht als aktiver Elite Shopper verfügbar.');
+    }
+
+    $roleStmt = mmDb()->prepare(
+        "SELECT id, label
+         FROM credential_roles
+         WHERE id = :id AND is_active = 1
+         LIMIT 1"
+    );
+    $roleStmt->execute(['id'=>$roleId]);
+    $role = $roleStmt->fetch();
+    if (!$role) {
+        throw new InvalidArgumentException('Die ausgewählte Ausweis-Rolle ist nicht verfügbar.');
+    }
+
+    $projectStmt = mmDb()->prepare(
+        "SELECT p.id, p.agency_id, p.customer_name, p.project_name, p.scope_key,
+                a.name AS agency_name
+         FROM credential_projects p
+         JOIN agencies a ON a.id = p.agency_id
+         WHERE p.id = :id
+           AND p.is_active = 1
+           AND a.is_active = 1
+         LIMIT 1"
+    );
+    $projectStmt->execute(['id'=>$projectId]);
+    $project = $projectStmt->fetch();
+    if (!$project) {
+        throw new InvalidArgumentException('Das ausgewählte Ausweis-Projekt ist nicht verfügbar.');
+    }
+
+    return [
+        'subject_user_id'=>(int)$subject['id'],
+        'person_name'=>(string)$subject['display_name'],
+        'credential_role_id'=>(int)$role['id'],
+        'role_label'=>(string)$role['label'],
+        'agency_id'=>(int)$project['agency_id'],
+        'agency_name'=>(string)$project['agency_name'],
+        'credential_project_id'=>(int)$project['id'],
+        'project_name'=>(string)$project['project_name'],
+        'brand_name'=>(string)$project['customer_name'],
+        'scope_key'=>$project['scope_key'] !== null ? (string)$project['scope_key'] : null,
+    ];
+}
+
 function mmCredentialStoreUploadedAsset(array $file, int $credentialId, string $type): string
 {
     $allowedTypes = [
