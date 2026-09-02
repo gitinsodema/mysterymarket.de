@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS credential_projects (
     customer_name VARCHAR(200) NOT NULL,
     project_name VARCHAR(200) NOT NULL,
     scope_key VARCHAR(80) NULL,
+    photo_allowed TINYINT(1) NOT NULL DEFAULT 0,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -55,11 +56,12 @@ FROM audit_verifications
 WHERE is_personal_verification = 1
   AND TRIM(COALESCE(agency_name, '')) <> '';
 
-INSERT IGNORE INTO credential_projects (agency_id, customer_name, project_name, scope_key, is_active)
+INSERT IGNORE INTO credential_projects (agency_id, customer_name, project_name, scope_key, photo_allowed, is_active)
 SELECT a.id,
        TRIM(v.brand_name),
        TRIM(v.project_name),
        NULLIF(TRIM(v.scope_key), ''),
+       COALESCE(v.photo_allowed, 0),
        1
 FROM audit_verifications v
 JOIN agencies a ON a.name = TRIM(v.agency_name)
