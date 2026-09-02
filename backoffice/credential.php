@@ -33,13 +33,19 @@ if (!$credential) {
     exit;
 }
 
-$subjectStmt = mmDb()->query(
-    "SELECT u.id, u.email, u.role, u.account_status, m.display_name, m.member_code
-     FROM backoffice_users u
-     LEFT JOIN elite_members m ON m.user_id = u.id
-     ORDER BY u.role, COALESCE(m.display_name, u.email), u.email"
-);
-$credentialSubjects = $subjectStmt->fetchAll();
+$credentialSubjects = mmCredentialControlledSubjects();
+$credentialRoles = mmCredentialControlledRoles();
+$credentialProjects = mmCredentialControlledProjects();
+
+$agencyOptions = [];
+$customerOptions = [];
+foreach ($credentialProjects as $projectOption) {
+    $agencyOptions[(int)$projectOption['agency_id']] = (string)$projectOption['agency_name'];
+    $customerOptions[(int)$projectOption['agency_id'] . '|' . (string)$projectOption['customer_name']] = [
+        'agency_id'=>(int)$projectOption['agency_id'],
+        'customer_name'=>(string)$projectOption['customer_name'],
+    ];
+}
 
 $error = '';
 
@@ -55,56 +61,69 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         try {
             if ($action === 'set_subject') {
                 $subjectUserId = (int)($_POST['subject_user_id'] ?? 0);
-                if ($subjectUserId > 0) {
-                    $checkSubject = mmDb()->prepare(
-                        'SELECT id FROM backoffice_users WHERE id = :id LIMIT 1'
-                    );
-                    $checkSubject->execute(['id'=>$subjectUserId]);
-                    if (!$checkSubject->fetchColumn()) {
-                        throw new InvalidArgumentException('Die ausgewählte Ausweis-Person ist nicht verfügbar.');
-                    }
+                if ($subjectUserId < 1) {
+                    throw new InvalidArgumentException('Eine aktive Elite-Person muss ausgewählt werden.');
+                }
+
+                $checkSubject = mmDb()->prepare(
+                    "SELECT u.id, m.display_name
+                     FROM backoffice_users u
+                     JOIN elite_members m ON m.user_id = u.id
+                     WHERE u.id = :id
+                       AND u.role = 'elite'
+                       AND u.account_status = 'active'
+                       AND m.membership_status = 'active'
+                     LIMIT 1"
+                );
+                $checkSubject->execute(['id'=>$subjectUserId]);
+                $subject = $checkSubject->fetch();
+                if (!$subject || trim((string)$subject['display_name']) === '') {
+                    throw new InvalidArgumentException('Die ausgewählte Ausweis-Person ist nicht als aktiver Elite Shopper verfügbar.');
                 }
 
                 $stmt = mmDb()->prepare(
                     'UPDATE audit_verifications
-                     SET subject_user_id = :subject_user_id, updated_at = NOW()
-                     WHERE id = :id AND is_personal_verification = 1'
+                     SET subject_user_id = :subject_user_id,
+                         person_name = :person_name,
+                         updated_at = NOW()
+                     WHERE id = :id AND is_personal_verification = 1 AND is_active = 0'
                 );
                 $stmt->execute([
-                    'subject_user_id'=>$subjectUserId > 0 ? $subjectUserId : null,
+                    'subject_user_id'=>$subjectUserId,
+                    'person_name'=>(string)$subject['display_name'],
                     'id'=>$id,
                 ]);
 
                 mmBackofficeAudit((int)$user['id'], 'verify_credential.subject_bound', 'audit_verification', $id, [
                     'reference_code'=>(string)$credential['reference_code'],
-                    'subject_user_id'=>$subjectUserId > 0 ? $subjectUserId : null,
+                    'subject_user_id'=>$subjectUserId,
+                    'person_name'=>(string)$subject['display_name'],
                 ]);
                 header('Location: /backoffice/credential.php?id=' . $id . '&subject_saved=1', true, 303);
                 exit;
             }
 
             if ($action === 'save_details') {
-                $personName = trim((string)($_POST['person_name'] ?? ''));
-                $roleLabel = trim((string)($_POST['role_label'] ?? ''));
-                $agencyName = trim((string)($_POST['agency_name'] ?? ''));
-                $projectName = trim((string)($_POST['project_name'] ?? ''));
-                $brandName = trim((string)($_POST['brand_name'] ?? ''));
+                $subjectUserId = (int)($credential['subject_user_id'] ?? 0);
+                $roleId = (int)($_POST['credential_role_id'] ?? 0);
+                $agencyId = (int)($_POST['agency_id'] ?? 0);
+                $projectCustomer = trim((string)($_POST['project_customer'] ?? ''));
+                $projectId = (int)($_POST['credential_project_id'] ?? 0);
+                $photoAllowed = ($_POST['photo_allowed'] ?? '') === '1';
                 $validFrom = mmCredentialDateOrNull((string)($_POST['valid_from'] ?? ''));
                 $validUntil = mmCredentialDateOrNull((string)($_POST['valid_until'] ?? ''));
                 $confidentiality = trim((string)($_POST['confidentiality_mode'] ?? 'public'));
                 $publicNote = trim((string)($_POST['public_note'] ?? ''));
 
-                if ($personName === '' || mb_strlen($personName) > 150) {
-                    throw new InvalidArgumentException('Person ist erforderlich.');
+                if ($subjectUserId < 1 || $roleId < 1 || $agencyId < 1 || $projectId < 1 || $projectCustomer === '') {
+                    throw new InvalidArgumentException('Person, Rolle, Agentur, Projektkunde und Projekt sind erforderlich.');
                 }
-                if ($roleLabel === '' || mb_strlen($roleLabel) > 120) {
-                    throw new InvalidArgumentException('Rolle ist erforderlich.');
+
+                $controlled = mmCredentialResolveControlledSelection($subjectUserId, $roleId, $projectId);
+                if ((int)$controlled['agency_id'] !== $agencyId || !hash_equals((string)$controlled['brand_name'], $projectCustomer)) {
+                    throw new InvalidArgumentException('Agentur, Projektkunde und Projekt passen nicht zusammen.');
                 }
-                foreach ([$agencyName,$projectName,$brandName] as $value) {
-                    if ($value === '' || mb_strlen($value) > 200) {
-                        throw new InvalidArgumentException('Agentur, Projekt und Marke/Kunde sind erforderlich.');
-                    }
-                }
+
                 if (!in_array($confidentiality, ['public','confidential'], true)) {
                     throw new InvalidArgumentException('Ungültiger Vertraulichkeitsstatus.');
                 }
@@ -123,32 +142,45 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                          public_note = :public_note,
                          person_name = :person_name,
                          role_label = :role_label,
+                         credential_role_id = :credential_role_id,
                          agency_name = :agency_name,
+                         agency_id = :agency_id,
                          project_name = :project_name,
+                         credential_project_id = :credential_project_id,
                          brand_name = :brand_name,
+                         scope_key = :scope_key,
+                         photo_allowed = :photo_allowed,
                          updated_at = NOW()
                      WHERE id = :id
                        AND is_personal_verification = 1
                        AND is_active = 0'
                 );
                 $stmt->execute([
-                    'public_title'=>$projectName,
-                    'public_partner'=>$agencyName,
-                    'public_client'=>$brandName,
+                    'public_title'=>$controlled['project_name'],
+                    'public_partner'=>$controlled['agency_name'],
+                    'public_client'=>$controlled['brand_name'],
                     'valid_from'=>$validFrom,
                     'valid_until'=>$validUntil,
                     'confidentiality_mode'=>$confidentiality,
                     'public_note'=>$publicNote !== '' ? $publicNote : null,
-                    'person_name'=>$personName,
-                    'role_label'=>$roleLabel,
-                    'agency_name'=>$agencyName,
-                    'project_name'=>$projectName,
-                    'brand_name'=>$brandName,
+                    'person_name'=>$controlled['person_name'],
+                    'role_label'=>$controlled['role_label'],
+                    'credential_role_id'=>$controlled['credential_role_id'],
+                    'agency_name'=>$controlled['agency_name'],
+                    'agency_id'=>$controlled['agency_id'],
+                    'project_name'=>$controlled['project_name'],
+                    'credential_project_id'=>$controlled['credential_project_id'],
+                    'brand_name'=>$controlled['brand_name'],
+                    'scope_key'=>$controlled['scope_key'],
+                    'photo_allowed'=>$photoAllowed ? 1 : 0,
                     'id'=>$id,
                 ]);
 
                 mmBackofficeAudit((int)$user['id'], 'verify_credential.updated', 'audit_verification', $id, [
-                    'reference_code'=>(string)$credential['reference_code']
+                    'reference_code'=>(string)$credential['reference_code'],
+                    'credential_role_id'=>$controlled['credential_role_id'],
+                    'credential_project_id'=>$controlled['credential_project_id'],
+                    'photo_allowed'=>$photoAllowed,
                 ]);
                 header('Location: /backoffice/credential.php?id=' . $id . '&saved=1', true, 303);
                 exit;
@@ -342,17 +374,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     "INSERT INTO audit_verifications
                      (reference_code, public_title, public_partner, public_client,
                       valid_from, valid_until, confidentiality_mode, public_note,
-                      person_name, role_label, agency_name, project_name, brand_name,
+                      person_name, role_label, credential_role_id, agency_name, agency_id,
+                      project_name, credential_project_id, brand_name,
                       photo_asset, brand_logo_asset, agency_logo_asset, scope_key,
-                      document_asset, document_label, document_enabled, print_card_enabled,
+                      document_asset, document_label, document_enabled, print_card_enabled, photo_allowed,
                       subject_user_id, is_personal_verification, is_active, supersedes_verification_id, revision_no,
                       created_at, updated_at)
                      VALUES
                      (:reference_code, :public_title, :public_partner, :public_client,
                       :valid_from, :valid_until, :confidentiality_mode, :public_note,
-                      :person_name, :role_label, :agency_name, :project_name, :brand_name,
+                      :person_name, :role_label, :credential_role_id, :agency_name, :agency_id,
+                      :project_name, :credential_project_id, :brand_name,
                       :photo_asset, :brand_logo_asset, :agency_logo_asset, :scope_key,
-                      :document_asset, :document_label, :document_enabled, :print_card_enabled,
+                      :document_asset, :document_label, :document_enabled, :print_card_enabled, :photo_allowed,
                       :subject_user_id, 1, 0, :supersedes_verification_id, :revision_no,
                       NOW(), NOW())"
                 );
@@ -367,8 +401,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'public_note'=>$credential['public_note'],
                     'person_name'=>$credential['person_name'],
                     'role_label'=>$credential['role_label'],
+                    'credential_role_id'=>$credential['credential_role_id'] ?? null,
                     'agency_name'=>$credential['agency_name'],
+                    'agency_id'=>$credential['agency_id'] ?? null,
                     'project_name'=>$credential['project_name'],
+                    'credential_project_id'=>$credential['credential_project_id'] ?? null,
                     'brand_name'=>$credential['brand_name'],
                     'photo_asset'=>$credential['photo_asset'],
                     'brand_logo_asset'=>$credential['brand_logo_asset'],
@@ -378,6 +415,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'document_label'=>$credential['document_label'],
                     'document_enabled'=>$credential['document_enabled'],
                     'print_card_enabled'=>$credential['print_card_enabled'],
+                    'photo_allowed'=>$credential['photo_allowed'] ?? 0,
                     'subject_user_id'=>$credential['subject_user_id'] ?? null,
                     'supersedes_verification_id'=>$id,
                     'revision_no'=>$nextRevision,
@@ -451,6 +489,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
       <p><strong><?= mmEscape((string)$credential['person_name']) ?></strong><br><?= mmEscape((string)$credential['role_label']) ?></p>
       <p><?= mmEscape((string)$credential['agency_name']) ?> · <?= mmEscape((string)$credential['brand_name']) ?></p>
       <p><strong>Gültig:</strong> <?= mmEscape((string)($credential['valid_from'] ?: '—')) ?> – <?= mmEscape((string)($credential['valid_until'] ?: '—')) ?></p>
+      <p><strong>Fotoerlaubnis:</strong> <?= mmBackofficeStatusBadge((int)($credential['photo_allowed'] ?? 0) === 1 ? 'active' : 'inactive', (int)($credential['photo_allowed'] ?? 0) === 1 ? 'Fotografieren erlaubt' : 'nicht erlaubt') ?></p>
       <p><strong>Revision:</strong> <?= (int)($credential['revision_no'] ?? 1) ?><?php if (!empty($credential['supersedes_verification_id'])): ?> · Folgeversion<?php endif; ?></p>
     </article>
 
@@ -546,7 +585,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
     <div class="section-head">
       <p class="eyebrow">Privater Zugriff</p>
       <h2>Ausweis-Person zuordnen.</h2>
-      <p>Diese Zuordnung steuert ausschließlich private Ausweis-, Druck- und spätere Wallet-Funktionen. Der öffentliche Verify-Inhalt bleibt davon unberührt.</p>
+      <p>Diese Auswahl ist die verbindliche Identität des Ausweises. Der aufgedruckte Name wird automatisch aus dem Elite-Mitglied übernommen und ist nicht frei editierbar.</p>
     </div>
     <form method="post" action="/backoffice/credential.php?id=<?= $id ?>">
       <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
@@ -554,16 +593,11 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
       <input type="hidden" name="action" value="set_subject">
       <label>Private Ausweis-Person
         <select name="subject_user_id">
-          <option value="">Nicht zugeordnet · nur Adminzugriff</option>
+          <option value="">Bitte aktive Elite-Person auswählen</option>
           <?php foreach ($credentialSubjects as $subject): ?>
             <?php
-              $subjectLabel = trim((string)($subject['display_name'] ?? ''));
-              if ($subjectLabel === '') {
-                  $subjectLabel = (string)$subject['email'];
-              }
-              $subjectMeta = strtoupper((string)$subject['role'])
-                  . (!empty($subject['member_code']) ? ' · ' . (string)$subject['member_code'] : '')
-                  . ' · ' . (string)$subject['email'];
+              $subjectLabel = (string)$subject['display_name'];
+              $subjectMeta = (string)$subject['member_code'] . ' · ' . (string)$subject['email'];
             ?>
             <option value="<?= (int)$subject['id'] ?>"<?= (int)($credential['subject_user_id'] ?? 0) === (int)$subject['id'] ? ' selected' : '' ?>>
               <?= mmEscape($subjectLabel . ' — ' . $subjectMeta) ?>
@@ -646,17 +680,57 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
       <div class="credential-editor-section">
         <div class="credential-editor-head"><span>01</span><div><strong>Person & Rolle</strong></div></div>
         <div class="form-grid">
-          <label>Person<input name="person_name" maxlength="150" required value="<?= mmEscape((string)$credential['person_name']) ?>"<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>></label>
-          <label>Rolle<input name="role_label" maxlength="120" required value="<?= mmEscape((string)$credential['role_label']) ?>"<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>></label>
+          <label>Person
+            <input value="<?= mmEscape((string)$credential['person_name']) ?>" disabled>
+            <small class="field-hint">Kommt verbindlich aus der zugeordneten Elite-Person.</small>
+          </label>
+          <label>Rolle
+            <select name="credential_role_id" required<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>>
+              <option value="">Bitte Rolle auswählen</option>
+              <?php foreach ($credentialRoles as $roleOption): ?>
+                <option value="<?= (int)$roleOption['id'] ?>"<?= (int)($credential['credential_role_id'] ?? 0) === (int)$roleOption['id'] ? ' selected' : '' ?>><?= mmEscape((string)$roleOption['label']) ?></option>
+              <?php endforeach; ?>
+            </select>
+          </label>
         </div>
       </div>
 
       <div class="credential-editor-section">
         <div class="credential-editor-head"><span>02</span><div><strong>Projekt</strong></div></div>
         <div class="form-grid">
-          <label>Agentur<input name="agency_name" maxlength="200" required value="<?= mmEscape((string)$credential['agency_name']) ?>"<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>></label>
-          <label>Marke / Kunde<input name="brand_name" maxlength="200" required value="<?= mmEscape((string)$credential['brand_name']) ?>"<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>></label>
-          <label class="wide">Projekt<input name="project_name" maxlength="200" required value="<?= mmEscape((string)$credential['project_name']) ?>"<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>></label>
+          <label>Agentur
+            <select name="agency_id" required data-credential-agency<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>>
+              <option value="">Bitte auswählen</option>
+              <?php foreach ($agencyOptions as $agencyId=>$agencyName): ?>
+                <option value="<?= (int)$agencyId ?>"<?= (int)($credential['agency_id'] ?? 0) === (int)$agencyId ? ' selected' : '' ?>><?= mmEscape($agencyName) ?></option>
+              <?php endforeach; ?>
+            </select>
+          </label>
+          <label>Projektkunde
+            <select name="project_customer" required data-credential-customer<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>>
+              <option value="">Bitte auswählen</option>
+              <?php foreach ($customerOptions as $customerOption): ?>
+                <option value="<?= mmEscape((string)$customerOption['customer_name']) ?>"
+                        data-agency-id="<?= (int)$customerOption['agency_id'] ?>"
+                        <?= (string)$credential['brand_name'] === (string)$customerOption['customer_name'] && (int)($credential['agency_id'] ?? 0) === (int)$customerOption['agency_id'] ? 'selected' : '' ?>>
+                  <?= mmEscape((string)$customerOption['customer_name']) ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </label>
+          <label class="wide">Projekt
+            <select name="credential_project_id" required data-credential-project<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>>
+              <option value="">Bitte Projekt auswählen</option>
+              <?php foreach ($credentialProjects as $projectOption): ?>
+                <option value="<?= (int)$projectOption['id'] ?>"
+                        data-agency-id="<?= (int)$projectOption['agency_id'] ?>"
+                        data-customer="<?= mmEscape((string)$projectOption['customer_name']) ?>"
+                        <?= (int)($credential['credential_project_id'] ?? 0) === (int)$projectOption['id'] ? 'selected' : '' ?>>
+                  <?= mmEscape((string)$projectOption['project_name']) ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </label>
         </div>
       </div>
 
@@ -671,6 +745,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
               <option value="confidential"<?= $credential['confidentiality_mode'] === 'confidential' ? ' selected' : '' ?>>Vertraulich</option>
             </select>
           </label>
+          <label class="wide credential-photo-permission"><input type="checkbox" name="photo_allowed" value="1"<?= (int)($credential['photo_allowed'] ?? 0) === 1 ? ' checked' : '' ?><?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>> <span><strong>Fotografieren erlaubt</strong><small class="field-hint">Nur aktivieren, wenn das Projekt bzw. Legitimationsschreiben Fotoaufnahmen ausdrücklich erlaubt.</small></span></label>
           <label class="wide">Öffentlicher Hinweis<textarea name="public_note"<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>><?= mmEscape((string)($credential['public_note'] ?? '')) ?></textarea></label>
         </div>
       </div>
@@ -681,4 +756,32 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
     </form>
   </div>
 </section>
+<script>
+(() => {
+  const agency = document.querySelector('[data-credential-agency]');
+  const customer = document.querySelector('[data-credential-customer]');
+  const project = document.querySelector('[data-credential-project]');
+  if (!agency || !customer || !project) return;
+
+  const apply = () => {
+    const agencyId = agency.value;
+    [...customer.options].forEach((option, index) => {
+      if (index === 0) return;
+      option.hidden = option.dataset.agencyId !== agencyId;
+      if (option.hidden && option.selected) customer.value = '';
+    });
+
+    const customerName = customer.value;
+    [...project.options].forEach((option, index) => {
+      if (index === 0) return;
+      option.hidden = option.dataset.agencyId !== agencyId || option.dataset.customer !== customerName;
+      if (option.hidden && option.selected) project.value = '';
+    });
+  };
+
+  agency.addEventListener('change', () => { customer.value = ''; project.value = ''; apply(); });
+  customer.addEventListener('change', () => { project.value = ''; apply(); });
+  apply();
+})();
+</script>
 <?php mmFooter(); ?>
