@@ -139,7 +139,7 @@ function mmCredentialControlledProjects(): array
     $stmt = mmDb()->query(
         "SELECT p.id, p.agency_id, p.project_name, p.scope_key, p.photo_allowed,
                 p.project_logo_asset, p.authorization_document_asset, p.authorization_document_label,
-                a.name AS agency_name
+                a.name AS agency_name, a.logo_asset AS agency_logo_asset
          FROM credential_projects p
          JOIN agencies a ON a.id = p.agency_id
          WHERE p.is_active = 1
@@ -206,6 +206,7 @@ function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId,
         'role_label'=>(string)$role['label'],
         'agency_id'=>(int)$project['agency_id'],
         'agency_name'=>(string)$project['agency_name'],
+        'agency_logo_asset'=>$project['agency_logo_asset'] !== null ? (string)$project['agency_logo_asset'] : null,
         'credential_project_id'=>(int)$project['id'],
         'project_name'=>(string)$project['project_name'],
         'brand_name'=>(string)$project['project_name'],
@@ -585,7 +586,8 @@ function mmCredentialIntegrityErrors(array $row): array
         if ($projectId > 0) {
             $projectStmt = mmDb()->prepare(
                 "SELECT p.agency_id, p.project_name, p.scope_key, p.photo_allowed, p.project_logo_asset,
-                    p.authorization_document_asset, p.authorization_document_label, a.name AS agency_name
+                    p.authorization_document_asset, p.authorization_document_label,
+                    a.name AS agency_name, a.logo_asset AS agency_logo_asset
                  FROM credential_projects p
                  JOIN agencies a ON a.id = p.agency_id
                  WHERE p.id = :id
@@ -598,6 +600,7 @@ function mmCredentialIntegrityErrors(array $row): array
             if (!$project
                 || (int)$project['agency_id'] !== (int)($row['agency_id'] ?? 0)
                 || !hash_equals(trim((string)$project['agency_name']), trim((string)($row['agency_name'] ?? '')))
+                || !hash_equals(trim((string)($project['agency_logo_asset'] ?? '')), trim((string)($row['agency_logo_asset'] ?? '')))
                 || !hash_equals(trim((string)$project['project_name']), trim((string)($row['brand_name'] ?? '')))
                 || !hash_equals(trim((string)$project['project_name']), trim((string)($row['project_name'] ?? '')))
                 || !hash_equals(trim((string)($project['project_logo_asset'] ?? '')), trim((string)($row['brand_logo_asset'] ?? '')))
