@@ -173,7 +173,7 @@ mmHeader('Neuer Verify-Ausweis', 'Projektbezogenen Verify-Ausweis anlegen.', 'no
       </div>
 
       <div class="credential-editor-section">
-        <div class="credential-editor-head"><span>02</span><div><strong>Projekt</strong><small>Agentur, Auftrag und Marke/Kunde</small></div></div>
+        <div class="credential-editor-head"><span>02</span><div><strong>Projekt</strong><small>Agentur, Projektkunde und freigegebenes Projekt</small></div></div>
         <div class="form-grid">
           <label>Agentur
             <select name="agency_id" required data-credential-agency>
