@@ -9,7 +9,7 @@ mmBackofficeRequireLogin('admin');
 
 $status = (string)($_GET['status'] ?? 'all');
 $query = trim((string)($_GET['q'] ?? ''));
-$allowed = ['all','new','in_progress','done'];
+$allowed = ['all','new','in_progress','done','archived'];
 if (!in_array($status, $allowed, true)) {
     $status = 'all';
 }
@@ -17,7 +17,7 @@ if (!in_array($status, $allowed, true)) {
 $where = [];
 $params = [];
 
-if ($query === '') {
+if ($query === '' && $status !== 'archived') {
     $where[] = "status <> 'archived'";
 }
 
@@ -110,6 +110,7 @@ mmHeader('Kontakte', 'Kontakt-Arbeitsansicht im MysteryMarket Backoffice.', 'noi
         'new' => 'New',
         'in_progress' => 'In Arbeit',
         'done' => 'Done',
+        'archived' => 'Archived',
       ];
       foreach ($allowed as $filter):
         $href = '/backoffice/contacts.php?status=' . rawurlencode($filter);
