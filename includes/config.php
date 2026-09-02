@@ -20,6 +20,11 @@ function mmConfig(): array
                 'rate_limit_salt' => '',
                 'verify_asset_dir' => '',
             ],
+            'turnstile' => [
+                'site_key' => '0x4AAAAAAEkyOLYcyYVdVC_p',
+                'secret_key' => '',
+                'hostname' => 'mysterymarket.de',
+            ],
             'atlas' => [
                 'base_url' => 'https://atlas.insodema.com/api/v1',
                 'token' => '',
