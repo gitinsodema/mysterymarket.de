@@ -495,3 +495,34 @@ A future change must not:
 - leave an activated revision and its superseded predecessor both active
 - generate unsigned/fake `.pkpass` files
 - embed Apple private keys or certificate passwords in repository code
+
+
+## Agency master authority
+
+`agencies` is the authoritative source for agency identity used by credential issuance.
+
+The agency master record owns:
+
+- official agency name and short name
+- website
+- official agency logo
+- address
+- contact person
+- contact email and phone
+- public/Elite-facing note
+- future Elite visibility flag
+
+The agency logo may be uploaded directly or imported from a validated public HTTP/HTTPS image URL. URL import is only an acquisition mechanism: the image is copied into the private Verify asset store and the source URL is retained as provenance.
+
+Credential behavior:
+
+1. new credential drafts inherit the current agency logo automatically;
+2. inactive drafts are refreshed when the central agency logo changes;
+3. active credentials remain immutable snapshots;
+4. a new revision resolves the current agency logo again;
+5. project activation is blocked when the linked agency has no authoritative logo.
+
+This avoids per-credential agency-logo editing and keeps the operational control point in the agency master record.
+
+Migration:
+- `database/20260902_agency_business_card_master.sql`
