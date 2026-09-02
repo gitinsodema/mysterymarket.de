@@ -546,7 +546,6 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
         <small>Änderungen erfolgen über die Ausweis-Projektstammdaten, nicht am einzelnen Ausweis.</small>
       </div>
     </div>
-    </div>
   </div>
 </section>
 
@@ -554,7 +553,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
   <div class="form-card credential-editor">
     <div class="section-head">
       <p class="eyebrow">Privater Zugriff</p>
-      <h2>Ausweis-Person zuordnen.</h2>
+      <h2>Ausweis-Person.</h2>
       <p>Diese Auswahl ist die verbindliche Identität des Ausweises. Der aufgedruckte Name wird automatisch aus dem Elite-Mitglied übernommen und ist nicht frei editierbar.</p>
     </div>
     <form method="post" action="/backoffice/credential.php?id=<?= $id ?>">
@@ -562,7 +561,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
       <input type="hidden" name="id" value="<?= $id ?>">
       <input type="hidden" name="action" value="set_subject">
       <label>Private Ausweis-Person
-        <select name="subject_user_id">
+        <select name="subject_user_id"<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>>
           <option value="">Bitte aktive Elite-Person auswählen</option>
           <?php foreach ($credentialSubjects as $subject): ?>
             <?php
@@ -575,7 +574,9 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
           <?php endforeach; ?>
         </select>
       </label>
-      <div class="elite-profile-actions"><button type="submit">Private Zuordnung speichern</button></div>
+      <?php if ((int)$credential['is_active'] !== 1): ?>
+        <div class="elite-profile-actions"><button type="submit">Ausweis-Person speichern</button></div>
+      <?php endif; ?>
     </form>
   </div>
 </section>
