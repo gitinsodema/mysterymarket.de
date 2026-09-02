@@ -23,6 +23,7 @@ $files = [
     dirname(__DIR__) . '/database/20260902_contact_status_workflow.sql',
     dirname(__DIR__) . '/database/20260902_credential_controlled_master_data.sql',
     dirname(__DIR__) . '/database/20260902_elite_project_proposals_and_profile_photo.sql',
+    dirname(__DIR__) . '/database/20260902_agency_business_card_master.sql',
 ];
 
 $pdo = mmDb();
@@ -121,6 +122,30 @@ foreach ([
     ['credential_projects','project_logo_asset'],
     ['credential_projects','authorization_document_asset'],
     ['credential_projects','authorization_document_label'],
+] as [$table,$column]) {
+    $columnCheck->execute([
+        'table_name' => $table,
+        'column_name' => $column,
+    ]);
+    if ((int)$columnCheck->fetchColumn() !== 1) {
+        fwrite(STDERR, "[FAIL] Missing {$table}.{$column}\n");
+        exit(1);
+    }
+    echo "[PASS] {$table}.{$column}\n";
+}
+
+foreach ([
+    ['agencies','logo_asset'],
+    ['agencies','logo_source_url'],
+    ['agencies','address_line1'],
+    ['agencies','postal_code'],
+    ['agencies','city'],
+    ['agencies','country_code'],
+    ['agencies','contact_name'],
+    ['agencies','contact_email'],
+    ['agencies','contact_phone'],
+    ['agencies','public_note'],
+    ['agencies','elite_visible'],
 ] as [$table,$column]) {
     $columnCheck->execute([
         'table_name' => $table,
