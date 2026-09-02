@@ -20,6 +20,7 @@ $files = [
     dirname(__DIR__) . '/database/20260830_verify_credential_revision.sql',
     dirname(__DIR__) . '/database/20260831_credential_access_binding.sql',
     dirname(__DIR__) . '/database/20260902_contact_moderation.sql',
+    dirname(__DIR__) . '/database/20260902_contact_status_workflow.sql',
 ];
 
 $pdo = mmDb();
