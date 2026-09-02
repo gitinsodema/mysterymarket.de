@@ -76,7 +76,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                   :valid_from, :valid_until, :confidentiality_mode, :public_note,
                   :person_name, :role_label, :credential_role_id, :agency_name, :agency_id,
                   :project_name, :credential_project_id, :brand_name,
-                  :photo_asset, :brand_logo_asset, NULL, :scope_key,
+                  :photo_asset, :brand_logo_asset, :agency_logo_asset, :scope_key,
                   :document_asset, :document_label, :document_enabled,
                   1, :photo_allowed, :subject_user_id, 1, 0,
                   NOW(), NOW())"
@@ -101,6 +101,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 'brand_name'=>$controlled['brand_name'],
                 'photo_asset'=>$controlled['photo_asset'],
                 'brand_logo_asset'=>$controlled['brand_logo_asset'],
+                'agency_logo_asset'=>$controlled['agency_logo_asset'],
                 'scope_key'=>$controlled['scope_key'],
                 'document_asset'=>$controlled['document_asset'],
                 'document_label'=>$controlled['document_label'],
@@ -215,7 +216,7 @@ mmHeader('Neuer Verify-Ausweis', 'Projektbezogenen Verify-Ausweis anlegen.', 'no
       </div>
 
       <div class="notice">
-        <strong>Automatische Bindung:</strong> Profilfoto, Projektlogo, Legitimationsschreiben, Scope und Fotoerlaubnis kommen aus den geprüften Stammdaten. Nur das Agenturlogo bleibt aktuell als separate Ausweisausstattung offen.
+        <strong>Automatische Bindung:</strong> Profilfoto, Projektlogo, Agenturlogo, Legitimationsschreiben, Scope und Fotoerlaubnis kommen vollständig aus den geprüften Stammdaten.
       </div>
 
       <div class="elite-profile-actions"><button type="submit">Ausweis-Draft anlegen</button></div>
