@@ -113,7 +113,7 @@ function mmCredentialDateOrNull(string $value): ?string
 function mmCredentialControlledSubjects(): array
 {
     $stmt = mmDb()->query(
-        "SELECT u.id, u.email, m.display_name, m.member_code
+        "SELECT u.id, u.email, m.display_name, m.member_code, m.profile_photo_asset
          FROM backoffice_users u
          JOIN elite_members m ON m.user_id = u.id
          WHERE u.role = 'elite'
@@ -138,7 +138,8 @@ function mmCredentialControlledRoles(): array
 function mmCredentialControlledProjects(): array
 {
     $stmt = mmDb()->query(
-        "SELECT p.id, p.agency_id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed,
+        "SELECT p.id, p.agency_id, p.project_name, p.scope_key, p.photo_allowed,
+                p.project_logo_asset, p.authorization_document_asset, p.authorization_document_label,
                 a.name AS agency_name
          FROM credential_projects p
          JOIN agencies a ON a.id = p.agency_id
@@ -198,13 +199,17 @@ function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId,
     return [
         'subject_user_id'=>(int)$subject['id'],
         'person_name'=>(string)$subject['display_name'],
+        'photo_asset'=>$subject['profile_photo_asset'] !== null ? (string)$subject['profile_photo_asset'] : null,
         'credential_role_id'=>(int)$role['id'],
         'role_label'=>(string)$role['label'],
         'agency_id'=>(int)$project['agency_id'],
         'agency_name'=>(string)$project['agency_name'],
         'credential_project_id'=>(int)$project['id'],
         'project_name'=>(string)$project['project_name'],
-        'brand_name'=>(string)$project['customer_name'],
+        'brand_name'=>(string)$project['project_name'],
+        'brand_logo_asset'=>$project['project_logo_asset'] !== null ? (string)$project['project_logo_asset'] : null,
+        'document_asset'=>$project['authorization_document_asset'] !== null ? (string)$project['authorization_document_asset'] : null,
+        'document_label'=>$project['authorization_document_label'] !== null ? (string)$project['authorization_document_label'] : 'Offizielles Legitimationsschreiben',
         'scope_key'=>$project['scope_key'] !== null ? (string)$project['scope_key'] : null,
         'photo_allowed'=>(int)($project['photo_allowed'] ?? 0),
     ];
@@ -449,7 +454,8 @@ function mmCredentialIntegrityErrors(array $row): array
         $projectId = (int)($row['credential_project_id'] ?? 0);
         if ($projectId > 0) {
             $projectStmt = mmDb()->prepare(
-                "SELECT p.agency_id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed, a.name AS agency_name
+                "SELECT p.agency_id, p.project_name, p.scope_key, p.photo_allowed, p.project_logo_asset,
+                    p.authorization_document_asset, p.authorization_document_label, a.name AS agency_name
                  FROM credential_projects p
                  JOIN agencies a ON a.id = p.agency_id
                  WHERE p.id = :id
@@ -462,8 +468,10 @@ function mmCredentialIntegrityErrors(array $row): array
             if (!$project
                 || (int)$project['agency_id'] !== (int)($row['agency_id'] ?? 0)
                 || !hash_equals(trim((string)$project['agency_name']), trim((string)($row['agency_name'] ?? '')))
-                || !hash_equals(trim((string)$project['customer_name']), trim((string)($row['brand_name'] ?? '')))
+                || !hash_equals(trim((string)$project['project_name']), trim((string)($row['brand_name'] ?? '')))
                 || !hash_equals(trim((string)$project['project_name']), trim((string)($row['project_name'] ?? '')))
+                || !hash_equals(trim((string)($project['project_logo_asset'] ?? '')), trim((string)($row['brand_logo_asset'] ?? '')))
+                || !hash_equals(trim((string)($project['authorization_document_asset'] ?? '')), trim((string)($row['document_asset'] ?? '')))
                 || !hash_equals(trim((string)($project['scope_key'] ?? '')), trim((string)($row['scope_key'] ?? '')))
                 || (int)($project['photo_allowed'] ?? 0) !== (int)($row['photo_allowed'] ?? 0)) {
                 $errors[] = 'Agentur, Projektkunde und Projekt stimmen nicht mit den Stammdaten überein';
