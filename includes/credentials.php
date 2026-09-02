@@ -157,7 +157,6 @@ function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId,
          FROM backoffice_users u
          JOIN elite_members m ON m.user_id = u.id
          WHERE u.id = :id
-           AND u.role = 'elite'
            AND u.account_status = 'active'
            AND m.membership_status = 'active'
          LIMIT 1"
