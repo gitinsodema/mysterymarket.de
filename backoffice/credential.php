@@ -55,7 +55,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
         http_response_code(400);
         $error = 'Ungültige Sitzung.';
-    } elseif ((int)$credential['is_active'] === 1 && !in_array($action, ['deactivate','create_revision','set_subject'], true)) {
+    } elseif ((int)$credential['is_active'] === 1 && !in_array($action, ['deactivate','create_revision'], true)) {
         $error = 'Aktive Verify-Ausweise sind schreibgeschützt. Änderungen erfolgen über Deaktivierung oder einen kontrollierten Revisions-Draft.';
     } else {
         try {
