@@ -26,3 +26,8 @@ JOIN (
 JOIN audit_verifications source_v ON source_v.id = latest.verification_id
 SET a.logo_asset = source_v.agency_logo_asset
 WHERE a.logo_asset IS NULL;
+
+UPDATE credential_projects p
+JOIN agencies a ON a.id = p.agency_id
+SET p.is_active = 0
+WHERE TRIM(COALESCE(a.logo_asset, '')) = '';
