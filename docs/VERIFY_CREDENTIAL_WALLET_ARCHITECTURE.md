@@ -26,6 +26,8 @@ The Backoffice role (admin / Elite) controls access to management functions only
 
 Private holder access is bound directly on the authoritative credential through `subject_user_id`. Admin may manage all credentials; an Elite user may open only credentials whose `subject_user_id` equals that user's Backoffice account ID. This binding controls private representations only and does not alter the public Verify identity.
 
+For new/draft personal credentials, the public person name is no longer independent free text: it is resolved from the selected active Elite member and stored as the credential snapshot. Role, agency, project customer and project are likewise selected from controlled master data and resolved server-side before a draft can be activated.
+
 ## 2. Authoritative data model
 
 ### `audit_verifications`
@@ -38,9 +40,13 @@ Important fields used by the reusable subsystem:
 - `reference_code`
 - `person_name`
 - `role_label`
+- `credential_role_id` (controlled role master reference)
 - `agency_name`
+- `agency_id` (controlled agency master reference)
 - `project_name`
-- `brand_name`
+- `credential_project_id` (controlled project master reference)
+- `brand_name` (credential snapshot of the project customer)
+- `photo_allowed` (credential snapshot of the project-level photography permission)
 - `valid_from`
 - `valid_until`
 - `photo_asset`
@@ -58,6 +64,32 @@ Important fields used by the reusable subsystem:
 - `revision_no`
 
 A product reusing this subsystem may rename the table, but it must preserve the same semantic contract: one authoritative credential record with one stable verification reference.
+
+## 2A. Controlled issuance master data
+
+Credential issuance is intentionally not an unrestricted text-entry process.
+
+Authoritative supporting master data:
+
+- `elite_members` + `backoffice_users`: selectable credential person
+- `credential_roles`: permitted role labels
+- `agencies`: permitted agency identities
+- `credential_projects`: permitted agency / project-customer / project combinations
+
+`credential_projects` also owns:
+
+- `scope_key`
+- `photo_allowed`
+- active/inactive issuance availability
+
+The credential stores both the controlled IDs and text snapshots. This is deliberate:
+
+1. IDs prove that the draft came from approved master data.
+2. Text values remain immutable credential snapshots after activation.
+3. Changing/deactivating master data must not silently rewrite an already active credential.
+4. A revision is created as a draft and must again satisfy the current master-data rules before activation.
+
+Photography permission is therefore not a free checkbox on a credential. It is authorised on the project master record and copied into `audit_verifications.photo_allowed` when the credential draft is created/saved. Public Verify, printable CR80 and Wallet consume that same snapshot.
 
 ### `verify_credential_outputs`
 
@@ -120,6 +152,11 @@ Private assets are stored outside the public webroot.
 Activation requires:
 
 - personal Verify record
+- controlled private subject binding
+- person snapshot matching the selected active Elite member
+- controlled role reference and matching role snapshot
+- controlled agency/project reference
+- project-customer/project/scope/photo-permission snapshots matching the selected active project
 - person
 - role
 - agency
@@ -390,6 +427,9 @@ Core:
 - `backoffice/credentials.php`
 - `backoffice/credential.php`
 - `backoffice/credential-new.php`
+- `backoffice/credential-projects.php`
+- `backoffice/credential-project.php`
+- `backoffice/credential-project-new.php`
 - `backoffice/credential-asset.php`
 - `backoffice/credential-output.php`
 - `backoffice/credential-wallet.php`
@@ -411,6 +451,7 @@ Schema:
 
 - `database/20260830_credentials_foundation.sql`
 - `database/20260830_verify_credential_revision.sql`
+- `database/20260902_credential_controlled_master_data.sql`
 
 Configuration template:
 
