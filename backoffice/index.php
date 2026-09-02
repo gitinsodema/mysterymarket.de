@@ -17,6 +17,8 @@ $dashboard = [
     'open_approvals' => 0,
     'membership_requests' => 0,
     'credential_projects' => 0,
+    'credential_count' => 0,
+    'project_requests' => 0,
 ];
 
 if ($role === 'admin') {
@@ -26,6 +28,8 @@ if ($role === 'admin') {
     $dashboard['open_approvals'] = (int)mmDb()->query("SELECT COUNT(*) FROM agency_approvals WHERE approval_status IN ('draft','requested')")->fetchColumn();
     $dashboard['membership_requests'] = (int)mmDb()->query("SELECT COUNT(*) FROM elite_membership_requests WHERE request_status = 'open'")->fetchColumn();
     $dashboard['credential_projects'] = (int)mmDb()->query("SELECT COUNT(*) FROM credential_projects WHERE is_active = 1")->fetchColumn();
+    $dashboard['credential_count'] = (int)mmDb()->query("SELECT COUNT(*) FROM audit_verifications WHERE is_personal_verification = 1")->fetchColumn();
+    $dashboard['project_requests'] = (int)mmDb()->query("SELECT COUNT(*) FROM credential_project_requests WHERE request_status = 'pending'")->fetchColumn();
 }
 
 mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noindex,nofollow');
@@ -62,7 +66,8 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
     <?php if ($role === 'admin'): ?>
       <a class="backoffice-module" href="/backoffice/members.php"><span>01</span><b class="backoffice-module-count"><?= $dashboard['active_members'] ?></b><strong>Elite Shopper</strong><small>Aktive Mitglieder & Status</small></a>
       <a class="backoffice-module" href="/backoffice/membership-requests.php"><span>01B</span><b class="backoffice-module-count"><?= $dashboard['membership_requests'] ?></b><strong>Mitgliedschaft</strong><small>Offene Anfragen</small></a>
-      <a class="backoffice-module" href="/backoffice/credentials.php"><span>02</span><b class="backoffice-module-count"><?= $dashboard['credential_projects'] ?></b><strong>Ausweis-Service</strong><small>Ausweise · Projekte · Druck · Wallet</small></a>
+      <a class="backoffice-module" href="/backoffice/credentials.php"><span>02</span><b class="backoffice-module-count"><?= $dashboard['credential_count'] ?></b><strong>Ausweis-Service</strong><small>Verify · Druck · Wallet · Karte</small></a>
+      <a class="backoffice-module" href="/backoffice/credential-projects.php"><span>02B</span><b class="backoffice-module-count"><?= $dashboard['project_requests'] ?></b><strong>Projekte</strong><small>Stammdaten · offene Vorschläge</small></a>
       <a class="backoffice-module" href="/backoffice/approvals.php"><span>03</span><b class="backoffice-module-count"><?= $dashboard['open_approvals'] ?></b><strong>Kommunikation</strong><small>Offene Agentur-Freigaben</small></a>
       <a class="backoffice-module" href="/backoffice/contacts.php"><span>04</span><b class="backoffice-module-count"><?= $dashboard['new_contacts'] ?></b><strong>Kontakte</strong><small>Neue & laufende Anfragen</small></a>
       <a class="backoffice-module" href="/backoffice/feed.php"><span>05</span><b class="backoffice-module-count"><?= $dashboard['feed_posts'] ?></b><strong>Elite Feed</strong><small>Aktive interne Hinweise</small></a>
@@ -70,9 +75,10 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
       <a class="backoffice-module" href="/backoffice/system.php"><span>07</span><strong>System</strong><small>Status & Audit Log</small></a>
     <?php else: ?>
       <a class="backoffice-module" href="/backoffice/profile.php"><span>01</span><strong>Mitgliedschaft</strong><small>Status & Profil</small></a>
-      <article class="backoffice-module"><span>02</span><strong>Projekt-Ausweise</strong><small>Werden projektbezogen über Verify bereitgestellt</small></article>
-      <a class="backoffice-module" href="/backoffice/feed.php"><span>03</span><strong>Elite Feed</strong><small>Interne Projekt- und Partnerinfos</small></a>
-      <article class="backoffice-module"><span>04</span><strong>ShopperMatch</strong><small>Eigenständige Job-/Matching-Plattform</small></article>
+      <a class="backoffice-module" href="/backoffice/profile.php"><span>02</span><strong>Meine Ausweise</strong><small>Projektbezogene Verify-Ausweise</small></a>
+      <a class="backoffice-module" href="/backoffice/project-request-new.php"><span>03</span><strong>Projekt vorschlagen</strong><small>Agentur + Projekt + Legitimationsschreiben</small></a>
+      <a class="backoffice-module" href="/backoffice/feed.php"><span>04</span><strong>Elite Feed</strong><small>Interne Projekt- und Partnerinfos</small></a>
+      <article class="backoffice-module"><span>05</span><strong>ShopperMatch</strong><small>Eigenständige Job-/Matching-Plattform</small></article>
     <?php endif; ?>
   </div>
 </section>
