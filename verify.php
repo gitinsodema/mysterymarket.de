@@ -144,6 +144,7 @@ $scanCopy = [
 $detailCopy = [
     'de' => [
         'identity'=>'Legitimierte Person','role'=>'Rolle','agency'=>'Beauftragte Agentur','project'=>'Projekt / Prüfkontext',
+        'photo_allowed'=>'Fotografieren erlaubt',
         'scope'=>'Umfang der Berechtigung','restriction'=>'Wichtige Einschränkung',
         'restriction_text'=>'Die Berechtigung ist auf Vodafone-relevante Prozesse und Datenverarbeitungen beschränkt. Eine Prüfung sonstiger Geschäftstätigkeiten des Untervertriebspartners ist nicht umfasst.',
         'scope_items'=>[
@@ -158,6 +159,7 @@ $detailCopy = [
     ],
     'en' => [
         'identity'=>'Authorised person','role'=>'Role','agency'=>'Commissioned agency','project'=>'Project / audit context',
+        'photo_allowed'=>'Photography permitted',
         'scope'=>'Scope of authorisation','restriction'=>'Important limitation',
         'restriction_text'=>'The authorisation is limited to Vodafone-related processes and data processing. It does not include an audit of other business activities of the subcontracting sales partner.',
         'scope_items'=>[
@@ -172,6 +174,7 @@ $detailCopy = [
     ],
     'nl' => [
         'identity'=>'Geleitimeerde persoon','role'=>'Rol','agency'=>'Opdrachtgevend bureau','project'=>'Project / auditcontext',
+        'photo_allowed'=>'Fotograferen toegestaan',
         'scope'=>'Omvang van de bevoegdheid','restriction'=>'Belangrijke beperking',
         'restriction_text'=>'De bevoegdheid is beperkt tot Vodafone-gerelateerde processen en gegevensverwerking. Controle van andere bedrijfsactiviteiten van de onderverkooppartner valt hier niet onder.',
         'scope_items'=>[
@@ -186,6 +189,7 @@ $detailCopy = [
     ],
     'tr' => [
         'identity'=>'Yetkilendirilmiş kişi','role'=>'Rol','agency'=>'Görevlendirilen ajans','project'=>'Proje / denetim kapsamı',
+        'photo_allowed'=>'Fotoğraf çekimine izin verilir',
         'scope'=>'Yetki kapsamı','restriction'=>'Önemli sınırlama',
         'restriction_text'=>'Yetki yalnızca Vodafone ile ilgili süreçler ve veri işleme faaliyetleriyle sınırlıdır. Alt satış ortağının diğer ticari faaliyetlerinin denetimini kapsamaz.',
         'scope_items'=>[
@@ -382,7 +386,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || $autoVerify) {
             try {
                 $stmt = mmDb()->prepare(
                     'SELECT reference_code, public_title, public_partner, public_client, valid_from, valid_until, confidentiality_mode, public_note,
-                            person_name, role_label, agency_name, project_name, brand_name,
+                            person_name, role_label, agency_name, project_name, brand_name, photo_allowed,
                             photo_asset, brand_logo_asset, agency_logo_asset, scope_key,
                             document_asset, document_label, document_enabled, print_card_enabled, is_personal_verification
                      FROM audit_verifications
@@ -531,6 +535,13 @@ $rtl = $verifyLang === 'ar';
               <?php if (!empty($result['valid_until'])): ?><p><strong><?= mmEscape($c['valid']) ?>:</strong> <?= mmEscape((string)$result['valid_until']) ?></p><?php endif; ?>
             </div>
           </div>
+
+          <?php if ((int)($result['photo_allowed'] ?? 0) === 1): ?>
+            <div class="verify-photo-permission">
+              <span aria-hidden="true">📷</span>
+              <strong><?= mmEscape($detailCopy['photo_allowed'] ?? 'Photography permitted') ?></strong>
+            </div>
+          <?php endif; ?>
 
           <div class="verify-context-grid">
             <div><small><?= mmEscape($detailCopy['agency']) ?></small>
