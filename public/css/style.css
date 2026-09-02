@@ -1682,3 +1682,91 @@ nav a[aria-current=page],
 @media(max-width:430px){
   .backoffice-app-shell .backoffice-module-grid{grid-template-columns:1fr 1fr}
 }
+
+
+/* Elite credential identity + project workflow */
+.elite-photo-layout{
+  display:grid;
+  grid-template-columns:150px minmax(0,1fr);
+  gap:18px;
+  align-items:start;
+}
+.elite-photo-preview,
+.admin-member-photo,
+.project-request-person img{
+  width:128px;
+  height:160px;
+  border-radius:10px;
+  overflow:hidden;
+  background:#eef2f6;
+  border:1px solid #d8e0e8;
+}
+.elite-photo-preview img,
+.admin-member-photo img,
+.project-request-person img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.elite-photo-placeholder{
+  width:128px;
+  height:160px;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+.project-request-person{
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+.project-request-person img{
+  width:76px;
+  height:96px;
+}
+.credential-master-identity{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:12px;
+}
+.credential-master-identity>div{
+  padding:10px 12px;
+  border:1px solid #e1e6ec;
+  border-radius:8px;
+  background:#f8fafc;
+}
+.credential-master-identity small{
+  display:block;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted);
+}
+.credential-master-identity strong{
+  display:block;
+  margin-top:3px;
+}
+.credential-project-assets{margin:18px 0}
+.project-logo-preview{
+  height:90px;
+  display:flex;
+  align-items:center;
+  margin:10px 0;
+  padding:8px;
+  border:1px solid #e1e6ec;
+  border-radius:8px;
+  background:#fff;
+}
+.project-logo-preview img{
+  max-width:100%;
+  max-height:72px;
+  object-fit:contain;
+}
+@media(max-width:700px){
+  .elite-photo-layout{grid-template-columns:1fr}
+  .credential-master-identity{grid-template-columns:1fr}
+}
