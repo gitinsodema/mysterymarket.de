@@ -23,11 +23,13 @@ $values = [
     'project_name'=>'',
     'scope_key'=>'',
 ];
+$photoAllowed = false;
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     foreach (array_keys($values) as $key) {
         $values[$key] = trim((string)($_POST[$key] ?? ''));
     }
+    $photoAllowed = ($_POST['photo_allowed'] ?? '') === '1';
 
     if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
         http_response_code(400);
@@ -58,14 +60,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
             $stmt = mmDb()->prepare(
                 'INSERT INTO credential_projects
-                 (agency_id, customer_name, project_name, scope_key, is_active, created_at, updated_at)
-                 VALUES (:agency_id, :customer_name, :project_name, :scope_key, 1, NOW(), NOW())'
+                 (agency_id, customer_name, project_name, scope_key, photo_allowed, is_active, created_at, updated_at)
+                 VALUES (:agency_id, :customer_name, :project_name, :scope_key, :photo_allowed, 1, NOW(), NOW())'
             );
             $stmt->execute([
                 'agency_id'=>$agencyId,
                 'customer_name'=>$values['customer_name'],
                 'project_name'=>$values['project_name'],
                 'scope_key'=>$values['scope_key'] !== '' ? $values['scope_key'] : null,
+                'photo_allowed'=>$photoAllowed ? 1 : 0,
             ]);
             $id = (int)mmDb()->lastInsertId();
 
@@ -79,6 +82,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'customer_name'=>$values['customer_name'],
                     'project_name'=>$values['project_name'],
                     'scope_key'=>$values['scope_key'] !== '' ? $values['scope_key'] : null,
+                    'photo_allowed'=>$photoAllowed,
                 ]
             );
 
@@ -125,6 +129,7 @@ mmHeader('Ausweis-Projekt anlegen', 'Kontrolliertes Projekt für Verify-Ausweise
         <label class="wide">Projekt
           <input name="project_name" maxlength="200" required value="<?= mmEscape($values['project_name']) ?>">
         </label>
+        <label class="wide credential-photo-permission"><input type="checkbox" name="photo_allowed" value="1"<?= $photoAllowed ? ' checked' : '' ?>> <span><strong>Fotografieren erlaubt</strong><small class="field-hint">Nur aktivieren, wenn Projekt/Legitimationsschreiben Fotoaufnahmen ausdrücklich freigibt.</small></span></label>
         <label class="wide">Verify-Scope
           <select name="scope_key">
             <option value="">Kein Scope</option>
