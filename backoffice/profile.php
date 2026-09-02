@@ -6,7 +6,7 @@ header('Cache-Control: private, no-store, max-age=0');
 header('Pragma: no-cache');
 header('X-Robots-Tag: noindex, noarchive');
 
-$user = mmBackofficeRequireLogin('elite');
+$user = mmBackofficeRequireLogin();
 $error = '';
 $success = '';
 
