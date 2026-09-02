@@ -109,7 +109,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $agencyId = (int)($_POST['agency_id'] ?? 0);
                 $projectCustomer = trim((string)($_POST['project_customer'] ?? ''));
                 $projectId = (int)($_POST['credential_project_id'] ?? 0);
-                $photoAllowed = ($_POST['photo_allowed'] ?? '') === '1';
                 $validFrom = mmCredentialDateOrNull((string)($_POST['valid_from'] ?? ''));
                 $validUntil = mmCredentialDateOrNull((string)($_POST['valid_until'] ?? ''));
                 $confidentiality = trim((string)($_POST['confidentiality_mode'] ?? 'public'));
@@ -172,7 +171,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'credential_project_id'=>$controlled['credential_project_id'],
                     'brand_name'=>$controlled['brand_name'],
                     'scope_key'=>$controlled['scope_key'],
-                    'photo_allowed'=>$photoAllowed ? 1 : 0,
+                    'photo_allowed'=>$controlled['photo_allowed'],
                     'id'=>$id,
                 ]);
 
@@ -180,7 +179,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'reference_code'=>(string)$credential['reference_code'],
                     'credential_role_id'=>$controlled['credential_role_id'],
                     'credential_project_id'=>$controlled['credential_project_id'],
-                    'photo_allowed'=>$photoAllowed,
+                    'photo_allowed'=>(bool)$controlled['photo_allowed'],
                 ]);
                 header('Location: /backoffice/credential.php?id=' . $id . '&saved=1', true, 303);
                 exit;
@@ -716,7 +715,9 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
               <option value="confidential"<?= $credential['confidentiality_mode'] === 'confidential' ? ' selected' : '' ?>>Vertraulich</option>
             </select>
           </label>
-          <label class="wide credential-photo-permission"><input type="checkbox" name="photo_allowed" value="1"<?= (int)($credential['photo_allowed'] ?? 0) === 1 ? ' checked' : '' ?><?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>> <span><strong>Fotografieren erlaubt</strong><small class="field-hint">Nur aktivieren, wenn das Projekt bzw. Legitimationsschreiben Fotoaufnahmen ausdrücklich erlaubt.</small></span></label>
+          <div class="wide credential-photo-permission credential-photo-permission--readonly">
+            <span><strong><?= (int)($credential['photo_allowed'] ?? 0) === 1 ? 'Fotografieren erlaubt' : 'Fotografieren nicht freigegeben' ?></strong><small class="field-hint">Diese Eigenschaft wird aus den Projekt-Stammdaten übernommen und kann am Ausweis nicht frei geändert werden.</small></span>
+          </div>
           <label class="wide">Öffentlicher Hinweis<textarea name="public_note"<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>><?= mmEscape((string)($credential['public_note'] ?? '')) ?></textarea></label>
         </div>
       </div>
