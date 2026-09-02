@@ -167,6 +167,9 @@ function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId,
     if (!$subject || trim((string)$subject['display_name']) === '') {
         throw new InvalidArgumentException('Die ausgewählte Ausweis-Person ist nicht als aktiver Elite Shopper verfügbar.');
     }
+    if (trim((string)($subject['profile_photo_asset'] ?? '')) === '') {
+        throw new InvalidArgumentException('Für die ausgewählte Ausweis-Person fehlt das verbindliche Elite-Profilfoto.');
+    }
 
     $roleStmt = mmDb()->prepare(
         "SELECT id, label
