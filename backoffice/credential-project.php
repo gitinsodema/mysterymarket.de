@@ -17,7 +17,7 @@ if ($id < 1) {
 function mmCredentialProjectAdminFetch(int $id): ?array
 {
     $stmt = mmDb()->prepare(
-        "SELECT p.*, a.name AS agency_name
+        "SELECT p.*, a.name AS agency_name, a.logo_asset AS agency_logo_asset
          FROM credential_projects p
          JOIN agencies a ON a.id = p.agency_id
          WHERE p.id = :id
@@ -94,6 +94,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $missing = [];
                 if (trim((string)($fresh['project_logo_asset'] ?? '')) === '') {
                     $missing[] = 'offizielles Projektlogo';
+                }
+                if (trim((string)($fresh['agency_logo_asset'] ?? '')) === '') {
+                    $missing[] = 'Agenturlogo';
                 }
                 if (trim((string)($fresh['authorization_document_asset'] ?? '')) === '') {
                     $missing[] = 'Legitimationsschreiben';
