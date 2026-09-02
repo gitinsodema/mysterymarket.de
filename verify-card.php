@@ -24,7 +24,7 @@ $user = mmBackofficeRequireLogin();
 
 $stmt = mmDb()->prepare(
     'SELECT reference_code, person_name, role_label, agency_name, project_name, brand_name,
-            valid_until, photo_asset, brand_logo_asset, agency_logo_asset, print_card_enabled, subject_user_id
+            valid_until, photo_asset, brand_logo_asset, agency_logo_asset, print_card_enabled, photo_allowed, subject_user_id
      FROM audit_verifications
      WHERE reference_code = :code
        AND is_active = 1
@@ -74,7 +74,9 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
 .id-main{padding:3.6mm 4mm 3.2mm;display:grid;grid-template-columns:minmax(0,1fr) 19mm;gap:2.6mm}
 .id-kicker{text-transform:uppercase;letter-spacing:.08em;font-size:1.55mm;font-weight:800;color:#008c96;line-height:1.2}
 .id-name{font-size:5.1mm;line-height:.95;margin:1.1mm 0 .6mm}
-.id-role{font-size:2.2mm;font-weight:800;color:#be001e;margin:0 0 1.8mm}
+.id-role{font-size:2.2mm;font-weight:800;color:#be001e;margin:0 0 1.2mm}
+.id-photo-permission{display:inline-flex;align-items:center;gap:.75mm;margin:0 0 1.4mm;padding:.75mm 1.15mm;border-radius:1.2mm;background:#e8f7ef;border:.25mm solid #8ed3b0;color:#08784f;font-size:1.45mm;font-weight:900;letter-spacing:.02em;line-height:1}
+.id-photo-permission svg{width:2.35mm;height:2.35mm;flex:0 0 auto}
 .id-meta{display:grid;gap:1.05mm;font-size:1.72mm;line-height:1.18}
 .id-meta span{display:block;color:#667085;font-size:1.28mm;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2mm}
 .id-meta strong{display:block}.id-project strong{line-height:1.12;word-break:normal;overflow-wrap:anywhere}
@@ -116,6 +118,12 @@ body{margin:0;background:#eef2f6;font-family:Arial,sans-serif;color:#001950}
           <div class="id-kicker">Audit / Authorisation Verification</div>
           <h1 class="id-name"><?= mmEscape((string)$row['person_name']) ?></h1>
           <p class="id-role"><?= mmEscape((string)$row['role_label']) ?></p>
+          <?php if ((int)($row['photo_allowed'] ?? 0) === 1): ?>
+            <div class="id-photo-permission" title="Fotografieren im Projektkontext erlaubt">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 4l1.4-2h3.2L15 4h3a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h3zm3 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2.2A2.8 2.8 0 1 1 12 14.8 2.8 2.8 0 0 1 12 9.2z"/></svg>
+              FOTO ERLAUBT
+            </div>
+          <?php endif; ?>
           <div class="id-meta">
             <div><span>Agency Partner</span><strong><?= mmEscape((string)$row['agency_name']) ?></strong><?php if (!empty($row['agency_logo_asset'])): ?><img class="id-agency-logo" src="/verify-asset.php?code=<?= rawurlencode($code) ?>&type=agency_logo" alt=""><?php endif; ?></div>
             <div class="id-project"><span>Project</span><strong><?= mmEscape((string)$row['project_name']) ?></strong></div>
