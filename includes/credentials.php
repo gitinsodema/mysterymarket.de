@@ -116,8 +116,7 @@ function mmCredentialControlledSubjects(): array
         "SELECT u.id, u.email, m.display_name, m.member_code, m.profile_photo_asset
          FROM backoffice_users u
          JOIN elite_members m ON m.user_id = u.id
-         WHERE u.role = 'elite'
-           AND u.account_status = 'active'
+         WHERE u.account_status = 'active'
            AND m.membership_status = 'active'
          ORDER BY m.display_name, u.email"
     );
@@ -428,7 +427,6 @@ function mmCredentialIntegrityErrors(array $row): array
                  FROM backoffice_users u
                  JOIN elite_members m ON m.user_id = u.id
                  WHERE u.id = :id
-                   AND u.role = 'elite'
                    AND u.account_status = 'active'
                    AND m.membership_status = 'active'
                  LIMIT 1"
