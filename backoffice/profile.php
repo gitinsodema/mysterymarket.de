@@ -31,7 +31,29 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     } else {
         $action = (string)($_POST['action'] ?? 'profile');
 
-        if ($action === 'profile') {
+        if ($action === 'profile_photo') {
+            try {
+                $filename = mmEliteStoreProfilePhoto($_FILES['profile_photo'] ?? [], (int)$member['id']);
+                $updatePhoto = mmDb()->prepare(
+                    'UPDATE elite_members SET profile_photo_asset = :asset, updated_at = NOW() WHERE id = :id'
+                );
+                $updatePhoto->execute([
+                    'asset'=>$filename,
+                    'id'=>(int)$member['id'],
+                ]);
+                mmBackofficeAudit(
+                    (int)$user['id'],
+                    'elite_profile.photo_updated',
+                    'elite_member',
+                    (int)$member['id'],
+                    ['asset'=>$filename]
+                );
+                header('Location: /backoffice/profile.php?photo_saved=1', true, 303);
+                exit;
+            } catch (Throwable $e) {
+                $error = $e->getMessage();
+            }
+        } elseif ($action === 'profile') {
             $displayName = trim((string)($_POST['display_name'] ?? ''));
             $organisation = trim((string)($_POST['organisation'] ?? ''));
             $workProfile = trim((string)($_POST['work_profile'] ?? ''));
@@ -252,6 +274,35 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
+  </div>
+</section>
+
+<section class="section">
+  <div class="form-card elite-photo-card">
+    <div class="section-head">
+      <p class="eyebrow">Ausweisidentität</p>
+      <h2>Mein Ausweisfoto.</h2>
+      <p>Dieses geschützte Profilfoto ist die einzige Fotoquelle für neue MysteryMarket-Ausweise. Es wird nicht frei pro Ausweis hochgeladen.</p>
+    </div>
+    <?php if (isset($_GET['photo_saved'])): ?><div class="alert success"><strong>Ausweisfoto gespeichert.</strong></div><?php endif; ?>
+    <div class="elite-photo-layout">
+      <div class="elite-photo-preview">
+        <?php if (!empty($member['profile_photo_asset'])): ?>
+          <img src="/backoffice/member-photo.php" alt="Mein Ausweisfoto">
+        <?php else: ?>
+          <div class="elite-photo-placeholder">Noch kein<br>Ausweisfoto</div>
+        <?php endif; ?>
+      </div>
+      <form method="post" action="/backoffice/profile.php" enctype="multipart/form-data">
+        <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+        <input type="hidden" name="action" value="profile_photo">
+        <label>Neues Ausweisfoto
+          <input type="file" name="profile_photo" accept="image/png,image/jpeg,image/webp" required>
+          <small class="field-hint">JPG, PNG oder WebP bis 5 MB. Bitte ein aktuelles, eindeutig erkennbares Portrait verwenden.</small>
+        </label>
+        <button type="submit"><?= !empty($member['profile_photo_asset']) ? 'Ausweisfoto ersetzen' : 'Ausweisfoto speichern' ?></button>
+      </form>
+    </div>
   </div>
 </section>
 
