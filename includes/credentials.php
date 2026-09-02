@@ -153,7 +153,7 @@ function mmCredentialControlledProjects(): array
 function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId, int $projectId): array
 {
     $subjectStmt = mmDb()->prepare(
-        "SELECT u.id, u.email, m.display_name, m.member_code
+        "SELECT u.id, u.email, m.display_name, m.member_code, m.profile_photo_asset
          FROM backoffice_users u
          JOIN elite_members m ON m.user_id = u.id
          WHERE u.id = :id
@@ -181,7 +181,8 @@ function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId,
     }
 
     $projectStmt = mmDb()->prepare(
-        "SELECT p.id, p.agency_id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed,
+        "SELECT p.id, p.agency_id, p.project_name, p.scope_key, p.photo_allowed,
+                p.project_logo_asset, p.authorization_document_asset, p.authorization_document_label,
                 a.name AS agency_name
          FROM credential_projects p
          JOIN agencies a ON a.id = p.agency_id
@@ -199,6 +200,7 @@ function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId,
     return [
         'subject_user_id'=>(int)$subject['id'],
         'person_name'=>(string)$subject['display_name'],
+        'photo_asset'=>$subject['profile_photo_asset'] !== null ? (string)$subject['profile_photo_asset'] : null,
         'photo_asset'=>$subject['profile_photo_asset'] !== null ? (string)$subject['profile_photo_asset'] : null,
         'credential_role_id'=>(int)$role['id'],
         'role_label'=>(string)$role['label'],
