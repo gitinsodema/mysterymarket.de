@@ -56,6 +56,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'id'=>$id,
                 ]);
 
+                $drafts = mmDb()->prepare(
+                    'UPDATE audit_verifications
+                     SET agency_logo_asset = :logo_asset, updated_at = NOW()
+                     WHERE agency_id = :agency_id
+                       AND is_personal_verification = 1
+                       AND is_active = 0'
+                );
+                $drafts->execute(['logo_asset'=>$filename,'agency_id'=>$id]);
+
                 mmBackofficeAudit(
                     (int)$user['id'],
                     'agency.logo_uploaded',
@@ -84,6 +93,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'logo_source_url'=>$logoUrl,
                     'id'=>$id,
                 ]);
+
+                $drafts = mmDb()->prepare(
+                    'UPDATE audit_verifications
+                     SET agency_logo_asset = :logo_asset, updated_at = NOW()
+                     WHERE agency_id = :agency_id
+                       AND is_personal_verification = 1
+                       AND is_active = 0'
+                );
+                $drafts->execute(['logo_asset'=>$filename,'agency_id'=>$id]);
 
                 mmBackofficeAudit(
                     (int)$user['id'],
