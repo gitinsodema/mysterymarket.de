@@ -138,7 +138,7 @@ function mmCredentialControlledRoles(): array
 function mmCredentialControlledProjects(): array
 {
     $stmt = mmDb()->query(
-        "SELECT p.id, p.agency_id, p.customer_name, p.project_name, p.scope_key,
+        "SELECT p.id, p.agency_id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed,
                 a.name AS agency_name
          FROM credential_projects p
          JOIN agencies a ON a.id = p.agency_id
@@ -206,6 +206,7 @@ function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId,
         'project_name'=>(string)$project['project_name'],
         'brand_name'=>(string)$project['customer_name'],
         'scope_key'=>$project['scope_key'] !== null ? (string)$project['scope_key'] : null,
+        'photo_allowed'=>(int)($project['photo_allowed'] ?? 0),
     ];
 }
 
@@ -281,7 +282,7 @@ function mmCredentialStoreUploadedAsset(array $file, int $credentialId, string $
     $projectId = (int)($row['credential_project_id'] ?? 0);
     if ($projectId > 0) {
         $projectStmt = mmDb()->prepare(
-            "SELECT p.agency_id, p.customer_name, p.project_name, p.scope_key, a.name AS agency_name
+            "SELECT p.agency_id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed, a.name AS agency_name
              FROM credential_projects p
              JOIN agencies a ON a.id = p.agency_id
              WHERE p.id = :id
@@ -296,7 +297,8 @@ function mmCredentialStoreUploadedAsset(array $file, int $credentialId, string $
             || !hash_equals(trim((string)$project['agency_name']), trim((string)($row['agency_name'] ?? '')))
             || !hash_equals(trim((string)$project['customer_name']), trim((string)($row['brand_name'] ?? '')))
             || !hash_equals(trim((string)$project['project_name']), trim((string)($row['project_name'] ?? '')))
-            || !hash_equals(trim((string)($project['scope_key'] ?? '')), trim((string)($row['scope_key'] ?? '')))) {
+            || !hash_equals(trim((string)($project['scope_key'] ?? '')), trim((string)($row['scope_key'] ?? '')))
+            || (int)($project['photo_allowed'] ?? 0) !== (int)($row['photo_allowed'] ?? 0)) {
             $errors[] = 'Agentur, Projektkunde und Projekt stimmen nicht mit den Stammdaten überein';
         }
     }
