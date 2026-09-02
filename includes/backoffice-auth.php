@@ -430,3 +430,13 @@ function mmBackofficeContactRiskBadge(array $row): string
     return '<span class="status status--' . mmEscape((string)$risk['tone']) . '">'
         . mmEscape((string)$risk['label']) . '</span>';
 }
+
+
+function mmBackofficeContactModerationBadge(string $decision): string
+{
+    return match (strtolower(trim($decision))) {
+        'allow' => mmBackofficeStatusBadge('approved', 'Zulassen'),
+        'spam' => mmBackofficeStatusBadge('rejected', 'Spam'),
+        default => mmBackofficeStatusBadge('pending', 'Unentschieden'),
+    };
+}
