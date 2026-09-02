@@ -8,17 +8,39 @@ header('X-Robots-Tag: noindex, noarchive');
 mmBackofficeRequireLogin('admin');
 
 $status = (string)($_GET['status'] ?? 'all');
-$allowed = ['all','new','seen','done'];
+$query = trim((string)($_GET['q'] ?? ''));
+$allowed = ['all','new','in_progress','done'];
 if (!in_array($status, $allowed, true)) {
     $status = 'all';
 }
 
-$sql = 'SELECT id, reference_code, request_type, name, organisation, email, phone, subject, message, status, moderation_decision, created_at
-        FROM contact_requests';
+$where = [];
 $params = [];
+
+if ($query === '') {
+    $where[] = "status <> 'archived'";
+}
+
 if ($status !== 'all') {
-    $sql .= ' WHERE status = :status';
+    $where[] = 'status = :status';
     $params['status'] = $status;
+}
+
+if ($query !== '') {
+    $where[] = '(reference_code LIKE :query
+        OR name LIKE :query
+        OR organisation LIKE :query
+        OR email LIKE :query
+        OR subject LIKE :query
+        OR message LIKE :query)';
+    $params['query'] = '%' . $query . '%';
+}
+
+$sql = 'SELECT id, reference_code, request_type, name, organisation, email, phone, subject, message,
+               status, moderation_decision, created_at
+        FROM contact_requests';
+if ($where !== []) {
+    $sql .= ' WHERE ' . implode(' AND ', $where);
 }
 $sql .= ' ORDER BY created_at DESC, id DESC';
 
@@ -26,13 +48,44 @@ $stmt = mmDb()->prepare($sql);
 $stmt->execute($params);
 $rows = $stmt->fetchAll();
 
+$statusPriority = ['new'=>0, 'in_progress'=>1, 'done'=>2, 'archived'=>3];
+$riskPriority = ['green'=>0, 'yellow'=>1, 'red'=>2];
+
+usort($rows, static function (array $a, array $b) use ($statusPriority, $riskPriority): int {
+    $aStatus = (string)($a['status'] ?? 'new');
+    $bStatus = (string)($b['status'] ?? 'new');
+    $statusCompare = ($statusPriority[$aStatus] ?? 9) <=> ($statusPriority[$bStatus] ?? 9);
+    if ($statusCompare !== 0) {
+        return $statusCompare;
+    }
+
+    if ($aStatus === 'new') {
+        $aRisk = mmBackofficeContactRisk($a);
+        $bRisk = mmBackofficeContactRisk($b);
+        $aRank = $riskPriority[(string)($aRisk['level'] ?? 'green')] ?? 9;
+        $bRank = $riskPriority[(string)($bRisk['level'] ?? 'green')] ?? 9;
+        if (($a['moderation_decision'] ?? '') === 'spam') {
+            $aRank = 3;
+        }
+        if (($b['moderation_decision'] ?? '') === 'spam') {
+            $bRank = 3;
+        }
+        $riskCompare = $aRank <=> $bRank;
+        if ($riskCompare !== 0) {
+            return $riskCompare;
+        }
+    }
+
+    return strcmp((string)$b['created_at'], (string)$a['created_at']);
+});
+
 mmHeader('Kontakte', 'Read-only Kontaktanfragen im MysteryMarket Backoffice.', 'noindex,nofollow');
 ?>
 <section class="hero backoffice-dashboard-hero">
   <div>
     <p class="eyebrow">Admin · Kontakte</p>
     <h1>Kontaktanfragen.</h1>
-    <p class="lead">Read-only Sicht auf die über das öffentliche Kontaktformular gespeicherten Anfragen.</p>
+    <p class="lead">Arbeitsansicht für neue, laufende und erledigte Kontaktanfragen. Archivierte Einträge erscheinen nur über die Suche.</p>
     <div class="actions">
       <a class="button secondary" href="/backoffice/">Dashboard</a>
     </div>
@@ -40,10 +93,32 @@ mmHeader('Kontakte', 'Read-only Kontaktanfragen im MysteryMarket Backoffice.', '
 </section>
 
 <section class="section">
+  <form class="backoffice-contact-search" method="get" action="/backoffice/contacts.php">
+    <label>
+      <span>Suche</span>
+      <input type="search" name="q" value="<?= mmEscape($query) ?>" placeholder="Ref., Name, Organisation, E-Mail, Betreff oder Text">
+    </label>
+    <input type="hidden" name="status" value="<?= mmEscape($status) ?>">
+    <button type="submit">Suchen</button>
+    <?php if ($query !== ''): ?><a class="button secondary" href="/backoffice/contacts.php?status=<?= mmEscape($status) ?>">Zurücksetzen</a><?php endif; ?>
+  </form>
+
   <div class="backoffice-filter-row">
-    <?php foreach ($allowed as $filter): ?>
-      <a class="button<?= $status === $filter ? '' : ' secondary' ?>" href="/backoffice/contacts.php?status=<?= mmEscape($filter) ?>">
-        <?= mmEscape($filter === 'all' ? 'Alle' : ucfirst($filter)) ?>
+    <?php
+      $filterLabels = [
+        'all' => 'Alle aktiv',
+        'new' => 'New',
+        'in_progress' => 'In Arbeit',
+        'done' => 'Done',
+      ];
+      foreach ($allowed as $filter):
+        $href = '/backoffice/contacts.php?status=' . rawurlencode($filter);
+        if ($query !== '') {
+            $href .= '&q=' . rawurlencode($query);
+        }
+    ?>
+      <a class="button<?= $status === $filter ? '' : ' secondary' ?>" href="<?= mmEscape($href) ?>">
+        <?= mmEscape($filterLabels[$filter]) ?>
       </a>
     <?php endforeach; ?>
   </div>
@@ -68,7 +143,7 @@ mmHeader('Kontakte', 'Read-only Kontaktanfragen im MysteryMarket Backoffice.', '
         </thead>
         <tbody>
         <?php foreach ($rows as $row): ?>
-          <tr>
+          <tr class="<?= $row['status'] === 'done' ? 'contact-row--done' : ($row['status'] === 'archived' ? 'contact-row--archived' : '') ?>">
             <td><a href="/backoffice/contact.php?id=<?= (int)$row['id'] ?>"><strong><?= mmEscape((string)($row['reference_code'] ?: $row['id'])) ?></strong></a></td>
             <td><?= mmEscape((string)$row['created_at']) ?></td>
             <td><a href="/backoffice/contact.php?id=<?= (int)$row['id'] ?>"><?= mmEscape((string)$row['name']) ?></a></td>
