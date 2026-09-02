@@ -82,12 +82,21 @@ mmHeader('Elite Shopper', 'Interne Mitgliedsverwaltung.', 'noindex,nofollow');
   </div>
 </section>
 <section class="section">
-  <div class="grid two">
+  <div class="grid three">
     <article class="card">
       <span class="badge">Mitgliedschaft</span>
       <h2><?= mmBackofficeStatusBadge((string)$member['membership_status']) ?></h2>
       <p>Login: <?= mmBackofficeStatusBadge((string)$member['account_status']) ?></p>
       <p>Letzter Login: <?= mmEscape((string)($member['last_login_at'] ?: '—')) ?></p>
+    </article>
+    <article class="card">
+      <span class="badge">Ausweisfoto</span>
+      <?php if (!empty($member['profile_photo_asset'])): ?>
+        <div class="admin-member-photo"><img src="/backoffice/member-photo.php?member_id=<?= (int)$member['id'] ?>" alt=""></div>
+        <p><?= mmBackofficeStatusBadge('active', 'Profilfoto vorhanden') ?></p>
+      <?php else: ?>
+        <p><?= mmBackofficeStatusBadge('pending', 'Profilfoto fehlt') ?></p>
+      <?php endif; ?>
     </article>
     <article class="card">
       <span class="badge">Einsatzprofil</span>
