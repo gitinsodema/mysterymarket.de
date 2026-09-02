@@ -94,6 +94,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                         );
                         $insert->execute([
                             'agency_id'=>(int)$request['agency_id'],
+                            'customer_name_compat'=>(string)$request['project_name'],
                             'project_name'=>(string)$request['project_name'],
                             'document'=>(string)$request['authorization_document_asset'],
                         ]);
