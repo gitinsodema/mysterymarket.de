@@ -129,6 +129,7 @@
     }
   ],
   "completed_since_last_report": [
+    "Owner requested a visible Archived filter beside Done; active default still excludes archived contacts, while Archived explicitly lists them and search can still find them.",
     "Legacy contact status seen is normalized to in_progress by migration 20260902_contact_status_workflow.sql.",
     "Backoffice Contacts now has text search plus active status filters; archived contacts are hidden from normal views and reappear only when a search matches them.",
     "Contact list now sorts active workflow states first, with New unauffällig before New risk/spam suspicion, and Done at the bottom with grey presentation.",
@@ -515,7 +516,7 @@
   },
   "next_recommended_action": {
     "classification": "OWNER_ACTION_REQUIRED",
-    "summary": "Deploy main, run backoffice migrations and preflight, then verify contact sorting/search/status workflow on desktop and iPhone PWA."
+    "summary": "Deploy main and verify the Contacts filter row shows Archived beside Done; confirm Alle aktiv still hides archived records."
   },
   "evidence": [
     {
