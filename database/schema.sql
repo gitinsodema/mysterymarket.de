@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS contact_requests (
     privacy_acknowledged_at DATETIME NOT NULL,
     created_at DATETIME NOT NULL,
     status VARCHAR(32) NOT NULL DEFAULT 'new',
+    moderation_decision VARCHAR(16) NOT NULL DEFAULT 'undecided',
+    moderation_reviewed_at DATETIME NULL,
+    moderation_reviewed_by BIGINT UNSIGNED NULL,
     notification_sent_at DATETIME NULL,
     notification_failed_at DATETIME NULL,
     confirmation_sent_at DATETIME NULL,
@@ -18,7 +21,11 @@ CREATE TABLE IF NOT EXISTS contact_requests (
     PRIMARY KEY (id),
     UNIQUE KEY uq_contact_reference_code (reference_code),
     KEY idx_contact_created_at (created_at),
-    KEY idx_contact_status (status)
+    KEY idx_contact_status (status),
+    KEY idx_contact_moderation_decision (moderation_decision),
+    CONSTRAINT fk_contact_moderation_reviewer
+        FOREIGN KEY (moderation_reviewed_by) REFERENCES backoffice_users(id)
+        ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS audit_verifications (
