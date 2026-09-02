@@ -46,6 +46,46 @@ UPDATE credential_projects
 SET customer_name = project_name
 WHERE customer_name <> project_name;
 
+UPDATE elite_members m
+JOIN (
+    SELECT v.subject_user_id, MAX(v.id) AS verification_id
+    FROM audit_verifications v
+    WHERE v.is_personal_verification = 1
+      AND v.subject_user_id IS NOT NULL
+      AND TRIM(COALESCE(v.photo_asset, '')) <> ''
+    GROUP BY v.subject_user_id
+) latest ON latest.subject_user_id = m.user_id
+JOIN audit_verifications source_v ON source_v.id = latest.verification_id
+SET m.profile_photo_asset = source_v.photo_asset
+WHERE m.profile_photo_asset IS NULL;
+
+UPDATE credential_projects p
+JOIN (
+    SELECT v.credential_project_id, MAX(v.id) AS verification_id
+    FROM audit_verifications v
+    WHERE v.is_personal_verification = 1
+      AND v.credential_project_id IS NOT NULL
+      AND (
+          TRIM(COALESCE(v.brand_logo_asset, '')) <> ''
+          OR TRIM(COALESCE(v.document_asset, '')) <> ''
+      )
+    GROUP BY v.credential_project_id
+) latest ON latest.credential_project_id = p.id
+JOIN audit_verifications source_v ON source_v.id = latest.verification_id
+SET p.project_logo_asset = COALESCE(p.project_logo_asset, source_v.brand_logo_asset),
+    p.authorization_document_asset = COALESCE(p.authorization_document_asset, source_v.document_asset),
+    p.authorization_document_label = COALESCE(
+        p.authorization_document_label,
+        source_v.document_label,
+        'Offizielles Legitimationsschreiben'
+    );
+
+UPDATE credential_projects
+SET is_active = 0
+WHERE TRIM(COALESCE(project_logo_asset, '')) = ''
+   OR TRIM(COALESCE(authorization_document_asset, '')) = ''
+   OR TRIM(COALESCE(scope_key, '')) = '';
+
 UPDATE audit_verifications v
 JOIN credential_projects p ON p.id = v.credential_project_id
 SET v.brand_name = p.project_name,
