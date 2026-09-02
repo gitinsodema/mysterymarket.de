@@ -129,6 +129,12 @@
     }
   ],
   "completed_since_last_report": [
+    "Admin dashboard statistics were merged into compact navigation modules; Backoffice CSS now favors dense administrative layouts over public-site presentation.",
+    "Backoffice credential project administration now supports create/list/edit with immutable identity fields and editable scope, photo permission and active status.",
+    "Existing credential text data is backfilled into controlled master data where possible by migration 20260902_credential_controlled_master_data.sql.",
+    "Photography permission is project-controlled, copied as an immutable credential snapshot, and shown explicitly on public Verify, CR80 card and Wallet mapping.",
+    "Added credential_roles and credential_projects master data; projects own agency, project customer, project name, Verify scope and photography permission.",
+    "Owner required controlled credential issuance: person is bound to the selected active Elite member; role, agency, project customer and project are no longer free text for new/draft credentials.",
     "Owner requested a visible Archived filter beside Done; active default still excludes archived contacts, while Archived explicitly lists them and search can still find them.",
     "Legacy contact status seen is normalized to in_progress by migration 20260902_contact_status_workflow.sql.",
     "Backoffice Contacts now has text search plus active status filters; archived contacts are hidden from normal views and reappear only when a search matches them.",
@@ -516,7 +522,7 @@
   },
   "next_recommended_action": {
     "classification": "OWNER_ACTION_REQUIRED",
-    "summary": "Deploy main and verify the Contacts filter row shows Archived beside Done; confirm Alle aktiv still hides archived records."
+    "summary": "Deploy main, run backoffice-migrate.php and preflight.php, then test: open project master data, set the correct project/photo permission, create one credential draft through controlled dropdowns, verify person name cannot be freely changed, and inspect Verify/CR80 photo-permission display."
   },
   "evidence": [
     {
