@@ -157,6 +157,7 @@ mmHeader('Ausweis-Projekt', 'Kontrollierte Projektstammdaten verwalten.', 'noind
 
 <section class="section">
   <div class="form-card compact-admin-form">
+    <?php if (isset($_GET['created'])): ?><div class="alert success"><strong>Projektstamm angelegt.</strong> Bitte offizielles Logo, Scope und Fotoerlaubnis prüfen und danach aktivieren.</div><?php endif; ?>
     <?php if (isset($_GET['updated'])): ?><div class="alert success"><strong>Projektstammdaten gespeichert.</strong></div><?php endif; ?>
     <?php if (isset($_GET['from_request'])): ?><div class="alert success"><strong>Projektanfrage freigegeben.</strong> Das Projekt ist noch inaktiv. Bitte Logo, Scope und Fotoerlaubnis prüfen und danach aktivieren.</div><?php endif; ?>
     <?php if (isset($_GET['logo_saved'])): ?><div class="alert success"><strong>Projektlogo gespeichert.</strong></div><?php endif; ?>
