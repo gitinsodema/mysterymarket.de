@@ -272,6 +272,134 @@ function mmEliteStoreProfilePhoto(array $file, int $memberId): string
     );
 }
 
+function mmAgencyStoreLogoUpload(array $file, int $agencyId): string
+{
+    return mmCredentialStorePrivateUploadedAsset(
+        $file,
+        'agency_' . $agencyId . '_logo',
+        ['png','jpg','jpeg','webp'],
+        ['image/png','image/jpeg','image/webp'],
+        5 * 1024 * 1024
+    );
+}
+
+function mmAgencyStoreLogoFromUrl(string $url, int $agencyId): string
+{
+    $url = trim($url);
+    if ($url === '' || !filter_var($url, FILTER_VALIDATE_URL)) {
+        throw new InvalidArgumentException('Logo-URL ist ungültig.');
+    }
+
+    $parts = parse_url($url);
+    $scheme = strtolower((string)($parts['scheme'] ?? ''));
+    $host = strtolower((string)($parts['host'] ?? ''));
+    if (!in_array($scheme, ['http','https'], true) || $host === '') {
+        throw new InvalidArgumentException('Logo-URL muss HTTP oder HTTPS verwenden.');
+    }
+
+    $records = dns_get_record($host, DNS_A);
+    $publicIp = null;
+    foreach ($records ?: [] as $record) {
+        $ip = (string)($record['ip'] ?? '');
+        if ($ip !== '' && filter_var(
+            $ip,
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+        )) {
+            $publicIp = $ip;
+            break;
+        }
+    }
+    if ($publicIp === null) {
+        throw new InvalidArgumentException('Logo-URL verweist nicht auf eine zulässige öffentliche Adresse.');
+    }
+
+    if (!function_exists('curl_init')) {
+        throw new RuntimeException('PHP cURL ist für Logo-Import nicht verfügbar.');
+    }
+
+    $tmp = tempnam(sys_get_temp_dir(), 'mm_agency_logo_');
+    if ($tmp === false) {
+        throw new RuntimeException('Temporäre Datei für Logo-Import konnte nicht angelegt werden.');
+    }
+
+    $handle = fopen($tmp, 'wb');
+    if ($handle === false) {
+        @unlink($tmp);
+        throw new RuntimeException('Temporäre Datei für Logo-Import konnte nicht geöffnet werden.');
+    }
+
+    $received = 0;
+    $maxBytes = 5 * 1024 * 1024;
+    $port = $scheme === 'https' ? 443 : 80;
+    $ch = curl_init($url);
+
+    try {
+        curl_setopt_array($ch, [
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_CONNECTTIMEOUT => 5,
+            CURLOPT_TIMEOUT => 12,
+            CURLOPT_USERAGENT => 'MysteryMarket/1.0 AgencyLogoImporter',
+            CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            CURLOPT_RESOLVE => [$host . ':' . $port . ':' . $publicIp],
+            CURLOPT_WRITEFUNCTION => static function ($curl, string $data) use ($handle, &$received, $maxBytes): int {
+                $length = strlen($data);
+                $received += $length;
+                if ($received > $maxBytes) {
+                    return 0;
+                }
+                return fwrite($handle, $data);
+            },
+        ]);
+
+        $ok = curl_exec($ch);
+        $status = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        if ($ok !== true || $status < 200 || $status >= 300 || $received < 1) {
+            throw new RuntimeException('Logo konnte von der URL nicht geladen werden. Bitte direkte Bild-URL oder Upload verwenden.');
+        }
+    } finally {
+        curl_close($ch);
+        fclose($handle);
+    }
+
+    try {
+        $mime = (new finfo(FILEINFO_MIME_TYPE))->file($tmp) ?: '';
+        $extensions = [
+            'image/png'=>'png',
+            'image/jpeg'=>'jpg',
+            'image/webp'=>'webp',
+        ];
+        if (!isset($extensions[$mime])) {
+            throw new RuntimeException('Die Logo-URL liefert kein unterstütztes Bildformat.');
+        }
+
+        $assetDir = rtrim((string)(mmConfig()['security']['verify_asset_dir'] ?? ''), '/');
+        $base = $assetDir !== '' ? realpath($assetDir) : false;
+        if ($base === false || !is_dir($base) || !is_writable($base)) {
+            throw new RuntimeException('Privater Verify-Asset-Speicher ist nicht beschreibbar.');
+        }
+
+        $filename = sprintf(
+            'agency_%d_logo_url_%s.%s',
+            $agencyId,
+            bin2hex(random_bytes(8)),
+            $extensions[$mime]
+        );
+        $target = $base . DIRECTORY_SEPARATOR . $filename;
+        if (!rename($tmp, $target)) {
+            throw new RuntimeException('Importiertes Agenturlogo konnte nicht gespeichert werden.');
+        }
+        @chmod($target, 0640);
+        $tmp = '';
+
+        return $filename;
+    } finally {
+        if ($tmp !== '') {
+            @unlink($tmp);
+        }
+    }
+}
+
 function mmCredentialStoreProjectLogo(array $file, int $projectId): string
 {
     return mmCredentialStorePrivateUploadedAsset(
