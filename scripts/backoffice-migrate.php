@@ -22,6 +22,7 @@ $files = [
     dirname(__DIR__) . '/database/20260902_contact_moderation.sql',
     dirname(__DIR__) . '/database/20260902_contact_status_workflow.sql',
     dirname(__DIR__) . '/database/20260902_credential_controlled_master_data.sql',
+    dirname(__DIR__) . '/database/20260902_elite_project_proposals_and_profile_photo.sql',
 ];
 
 $pdo = mmDb();
@@ -55,6 +56,7 @@ $required = [
     'verify_credential_outputs',
     'credential_roles',
     'credential_projects',
+    'credential_project_requests',
 ];
 
 $check = $pdo->prepare(
@@ -113,6 +115,23 @@ if ((int)$columnCheck->fetchColumn() !== 1) {
     exit(1);
 }
 echo "[PASS] credential_projects.photo_allowed\n";
+
+foreach ([
+    ['elite_members','profile_photo_asset'],
+    ['credential_projects','project_logo_asset'],
+    ['credential_projects','authorization_document_asset'],
+    ['credential_projects','authorization_document_label'],
+] as [$table,$column]) {
+    $columnCheck->execute([
+        'table_name' => $table,
+        'column_name' => $column,
+    ]);
+    if ((int)$columnCheck->fetchColumn() !== 1) {
+        fwrite(STDERR, "[FAIL] Missing {$table}.{$column}\n");
+        exit(1);
+    }
+    echo "[PASS] {$table}.{$column}\n";
+}
 
 echo "MYSTERYMARKET_BACKOFFICE_FOUNDATION_OK
 ";
