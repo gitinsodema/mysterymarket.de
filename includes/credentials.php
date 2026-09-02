@@ -145,7 +145,7 @@ function mmCredentialControlledProjects(): array
          JOIN agencies a ON a.id = p.agency_id
          WHERE p.is_active = 1
            AND a.is_active = 1
-         ORDER BY a.name, p.customer_name, p.project_name"
+         ORDER BY a.name, p.project_name"
     );
     return $stmt->fetchAll();
 }
@@ -200,7 +200,6 @@ function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId,
     return [
         'subject_user_id'=>(int)$subject['id'],
         'person_name'=>(string)$subject['display_name'],
-        'photo_asset'=>$subject['profile_photo_asset'] !== null ? (string)$subject['profile_photo_asset'] : null,
         'photo_asset'=>$subject['profile_photo_asset'] !== null ? (string)$subject['profile_photo_asset'] : null,
         'credential_role_id'=>(int)$role['id'],
         'role_label'=>(string)$role['label'],
@@ -379,7 +378,7 @@ function mmCredentialIntegrityErrors(array $row): array
         'role_label'=>'Rolle fehlt',
         'agency_name'=>'Agentur fehlt',
         'project_name'=>'Projekt fehlt',
-        'brand_name'=>'Marke / Kunde fehlt',
+        'brand_name'=>'Projekt fehlt',
         'photo_asset'=>'Foto fehlt',
         'brand_logo_asset'=>'Markenlogo fehlt',
         'agency_logo_asset'=>'Agenturlogo fehlt',
@@ -476,7 +475,7 @@ function mmCredentialIntegrityErrors(array $row): array
                 || !hash_equals(trim((string)($project['authorization_document_asset'] ?? '')), trim((string)($row['document_asset'] ?? '')))
                 || !hash_equals(trim((string)($project['scope_key'] ?? '')), trim((string)($row['scope_key'] ?? '')))
                 || (int)($project['photo_allowed'] ?? 0) !== (int)($row['photo_allowed'] ?? 0)) {
-                $errors[] = 'Agentur, Projektkunde und Projekt stimmen nicht mit den Stammdaten überein';
+                $errors[] = 'Agentur und Projekt stimmen nicht mit den Stammdaten überein';
             }
         }
     }
