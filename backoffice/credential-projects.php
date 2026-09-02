@@ -11,13 +11,16 @@ $user = mmBackofficeRequireLogin('admin');
 $error = '';
 
 $stmt = mmDb()->query(
-    "SELECT p.id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed, p.is_active,
-            a.name AS agency_name
+    "SELECT p.id, p.project_name, p.scope_key, p.photo_allowed, p.project_logo_asset,
+            p.authorization_document_asset, p.is_active, a.name AS agency_name
      FROM credential_projects p
      JOIN agencies a ON a.id = p.agency_id
-     ORDER BY p.is_active DESC, a.name, p.customer_name, p.project_name"
+     ORDER BY p.is_active DESC, a.name, p.project_name"
 );
 $rows = $stmt->fetchAll();
+$pendingRequests = (int)mmDb()->query(
+    "SELECT COUNT(*) FROM credential_project_requests WHERE request_status = 'pending'"
+)->fetchColumn();
 
 mmHeader('Ausweis-Projekte', 'Kontrollierte Projektstammdaten für Verify-Ausweise.', 'noindex,nofollow');
 ?>
@@ -25,8 +28,9 @@ mmHeader('Ausweis-Projekte', 'Kontrollierte Projektstammdaten für Verify-Auswei
   <div>
     <p class="eyebrow">Admin · Ausweis-Stammdaten</p>
     <h1>Projekte.</h1>
-    <p class="lead">Nur hier freigegebene Agentur-/Projektkunde-/Projekt-Kombinationen können für neue Verify-Ausweise verwendet werden.</p>
+    <p class="lead">Nur hier vollständig geprüfte Agentur-/Projekt-Kombinationen können für neue Verify-Ausweise verwendet werden.</p>
     <div class="actions">
+      <a class="button secondary" href="/backoffice/project-requests.php">Projektanfragen<?= $pendingRequests > 0 ? ' · ' . $pendingRequests : '' ?></a>
       <a class="button secondary" href="/backoffice/credentials.php">Ausweis-Service</a>
       <a class="button" href="/backoffice/credential-project-new.php">Projekt anlegen</a>
     </div>
@@ -41,14 +45,15 @@ mmHeader('Ausweis-Projekte', 'Kontrollierte Projektstammdaten für Verify-Auswei
   <div class="backoffice-table-wrap">
     <table class="backoffice-table">
       <thead>
-        <tr><th>Agentur</th><th>Projektkunde</th><th>Projekt</th><th>Foto</th><th>Scope</th><th>Status</th><th>Aktion</th></tr>
+        <tr><th>Agentur</th><th>Projekt</th><th>Logo</th><th>Dokument</th><th>Foto</th><th>Scope</th><th>Status</th><th></th></tr>
       </thead>
       <tbody>
       <?php foreach ($rows as $row): ?>
         <tr>
           <td><?= mmEscape((string)$row['agency_name']) ?></td>
-          <td><?= mmEscape((string)$row['customer_name']) ?></td>
           <td><strong><?= mmEscape((string)$row['project_name']) ?></strong></td>
+          <td><?= mmBackofficeStatusBadge(!empty($row['project_logo_asset']) ? 'active' : 'pending', !empty($row['project_logo_asset']) ? 'vorhanden' : 'fehlt') ?></td>
+          <td><?= mmBackofficeStatusBadge(!empty($row['authorization_document_asset']) ? 'active' : 'pending', !empty($row['authorization_document_asset']) ? 'vorhanden' : 'fehlt') ?></td>
           <td><?= mmBackofficeStatusBadge((int)$row['photo_allowed'] === 1 ? 'active' : 'inactive', (int)$row['photo_allowed'] === 1 ? 'erlaubt' : 'nein') ?></td>
           <td><?= mmEscape((string)($row['scope_key'] ?: '—')) ?></td>
           <td><?= mmBackofficeStatusBadge((int)$row['is_active'] === 1 ? 'active' : 'inactive') ?></td>
