@@ -21,6 +21,7 @@ $files = [
     dirname(__DIR__) . '/database/20260831_credential_access_binding.sql',
     dirname(__DIR__) . '/database/20260902_contact_moderation.sql',
     dirname(__DIR__) . '/database/20260902_contact_status_workflow.sql',
+    dirname(__DIR__) . '/database/20260902_credential_controlled_master_data.sql',
 ];
 
 $pdo = mmDb();
@@ -52,6 +53,8 @@ $required = [
     'elite_membership_requests',
     'agencies',
     'verify_credential_outputs',
+    'credential_roles',
+    'credential_projects',
 ];
 
 $check = $pdo->prepare(
@@ -87,6 +90,18 @@ foreach (['moderation_decision','moderation_reviewed_at','moderation_reviewed_by
         exit(1);
     }
     echo "[PASS] contact_requests.{$column}\n";
+}
+
+foreach (['credential_role_id','agency_id','credential_project_id','photo_allowed'] as $column) {
+    $columnCheck->execute([
+        'table_name' => 'audit_verifications',
+        'column_name' => $column,
+    ]);
+    if ((int)$columnCheck->fetchColumn() !== 1) {
+        fwrite(STDERR, "[FAIL] Missing credential control column: {$column}\n");
+        exit(1);
+    }
+    echo "[PASS] audit_verifications.{$column}\n";
 }
 
 echo "MYSTERYMARKET_BACKOFFICE_FOUNDATION_OK
