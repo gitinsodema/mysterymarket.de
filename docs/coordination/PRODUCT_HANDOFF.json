@@ -129,6 +129,14 @@
     }
   ],
   "completed_since_last_report": [
+    "Migration backfills profile photos and project assets from existing credential snapshots where possible and deactivates incomplete project masters.",
+    "Credential role master data now includes Testkäufer.",
+    "Controlled project master assets are copied into credential snapshots; credential editor no longer permits direct profile-photo, project-logo or authorisation-document replacement.",
+    "Project approval creates/links an inactive master project; admin must control official project logo, authorisation document, Verify scope and photography permission before activation.",
+    "Admin Projects is now a first-class Backoffice module separate from Credential Service. Pending Elite project proposals are reviewed there.",
+    "Elite Shopper dashboard now exposes Project vorschlagen. Proposal intake requires an active agency, project name and mandatory PDF authorisation letter.",
+    "Elite profiles now own the authoritative protected credential photo through elite_members.profile_photo_asset; new credential drafts and revisions consume that photo and cannot upload a separate holder photo.",
+    "Owner simplified controlled credential identity from agency + project customer + project to agency + project; legacy customer_name/brand_name remain compatibility snapshots and mirror project_name.",
     "Static review confirms credential create/edit no longer expose free person, role, agency, project-customer, project or photo-permission inputs.",
     "Final review removed the independent scope mutation path; Verify scope now comes from the controlled project master record.",
     "Final review moved photography permission fully into credential project master data; credential forms no longer expose a free photo-permission checkbox.",
@@ -525,7 +533,7 @@
   },
   "next_recommended_action": {
     "classification": "OWNER_ACTION_REQUIRED",
-    "summary": "Deploy main, run backoffice-migrate.php and preflight.php. Then open Ausweis-Service -> Projekt-Stammdaten, configure the intended project including Foto erlaubt and scope, create one draft via dropdowns, and inspect CR80 plus public Verify."
+    "summary": "Deploy main, run backoffice-migrate.php and preflight.php. Then verify: Elite profile photo upload; Elite Project vorschlagen requires PDF; Admin Projects shows proposal and can approve; complete project with official logo/scope/photo permission then activate; create credential and confirm person photo/project logo/document are inherited and not directly editable."
   },
   "evidence": [
     {
