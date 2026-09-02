@@ -180,7 +180,7 @@ function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId,
     }
 
     $projectStmt = mmDb()->prepare(
-        "SELECT p.id, p.agency_id, p.customer_name, p.project_name, p.scope_key,
+        "SELECT p.id, p.agency_id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed,
                 a.name AS agency_name
          FROM credential_projects p
          JOIN agencies a ON a.id = p.agency_id
