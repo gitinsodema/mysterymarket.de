@@ -181,7 +181,6 @@ mmHeader('Ausweis-Projekt', 'Kontrollierte Projektstammdaten verwalten.', 'noind
           <form method="post" action="/backoffice/credential-project.php?id=<?= $id ?>" enctype="multipart/form-data">
             <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
             <input type="hidden" name="id" value="<?= $id ?>">
-      <input type="hidden" name="action" value="save">
             <input type="hidden" name="action" value="upload_logo">
             <input type="file" name="project_logo" accept="image/png,image/jpeg,image/webp" required>
             <button type="submit"><?= !empty($project['project_logo_asset']) ? 'Logo ersetzen' : 'Logo hochladen' ?></button>
@@ -206,6 +205,7 @@ mmHeader('Ausweis-Projekt', 'Kontrollierte Projektstammdaten verwalten.', 'noind
     <form method="post" action="/backoffice/credential-project.php?id=<?= $id ?>">
       <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
       <input type="hidden" name="id" value="<?= $id ?>">
+      <input type="hidden" name="action" value="save">
 
       <div class="form-grid">
         <label class="wide credential-photo-permission">
