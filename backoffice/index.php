@@ -16,6 +16,7 @@ $dashboard = [
     'new_contacts' => 0,
     'open_approvals' => 0,
     'membership_requests' => 0,
+    'credential_projects' => 0,
 ];
 
 if ($role === 'admin') {
@@ -24,6 +25,7 @@ if ($role === 'admin') {
     $dashboard['new_contacts'] = (int)mmDb()->query("SELECT COUNT(*) FROM contact_requests WHERE status = 'new'")->fetchColumn();
     $dashboard['open_approvals'] = (int)mmDb()->query("SELECT COUNT(*) FROM agency_approvals WHERE approval_status IN ('draft','requested')")->fetchColumn();
     $dashboard['membership_requests'] = (int)mmDb()->query("SELECT COUNT(*) FROM elite_membership_requests WHERE request_status = 'open'")->fetchColumn();
+    $dashboard['credential_projects'] = (int)mmDb()->query("SELECT COUNT(*) FROM credential_projects WHERE is_active = 1")->fetchColumn();
 }
 
 mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noindex,nofollow');
@@ -31,10 +33,10 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
 <section class="hero backoffice-dashboard-hero">
   <div>
     <p class="eyebrow"><?= $role === 'admin' ? 'Admin' : 'Elite Shopper' ?></p>
-    <h1><?= $role === 'admin' ? 'Little Backoffice.' : 'Elite Shopper Area.' ?></h1>
+    <h1><?= $role === 'admin' ? 'Backoffice.' : 'Elite Shopper Area.' ?></h1>
     <p class="lead">
       <?= $role === 'admin'
-          ? 'Mitglieder, Ausweise, interne Informationen und operative Freigaben werden hier schrittweise gebündelt.'
+          ? 'Verwaltung von Mitgliedern, Projekten, Ausweisen, Kontakten und Freigaben.'
           : 'Dein geschützter Bereich für Mitgliedschaft, Informationen und künftig deinen Elite-Shopper-Ausweis.' ?>
     </p>
     <div class="actions">
@@ -53,28 +55,18 @@ mmHeader('Backoffice', 'Geschützter MysteryMarket Backoffice-Bereich.', 'noinde
   </div>
 </section>
 
-<?php if ($role === 'admin'): ?>
-<section class="section backoffice-stat-section">
-  <div class="backoffice-stat-grid">
-    <article><span><?= $dashboard['active_members'] ?></span><strong>Aktive Elite Shopper</strong></article>
-    <article><span><?= $dashboard['feed_posts'] ?></span><strong>Feed-Posts</strong></article>
-    <article><span><?= $dashboard['new_contacts'] ?></span><strong>Neue Kontakte</strong></article>
-    <article><span><?= $dashboard['open_approvals'] ?></span><strong>Offene Freigaben</strong></article>
-    <article><span><?= $dashboard['membership_requests'] ?></span><strong>Mitgliedschaftsanfragen</strong></article>
-  </div>
-</section>
-<?php endif; ?>
+
 
 <section class="section">
   <div class="backoffice-module-grid">
     <?php if ($role === 'admin'): ?>
-      <a class="backoffice-module" href="/backoffice/members.php"><span>01</span><strong>Elite Shopper</strong><small>Mitglieder & Status</small></a>
-      <a class="backoffice-module" href="/backoffice/membership-requests.php"><span>01B</span><strong>Mitgliedschaft</strong><small>Pause-/Beendigungsanfragen</small></a>
-      <a class="backoffice-module" href="/backoffice/credentials.php"><span>02</span><strong>Ausweis-Service</strong><small>Verify · Druck · Wallet · Karte</small></a>
-      <a class="backoffice-module" href="/backoffice/approvals.php"><span>03</span><strong>Kommunikation</strong><small>Agentur-Freigaben</small></a>
-      <a class="backoffice-module" href="/backoffice/contacts.php"><span>04</span><strong>Kontakte</strong><small>Read-only Anfragen</small></a>
-      <a class="backoffice-module" href="/backoffice/feed.php"><span>05</span><strong>Elite Feed</strong><small>Interne Hinweise</small></a>
-      <a class="backoffice-module" href="/backoffice/agencies.php"><span>06</span><strong>Agenturen</strong><small>Stammdaten für Feed & Freigaben</small></a>
+      <a class="backoffice-module" href="/backoffice/members.php"><span>01</span><b class="backoffice-module-count"><?= $dashboard['active_members'] ?></b><strong>Elite Shopper</strong><small>Aktive Mitglieder & Status</small></a>
+      <a class="backoffice-module" href="/backoffice/membership-requests.php"><span>01B</span><b class="backoffice-module-count"><?= $dashboard['membership_requests'] ?></b><strong>Mitgliedschaft</strong><small>Offene Anfragen</small></a>
+      <a class="backoffice-module" href="/backoffice/credentials.php"><span>02</span><b class="backoffice-module-count"><?= $dashboard['credential_projects'] ?></b><strong>Ausweis-Service</strong><small>Ausweise · Projekte · Druck · Wallet</small></a>
+      <a class="backoffice-module" href="/backoffice/approvals.php"><span>03</span><b class="backoffice-module-count"><?= $dashboard['open_approvals'] ?></b><strong>Kommunikation</strong><small>Offene Agentur-Freigaben</small></a>
+      <a class="backoffice-module" href="/backoffice/contacts.php"><span>04</span><b class="backoffice-module-count"><?= $dashboard['new_contacts'] ?></b><strong>Kontakte</strong><small>Neue & laufende Anfragen</small></a>
+      <a class="backoffice-module" href="/backoffice/feed.php"><span>05</span><b class="backoffice-module-count"><?= $dashboard['feed_posts'] ?></b><strong>Elite Feed</strong><small>Aktive interne Hinweise</small></a>
+      <a class="backoffice-module" href="/backoffice/agencies.php"><span>06</span><strong>Agenturen</strong><small>Stammdaten für Projekte & Freigaben</small></a>
       <a class="backoffice-module" href="/backoffice/system.php"><span>07</span><strong>System</strong><small>Status & Audit Log</small></a>
     <?php else: ?>
       <a class="backoffice-module" href="/backoffice/profile.php"><span>01</span><strong>Mitgliedschaft</strong><small>Status & Profil</small></a>
