@@ -129,6 +129,12 @@
     }
   ],
   "completed_since_last_report": [
+    "Agency master data includes an elite_visible flag preparing a later read-only Elite Shopper agency card.",
+    "Project activation now requires an authoritative agency logo in addition to project logo/document/scope readiness.",
+    "Agency logo changes propagate automatically to inactive credential drafts; active credentials remain immutable snapshots and revisions resolve the current logo.",
+    "Agency logo supports direct upload or secure import from a public image URL; imported images are copied into the private Verify asset store and the source URL is retained as provenance.",
+    "Agency profile is now a compact business-card-style admin master record with logo, website, address, contact person, contact email/phone, Elite-facing note and linked projects.",
+    "Owner moved agency logos into authoritative agency master data; credential-level agency-logo editing has been removed.",
     "Admin dashboard now exposes Mein Elite-Profil; if no linked member exists, a controlled self-bootstrap creates an active elite_members record on the existing admin account without changing the admin role or creating another login.",
     "Admins with a linked Elite member can open their own /backoffice/profile.php, manage the authoritative profile photo and submit personal project proposals without a second login.",
     "Credential-holder eligibility now depends on active elite_members linkage plus active account status, not backoffice_users.role='elite'.",
@@ -537,7 +543,7 @@
   },
   "next_recommended_action": {
     "classification": "OWNER_ACTION_REQUIRED",
-    "summary": "Deploy main. On the Admin dashboard open Mein Elite-Profil (or Mein Elite-Profil anlegen if no linkage exists), ensure the profile is active and has a profile photo, then verify the same account appears in the credential Person dropdown."
+    "summary": "Deploy main, run backoffice-migrate.php and preflight.php, then open Admin -> Agenturen -> agency.php, complete one agency including logo via upload or direct image URL, verify linked projects, activate a project, and create a credential draft to confirm the agency logo is inherited automatically."
   },
   "evidence": [
     {
