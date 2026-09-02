@@ -69,5 +69,24 @@ foreach ($required as $table) {
 ";
 }
 
+$columnCheck = $pdo->prepare(
+    'SELECT COUNT(*) FROM information_schema.columns
+     WHERE table_schema = DATABASE()
+       AND table_name = :table_name
+       AND column_name = :column_name'
+);
+
+foreach (['moderation_decision','moderation_reviewed_at','moderation_reviewed_by'] as $column) {
+    $columnCheck->execute([
+        'table_name' => 'contact_requests',
+        'column_name' => $column,
+    ]);
+    if ((int)$columnCheck->fetchColumn() !== 1) {
+        fwrite(STDERR, "[FAIL] Missing contact moderation column: {$column}\n");
+        exit(1);
+    }
+    echo "[PASS] contact_requests.{$column}\n";
+}
+
 echo "MYSTERYMARKET_BACKOFFICE_FOUNDATION_OK
 ";
