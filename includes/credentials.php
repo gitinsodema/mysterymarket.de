@@ -349,7 +349,8 @@ function mmAgencyStoreLogoFromUrl(string $url, int $agencyId): string
                 if ($received > $maxBytes) {
                     return 0;
                 }
-                return fwrite($handle, $data);
+                $written = fwrite($handle, $data);
+                return $written === false ? 0 : $written;
             },
         ]);
 
