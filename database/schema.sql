@@ -22,10 +22,7 @@ CREATE TABLE IF NOT EXISTS contact_requests (
     UNIQUE KEY uq_contact_reference_code (reference_code),
     KEY idx_contact_created_at (created_at),
     KEY idx_contact_status (status),
-    KEY idx_contact_moderation_decision (moderation_decision),
-    CONSTRAINT fk_contact_moderation_reviewer
-        FOREIGN KEY (moderation_reviewed_by) REFERENCES backoffice_users(id)
-        ON UPDATE CASCADE ON DELETE SET NULL
+    KEY idx_contact_moderation_decision (moderation_decision)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS audit_verifications (
