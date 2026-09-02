@@ -37,8 +37,11 @@ CREATE TABLE IF NOT EXISTS audit_verifications (
     public_note TEXT NULL,
     person_name VARCHAR(150) NULL,
     role_label VARCHAR(120) NULL,
+    credential_role_id BIGINT UNSIGNED NULL,
     agency_name VARCHAR(200) NULL,
+    agency_id BIGINT UNSIGNED NULL,
     project_name VARCHAR(200) NULL,
+    credential_project_id BIGINT UNSIGNED NULL,
     brand_name VARCHAR(200) NULL,
     photo_asset VARCHAR(255) NULL,
     brand_logo_asset VARCHAR(255) NULL,
@@ -48,6 +51,7 @@ CREATE TABLE IF NOT EXISTS audit_verifications (
     document_label VARCHAR(200) NULL,
     document_enabled TINYINT(1) NOT NULL DEFAULT 0,
     print_card_enabled TINYINT(1) NOT NULL DEFAULT 0,
+    photo_allowed TINYINT(1) NOT NULL DEFAULT 0,
     is_personal_verification TINYINT(1) NOT NULL DEFAULT 0,
     subject_user_id BIGINT UNSIGNED NULL,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
@@ -57,7 +61,10 @@ CREATE TABLE IF NOT EXISTS audit_verifications (
     UNIQUE KEY uq_audit_reference_code (reference_code),
     KEY idx_audit_active (is_active),
     KEY idx_audit_valid_until (valid_until),
-    KEY idx_audit_subject_user (subject_user_id)
+    KEY idx_audit_subject_user (subject_user_id),
+    KEY idx_audit_credential_role (credential_role_id),
+    KEY idx_audit_agency_id (agency_id),
+    KEY idx_audit_credential_project (credential_project_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
