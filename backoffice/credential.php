@@ -144,6 +144,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                          brand_name = :brand_name,
                          photo_asset = :photo_asset,
                          brand_logo_asset = :brand_logo_asset,
+                         agency_logo_asset = :agency_logo_asset,
                          scope_key = :scope_key,
                          document_asset = :document_asset,
                          document_label = :document_label,
@@ -172,6 +173,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'brand_name'=>$controlled['brand_name'],
                     'photo_asset'=>$controlled['photo_asset'],
                     'brand_logo_asset'=>$controlled['brand_logo_asset'],
+                    'agency_logo_asset'=>$controlled['agency_logo_asset'],
                     'scope_key'=>$controlled['scope_key'],
                     'document_asset'=>$controlled['document_asset'],
                     'document_label'=>$controlled['document_label'],
@@ -187,56 +189,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'photo_allowed'=>(bool)$controlled['photo_allowed'],
                 ]);
                 header('Location: /backoffice/credential.php?id=' . $id . '&saved=1', true, 303);
-                exit;
-            }
-
-            if ($action === 'asset_upload') {
-                $type = trim((string)($_POST['asset_type'] ?? ''));
-                $columns = [
-                    'agency_logo'=>'agency_logo_asset',
-                ];
-                if (!isset($columns[$type])) {
-                    throw new InvalidArgumentException('Ungültiger Asset-Typ.');
-                }
-
-                $filename = mmCredentialStoreUploadedAsset($_FILES['asset_file'] ?? [], $id, $type);
-                $column = $columns[$type];
-
-                $sql = "UPDATE audit_verifications SET {$column} = :filename, updated_at = NOW()";
-                $params = ['filename'=>$filename,'id'=>$id];
-
-                $sql .= ' WHERE id = :id AND is_personal_verification = 1 AND is_active = 0';
-                $stmt = mmDb()->prepare($sql);
-                $stmt->execute($params);
-
-                mmBackofficeAudit((int)$user['id'], 'verify_credential.asset_uploaded', 'audit_verification', $id, [
-                    'asset_type'=>$type,
-                    'filename'=>$filename
-                ]);
-                header('Location: /backoffice/credential.php?id=' . $id . '&asset_saved=1', true, 303);
-                exit;
-            }
-
-            if ($action === 'asset_unbind') {
-                $type = trim((string)($_POST['asset_type'] ?? ''));
-                $columns = [
-                    'agency_logo'=>'agency_logo_asset',
-                ];
-                if (!isset($columns[$type])) {
-                    throw new InvalidArgumentException('Ungültiger Asset-Typ.');
-                }
-
-                $column = $columns[$type];
-                $sql = "UPDATE audit_verifications SET {$column} = NULL, updated_at = NOW()";
-                $sql .= ' WHERE id = :id AND is_personal_verification = 1 AND is_active = 0';
-
-                $stmt = mmDb()->prepare($sql);
-                $stmt->execute(['id'=>$id]);
-
-                mmBackofficeAudit((int)$user['id'], 'verify_credential.asset_unbound', 'audit_verification', $id, [
-                    'asset_type'=>$type
-                ]);
-                header('Location: /backoffice/credential.php?id=' . $id . '&asset_removed=1', true, 303);
                 exit;
             }
 
@@ -377,7 +329,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'brand_name'=>$controlledRevision['brand_name'],
                     'photo_asset'=>$controlledRevision['photo_asset'],
                     'brand_logo_asset'=>$controlledRevision['brand_logo_asset'],
-                    'agency_logo_asset'=>$credential['agency_logo_asset'],
+                    'agency_logo_asset'=>$controlledRevision['agency_logo_asset'],
                     'scope_key'=>$controlledRevision['scope_key'],
                     'document_asset'=>$controlledRevision['document_asset'],
                     'document_label'=>$controlledRevision['document_label'],
@@ -479,60 +431,14 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
   <div class="form-card credential-editor">
     <div class="section-head">
       <p class="eyebrow">Geschützte Ausstattung</p>
-      <h2>Assets & Scope.</h2>
-      <p>Profilfoto, Projektlogo und Legitimationsschreiben sind kontrolliert gebunden. Nur das Agenturlogo wird derzeit noch direkt am Ausweis gepflegt.</p>
+      <h2>Automatische Assets.</h2>
+      <p>Profilfoto, Projektlogo, Agenturlogo und Legitimationsschreiben werden aus den jeweiligen Stammdaten übernommen. Änderungen erfolgen an Person, Projekt oder Agentur – nicht am einzelnen Ausweis.</p>
     </div>
-
-    <div class="credential-asset-manager">
-      <?php
-      $assetConfig = [
-          'agency_logo'=>['Agenturlogo','agency_logo_asset','PNG/JPG/WebP bis 5 MB'],
-      ];
-      foreach ($assetConfig as $assetType=>[$label,$column,$hint]):
-          $bound = trim((string)($credential[$column] ?? ''));
-      ?>
-        <article class="credential-asset-item">
-          <div>
-            <strong><?= mmEscape($label) ?></strong>
-            <small><?= mmEscape($bound !== '' ? $bound : $hint) ?></small>
-          </div>
-
-          <?php if ($bound !== ''): ?>
-            <div class="credential-asset-actions">
-              <a class="button secondary" target="_blank" rel="noopener" href="/backoffice/credential-asset.php?id=<?= $id ?>&type=<?= rawurlencode($assetType) ?>">Anzeigen</a>
-              <?php if ((int)$credential['is_active'] !== 1): ?>
-                <form method="post" action="/backoffice/credential.php?id=<?= $id ?>">
-                  <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
-                  <input type="hidden" name="id" value="<?= $id ?>">
-                  <input type="hidden" name="action" value="asset_unbind">
-                  <input type="hidden" name="asset_type" value="<?= mmEscape($assetType) ?>">
-                  <button type="submit" class="button secondary">Bindung lösen</button>
-                </form>
-              <?php endif; ?>
-            </div>
-          <?php elseif ((int)$credential['is_active'] !== 1): ?>
-            <form method="post" action="/backoffice/credential.php?id=<?= $id ?>" enctype="multipart/form-data" class="credential-asset-upload">
-              <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
-              <input type="hidden" name="id" value="<?= $id ?>">
-              <input type="hidden" name="action" value="asset_upload">
-              <input type="hidden" name="asset_type" value="<?= mmEscape($assetType) ?>">
-              <input type="file" name="asset_file" required accept="<?= $assetType === 'document' ? 'application/pdf' : 'image/png,image/jpeg,image/webp' ?>">
-              <?php if ($assetType === 'document'): ?>
-                <input name="document_label" maxlength="200" value="<?= mmEscape((string)($credential['document_label'] ?: 'Offizielles Legitimationsschreiben')) ?>" placeholder="Dokumentbezeichnung">
-              <?php endif; ?>
-              <button type="submit">Hochladen</button>
-            </form>
-          <?php endif; ?>
-        </article>
-      <?php endforeach; ?>
-    </div>
-
-    <div class="credential-editor-section credential-scope-editor">
-      <div class="credential-editor-head"><span>04</span><div><strong>Projekt-Scope</strong><small>Wird aus den kontrollierten Projekt-Stammdaten übernommen</small></div></div>
-      <div class="credential-scope-readonly">
-        <strong><?= mmEscape((string)($credential['scope_key'] ?: 'Kein Scope hinterlegt')) ?></strong>
-        <small>Änderungen erfolgen über die Ausweis-Projektstammdaten, nicht am einzelnen Ausweis.</small>
-      </div>
+    <div class="credential-integrity-grid">
+      <div><strong>Profilfoto</strong><?= mmBackofficeStatusBadge(!empty($credential['photo_asset']) ? 'active' : 'pending', !empty($credential['photo_asset']) ? 'gebunden' : 'fehlt') ?></div>
+      <div><strong>Projektlogo</strong><?= mmBackofficeStatusBadge(!empty($credential['brand_logo_asset']) ? 'active' : 'pending', !empty($credential['brand_logo_asset']) ? 'gebunden' : 'fehlt') ?></div>
+      <div><strong>Agenturlogo</strong><?= mmBackofficeStatusBadge(!empty($credential['agency_logo_asset']) ? 'active' : 'pending', !empty($credential['agency_logo_asset']) ? 'gebunden' : 'fehlt') ?></div>
+      <div><strong>Legitimationsschreiben</strong><?= mmBackofficeStatusBadge(!empty($credential['document_asset']) ? 'active' : 'pending', !empty($credential['document_asset']) ? 'gebunden' : 'fehlt') ?></div>
     </div>
   </div>
 </section>
