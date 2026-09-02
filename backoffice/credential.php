@@ -186,29 +186,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
 
-            if ($action === 'scope_update') {
-                $scopeKey = trim((string)($_POST['scope_key'] ?? ''));
-                $allowedScopes = ['', 'vodafone_skopos_2026', 'hp_bare_retail_2025_2026'];
-                if (!in_array($scopeKey, $allowedScopes, true)) {
-                    throw new InvalidArgumentException('Unbekannter Scope.');
-                }
-
-                $stmt = mmDb()->prepare(
-                    'UPDATE audit_verifications
-                     SET scope_key = :scope_key, updated_at = NOW()
-                     WHERE id = :id AND is_personal_verification = 1 AND is_active = 0'
-                );
-                $stmt->execute([
-                    'scope_key'=>$scopeKey !== '' ? $scopeKey : null,
-                    'id'=>$id,
-                ]);
-                mmBackofficeAudit((int)$user['id'], 'verify_credential.scope_updated', 'audit_verification', $id, [
-                    'scope_key'=>$scopeKey !== '' ? $scopeKey : null
-                ]);
-                header('Location: /backoffice/credential.php?id=' . $id . '&scope_saved=1', true, 303);
-                exit;
-            }
-
             if ($action === 'asset_upload') {
                 $type = trim((string)($_POST['asset_type'] ?? ''));
                 $columns = [
@@ -473,7 +450,6 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
   <?php if (isset($_GET['created'])): ?><div class="alert success"><strong>Ausweis-Draft angelegt.</strong> Die Verify-Referenz wurde automatisch erzeugt.</div><?php endif; ?>
   <?php if (isset($_GET['saved'])): ?><div class="alert success"><strong>Ausweis gespeichert.</strong></div><?php endif; ?>
   <?php if (isset($_GET['subject_saved'])): ?><div class="alert success"><strong>Private Ausweis-Zuordnung gespeichert.</strong></div><?php endif; ?>
-  <?php if (isset($_GET['scope_saved'])): ?><div class="alert success"><strong>Scope gespeichert.</strong></div><?php endif; ?>
   <?php if (isset($_GET['asset_saved'])): ?><div class="alert success"><strong>Asset sicher gespeichert und gebunden.</strong></div><?php endif; ?>
   <?php if (isset($_GET['asset_removed'])): ?><div class="alert success"><strong>Asset-Bindung entfernt.</strong></div><?php endif; ?>
   <?php if (isset($_GET['activated'])): ?><div class="alert success"><strong>Verify-Ausweis aktiviert.</strong> Der Datensatz ist jetzt produktiv und über Verify gültig, sofern er im Gültigkeitszeitraum liegt.</div><?php endif; ?>
@@ -564,18 +540,12 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
     </div>
 
     <div class="credential-editor-section credential-scope-editor">
-      <div class="credential-editor-head"><span>04</span><div><strong>Projekt-Scope</strong><small>Nur bereits definierte Verify-Regeln auswählen</small></div></div>
-      <form method="post" action="/backoffice/credential.php?id=<?= $id ?>" class="credential-scope-form">
-        <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
-        <input type="hidden" name="id" value="<?= $id ?>">
-        <input type="hidden" name="action" value="scope_update">
-        <select name="scope_key"<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>>
-          <option value=""<?= empty($credential['scope_key']) ? ' selected' : '' ?>>Kein Scope / noch nicht festgelegt</option>
-          <option value="vodafone_skopos_2026"<?= $credential['scope_key'] === 'vodafone_skopos_2026' ? ' selected' : '' ?>>Vodafone / SKOPOS NEXT 2026</option>
-          <option value="hp_bare_retail_2025_2026"<?= $credential['scope_key'] === 'hp_bare_retail_2025_2026' ? ' selected' : '' ?>>HP / BARE Retail 2025/2026</option>
-        </select>
-        <?php if ((int)$credential['is_active'] !== 1): ?><button type="submit">Scope speichern</button><?php endif; ?>
-      </form>
+      <div class="credential-editor-head"><span>04</span><div><strong>Projekt-Scope</strong><small>Wird aus den kontrollierten Projekt-Stammdaten übernommen</small></div></div>
+      <div class="credential-scope-readonly">
+        <strong><?= mmEscape((string)($credential['scope_key'] ?: 'Kein Scope hinterlegt')) ?></strong>
+        <small>Änderungen erfolgen über die Ausweis-Projektstammdaten, nicht am einzelnen Ausweis.</small>
+      </div>
+    </div>
     </div>
   </div>
 </section>
