@@ -11,13 +11,13 @@ $user = mmBackofficeRequireLogin();
 $memberId = (int)($_GET['member_id'] ?? 0);
 
 if ($memberId < 1) {
-    if (($user['role'] ?? '') !== 'elite') {
-        http_response_code(404);
-        exit;
-    }
     $stmt = mmDb()->prepare('SELECT id FROM elite_members WHERE user_id = :user_id LIMIT 1');
     $stmt->execute(['user_id'=>(int)$user['id']]);
     $memberId = (int)$stmt->fetchColumn();
+    if ($memberId < 1) {
+        http_response_code(404);
+        exit;
+    }
 }
 
 $stmt = mmDb()->prepare(
