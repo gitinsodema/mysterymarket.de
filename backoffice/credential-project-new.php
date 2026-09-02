@@ -19,18 +19,13 @@ $agencies = mmDb()->query(
 
 $values = [
     'agency_id'=>'',
-    'customer_name'=>'',
     'project_name'=>'',
-    'scope_key'=>'',
 ];
-$photoAllowed = false;
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     foreach (array_keys($values) as $key) {
         $values[$key] = trim((string)($_POST[$key] ?? ''));
     }
-    $photoAllowed = ($_POST['photo_allowed'] ?? '') === '1';
-
     if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
         http_response_code(400);
         $error = 'Ungültige Sitzung.';
@@ -46,29 +41,28 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 throw new InvalidArgumentException('Die Agentur ist nicht verfügbar.');
             }
 
-            if ($values['customer_name'] === '' || mb_strlen($values['customer_name']) > 200) {
-                throw new InvalidArgumentException('Projektkunde ist erforderlich.');
-            }
             if ($values['project_name'] === '' || mb_strlen($values['project_name']) > 200) {
                 throw new InvalidArgumentException('Projektname ist erforderlich.');
             }
 
-            $allowedScopes = ['', 'vodafone_skopos_2026', 'hp_bare_retail_2025_2026'];
-            if (!in_array($values['scope_key'], $allowedScopes, true)) {
-                throw new InvalidArgumentException('Ungültiger Verify-Scope.');
-            }
-
             $stmt = mmDb()->prepare(
-                'INSERT INTO credential_projects
-                 (agency_id, customer_name, project_name, scope_key, photo_allowed, is_active, created_at, updated_at)
-                 VALUES (:agency_id, :customer_name, :project_name, :scope_key, :photo_allowed, 1, NOW(), NOW())'
+                "INSERT INTO credential_projects
+                 (agency_id, customer_name, project_name,
+                  authorization_document_asset, authorization_document_label,
+                  scope_key, photo_allowed, is_active, created_at, updated_at)
+                 VALUES (:agency_id, :project_name, :project_name,
+                         :document, 'Offizielles Legitimationsschreiben',
+                         NULL, 0, 0, NOW(), NOW())"
             );
+            $document = mmCredentialStoreProjectDocument(
+                $_FILES['authorization_document'] ?? [],
+                'project_admin_new'
+            );
+
             $stmt->execute([
                 'agency_id'=>$agencyId,
-                'customer_name'=>$values['customer_name'],
                 'project_name'=>$values['project_name'],
-                'scope_key'=>$values['scope_key'] !== '' ? $values['scope_key'] : null,
-                'photo_allowed'=>$photoAllowed ? 1 : 0,
+                'document'=>$document,
             ]);
             $id = (int)mmDb()->lastInsertId();
 
@@ -79,20 +73,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $id,
                 [
                     'agency_id'=>$agencyId,
-                    'customer_name'=>$values['customer_name'],
                     'project_name'=>$values['project_name'],
-                    'scope_key'=>$values['scope_key'] !== '' ? $values['scope_key'] : null,
-                    'photo_allowed'=>$photoAllowed,
                 ]
             );
 
-            header('Location: /backoffice/credential-projects.php?created=1', true, 303);
+            header('Location: /backoffice/credential-project.php?id=' . $id . '&created=1', true, 303);
             exit;
         } catch (InvalidArgumentException $e) {
             $error = $e->getMessage();
         } catch (PDOException $e) {
             $error = $e->getCode() === '23000'
-                ? 'Diese Agentur-/Projektkunde-/Projekt-Kombination existiert bereits.'
+                ? 'Dieses Projekt existiert für die Agentur bereits.'
                 : 'Projekt konnte nicht angelegt werden.';
         }
     }
@@ -104,7 +95,7 @@ mmHeader('Ausweis-Projekt anlegen', 'Kontrolliertes Projekt für Verify-Ausweise
   <div>
     <p class="eyebrow">Admin · Ausweis-Stammdaten</p>
     <h1>Projekt anlegen.</h1>
-    <p class="lead">Diese Stammdaten bestimmen später direkt die auswählbaren Angaben auf Verify-Ausweisen.</p>
+    <p class="lead">Agentur, Projekt und Legitimationsschreiben anlegen. Das Projekt bleibt zunächst inaktiv, bis Logo, Scope und Fotoerlaubnis geprüft sind.</p>
     <div class="actions"><a class="button secondary" href="/backoffice/credential-projects.php">Zurück zu Projekten</a></div>
   </div>
 </section>
@@ -112,7 +103,7 @@ mmHeader('Ausweis-Projekt anlegen', 'Kontrolliertes Projekt für Verify-Ausweise
 <section class="section">
   <div class="form-card compact-admin-form">
     <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
-    <form method="post" action="/backoffice/credential-project-new.php">
+    <form method="post" action="/backoffice/credential-project-new.php" enctype="multipart/form-data">
       <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
       <div class="form-grid">
         <label>Agentur
@@ -123,22 +114,16 @@ mmHeader('Ausweis-Projekt anlegen', 'Kontrolliertes Projekt für Verify-Ausweise
             <?php endforeach; ?>
           </select>
         </label>
-        <label>Projektkunde
-          <input name="customer_name" maxlength="200" required value="<?= mmEscape($values['customer_name']) ?>">
-        </label>
         <label class="wide">Projekt
-          <input name="project_name" maxlength="200" required value="<?= mmEscape($values['project_name']) ?>">
+          <input name="project_name" maxlength="200" required value="<?= mmEscape($values['project_name']) ?>" placeholder="z. B. ALDO">
         </label>
-        <label class="wide credential-photo-permission"><input type="checkbox" name="photo_allowed" value="1"<?= $photoAllowed ? ' checked' : '' ?>> <span><strong>Fotografieren erlaubt</strong><small class="field-hint">Nur aktivieren, wenn Projekt/Legitimationsschreiben Fotoaufnahmen ausdrücklich freigibt.</small></span></label>
-        <label class="wide">Verify-Scope
-          <select name="scope_key">
-            <option value="">Kein Scope</option>
-            <option value="vodafone_skopos_2026"<?= $values['scope_key'] === 'vodafone_skopos_2026' ? ' selected' : '' ?>>Vodafone / SKOPOS NEXT 2026</option>
-            <option value="hp_bare_retail_2025_2026"<?= $values['scope_key'] === 'hp_bare_retail_2025_2026' ? ' selected' : '' ?>>HP / BARE Retail 2025/2026</option>
-          </select>
+        <label class="wide">Legitimationsschreiben
+          <input type="file" name="authorization_document" accept="application/pdf" required>
+          <small class="field-hint">PDF bis 10 MB. Auch bei direkter Admin-Anlage ist das Legitimationsschreiben Pflicht.</small>
         </label>
+
       </div>
-      <div class="elite-profile-actions"><button type="submit">Projekt freigeben</button></div>
+      <div class="elite-profile-actions"><button type="submit">Projektstamm anlegen</button></div>
     </form>
   </div>
 </section>
