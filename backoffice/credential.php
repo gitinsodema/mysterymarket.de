@@ -38,13 +38,8 @@ $credentialRoles = mmCredentialControlledRoles();
 $credentialProjects = mmCredentialControlledProjects();
 
 $agencyOptions = [];
-$customerOptions = [];
 foreach ($credentialProjects as $projectOption) {
     $agencyOptions[(int)$projectOption['agency_id']] = (string)$projectOption['agency_name'];
-    $customerOptions[(int)$projectOption['agency_id'] . '|' . (string)$projectOption['customer_name']] = [
-        'agency_id'=>(int)$projectOption['agency_id'],
-        'customer_name'=>(string)$projectOption['customer_name'],
-    ];
 }
 
 $error = '';
@@ -66,7 +61,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 }
 
                 $checkSubject = mmDb()->prepare(
-                    "SELECT u.id, m.display_name
+                    "SELECT u.id, m.display_name, m.profile_photo_asset
                      FROM backoffice_users u
                      JOIN elite_members m ON m.user_id = u.id
                      WHERE u.id = :id
@@ -85,12 +80,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'UPDATE audit_verifications
                      SET subject_user_id = :subject_user_id,
                          person_name = :person_name,
+                         photo_asset = :photo_asset,
                          updated_at = NOW()
                      WHERE id = :id AND is_personal_verification = 1 AND is_active = 0'
                 );
                 $stmt->execute([
                     'subject_user_id'=>$subjectUserId,
                     'person_name'=>(string)$subject['display_name'],
+                    'photo_asset'=>$subject['profile_photo_asset'] !== null ? (string)$subject['profile_photo_asset'] : null,
                     'id'=>$id,
                 ]);
 
@@ -107,20 +104,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $subjectUserId = (int)($credential['subject_user_id'] ?? 0);
                 $roleId = (int)($_POST['credential_role_id'] ?? 0);
                 $agencyId = (int)($_POST['agency_id'] ?? 0);
-                $projectCustomer = trim((string)($_POST['project_customer'] ?? ''));
                 $projectId = (int)($_POST['credential_project_id'] ?? 0);
                 $validFrom = mmCredentialDateOrNull((string)($_POST['valid_from'] ?? ''));
                 $validUntil = mmCredentialDateOrNull((string)($_POST['valid_until'] ?? ''));
                 $confidentiality = trim((string)($_POST['confidentiality_mode'] ?? 'public'));
                 $publicNote = trim((string)($_POST['public_note'] ?? ''));
 
-                if ($subjectUserId < 1 || $roleId < 1 || $agencyId < 1 || $projectId < 1 || $projectCustomer === '') {
-                    throw new InvalidArgumentException('Person, Rolle, Agentur, Projektkunde und Projekt sind erforderlich.');
+                if ($subjectUserId < 1 || $roleId < 1 || $agencyId < 1 || $projectId < 1) {
+                    throw new InvalidArgumentException('Person, Rolle, Agentur und Projekt sind erforderlich.');
                 }
 
                 $controlled = mmCredentialResolveControlledSelection($subjectUserId, $roleId, $projectId);
-                if ((int)$controlled['agency_id'] !== $agencyId || !hash_equals((string)$controlled['brand_name'], $projectCustomer)) {
-                    throw new InvalidArgumentException('Agentur, Projektkunde und Projekt passen nicht zusammen.');
+                if ((int)$controlled['agency_id'] !== $agencyId) {
+                    throw new InvalidArgumentException('Agentur und Projekt passen nicht zusammen.');
                 }
 
                 if (!in_array($confidentiality, ['public','confidential'], true)) {
@@ -147,7 +143,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                          project_name = :project_name,
                          credential_project_id = :credential_project_id,
                          brand_name = :brand_name,
+                         photo_asset = :photo_asset,
+                         brand_logo_asset = :brand_logo_asset,
                          scope_key = :scope_key,
+                         document_asset = :document_asset,
+                         document_label = :document_label,
+                         document_enabled = :document_enabled,
                          photo_allowed = :photo_allowed,
                          updated_at = NOW()
                      WHERE id = :id
@@ -170,7 +171,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'project_name'=>$controlled['project_name'],
                     'credential_project_id'=>$controlled['credential_project_id'],
                     'brand_name'=>$controlled['brand_name'],
+                    'photo_asset'=>$controlled['photo_asset'],
+                    'brand_logo_asset'=>$controlled['brand_logo_asset'],
                     'scope_key'=>$controlled['scope_key'],
+                    'document_asset'=>$controlled['document_asset'],
+                    'document_label'=>$controlled['document_label'],
+                    'document_enabled'=>$controlled['document_asset'] ? 1 : 0,
                     'photo_allowed'=>$controlled['photo_allowed'],
                     'id'=>$id,
                 ]);
@@ -188,10 +194,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             if ($action === 'asset_upload') {
                 $type = trim((string)($_POST['asset_type'] ?? ''));
                 $columns = [
-                    'photo'=>'photo_asset',
-                    'brand_logo'=>'brand_logo_asset',
                     'agency_logo'=>'agency_logo_asset',
-                    'document'=>'document_asset',
                 ];
                 if (!isset($columns[$type])) {
                     throw new InvalidArgumentException('Ungültiger Asset-Typ.');
@@ -202,15 +205,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
                 $sql = "UPDATE audit_verifications SET {$column} = :filename, updated_at = NOW()";
                 $params = ['filename'=>$filename,'id'=>$id];
-
-                if ($type === 'document') {
-                    $label = trim((string)($_POST['document_label'] ?? 'Offizielles Legitimationsschreiben'));
-                    if ($label === '' || mb_strlen($label) > 200) {
-                        throw new InvalidArgumentException('Dokumentbezeichnung ist erforderlich.');
-                    }
-                    $sql .= ', document_label = :document_label, document_enabled = 1';
-                    $params['document_label'] = $label;
-                }
 
                 $sql .= ' WHERE id = :id AND is_personal_verification = 1 AND is_active = 0';
                 $stmt = mmDb()->prepare($sql);
@@ -227,10 +221,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             if ($action === 'asset_unbind') {
                 $type = trim((string)($_POST['asset_type'] ?? ''));
                 $columns = [
-                    'photo'=>'photo_asset',
-                    'brand_logo'=>'brand_logo_asset',
                     'agency_logo'=>'agency_logo_asset',
-                    'document'=>'document_asset',
                 ];
                 if (!isset($columns[$type])) {
                     throw new InvalidArgumentException('Ungültiger Asset-Typ.');
@@ -238,9 +229,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
                 $column = $columns[$type];
                 $sql = "UPDATE audit_verifications SET {$column} = NULL, updated_at = NOW()";
-                if ($type === 'document') {
-                    $sql .= ', document_label = NULL, document_enabled = 0';
-                }
                 $sql .= ' WHERE id = :id AND is_personal_verification = 1 AND is_active = 0';
 
                 $stmt = mmDb()->prepare($sql);
@@ -345,6 +333,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
                 $newReference = mmCredentialGenerateVerifyReference();
                 $nextRevision = max(2, ((int)($credential['revision_no'] ?? 1)) + 1);
+                $controlledRevision = mmCredentialResolveControlledSelection(
+                    (int)($credential['subject_user_id'] ?? 0),
+                    (int)($credential['credential_role_id'] ?? 0),
+                    (int)($credential['credential_project_id'] ?? 0)
+                );
 
                 $stmt = mmDb()->prepare(
                     "INSERT INTO audit_verifications
@@ -368,30 +361,30 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 );
                 $stmt->execute([
                     'reference_code'=>$newReference,
-                    'public_title'=>$credential['public_title'],
-                    'public_partner'=>$credential['public_partner'],
-                    'public_client'=>$credential['public_client'],
+                    'public_title'=>$controlledRevision['project_name'],
+                    'public_partner'=>$controlledRevision['agency_name'],
+                    'public_client'=>$controlledRevision['brand_name'],
                     'valid_from'=>$credential['valid_from'],
                     'valid_until'=>$credential['valid_until'],
                     'confidentiality_mode'=>$credential['confidentiality_mode'],
                     'public_note'=>$credential['public_note'],
-                    'person_name'=>$credential['person_name'],
-                    'role_label'=>$credential['role_label'],
-                    'credential_role_id'=>$credential['credential_role_id'] ?? null,
-                    'agency_name'=>$credential['agency_name'],
-                    'agency_id'=>$credential['agency_id'] ?? null,
-                    'project_name'=>$credential['project_name'],
-                    'credential_project_id'=>$credential['credential_project_id'] ?? null,
-                    'brand_name'=>$credential['brand_name'],
-                    'photo_asset'=>$credential['photo_asset'],
-                    'brand_logo_asset'=>$credential['brand_logo_asset'],
+                    'person_name'=>$controlledRevision['person_name'],
+                    'role_label'=>$controlledRevision['role_label'],
+                    'credential_role_id'=>$controlledRevision['credential_role_id'],
+                    'agency_name'=>$controlledRevision['agency_name'],
+                    'agency_id'=>$controlledRevision['agency_id'],
+                    'project_name'=>$controlledRevision['project_name'],
+                    'credential_project_id'=>$controlledRevision['credential_project_id'],
+                    'brand_name'=>$controlledRevision['brand_name'],
+                    'photo_asset'=>$controlledRevision['photo_asset'],
+                    'brand_logo_asset'=>$controlledRevision['brand_logo_asset'],
                     'agency_logo_asset'=>$credential['agency_logo_asset'],
-                    'scope_key'=>$credential['scope_key'],
-                    'document_asset'=>$credential['document_asset'],
-                    'document_label'=>$credential['document_label'],
-                    'document_enabled'=>$credential['document_enabled'],
+                    'scope_key'=>$controlledRevision['scope_key'],
+                    'document_asset'=>$controlledRevision['document_asset'],
+                    'document_label'=>$controlledRevision['document_label'],
+                    'document_enabled'=>$controlledRevision['document_asset'] ? 1 : 0,
                     'print_card_enabled'=>$credential['print_card_enabled'],
-                    'photo_allowed'=>$credential['photo_allowed'] ?? 0,
+                    'photo_allowed'=>$controlledRevision['photo_allowed'],
                     'subject_user_id'=>$credential['subject_user_id'] ?? null,
                     'supersedes_verification_id'=>$id,
                     'revision_no'=>$nextRevision,
@@ -488,16 +481,13 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
     <div class="section-head">
       <p class="eyebrow">Geschützte Ausstattung</p>
       <h2>Assets & Scope.</h2>
-      <p>Dateien werden ausschließlich in den privaten Verify-Speicher geschrieben. Aktive Ausweise bleiben schreibgeschützt.</p>
+      <p>Profilfoto, Projektlogo und Legitimationsschreiben sind kontrolliert gebunden. Nur das Agenturlogo wird derzeit noch direkt am Ausweis gepflegt.</p>
     </div>
 
     <div class="credential-asset-manager">
       <?php
       $assetConfig = [
-          'photo'=>['Foto','photo_asset','Bild bis 5 MB'],
-          'brand_logo'=>['Markenlogo','brand_logo_asset','PNG/JPG/WebP bis 5 MB'],
           'agency_logo'=>['Agenturlogo','agency_logo_asset','PNG/JPG/WebP bis 5 MB'],
-          'document'=>['Dokument','document_asset','PDF bis 10 MB'],
       ];
       foreach ($assetConfig as $assetType=>[$label,$column,$hint]):
           $bound = trim((string)($credential[$column] ?? ''));
@@ -676,25 +666,12 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
               <?php endforeach; ?>
             </select>
           </label>
-          <label>Projektkunde
-            <select name="project_customer" required data-credential-customer<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>>
-              <option value="">Bitte auswählen</option>
-              <?php foreach ($customerOptions as $customerOption): ?>
-                <option value="<?= mmEscape((string)$customerOption['customer_name']) ?>"
-                        data-agency-id="<?= (int)$customerOption['agency_id'] ?>"
-                        <?= (string)$credential['brand_name'] === (string)$customerOption['customer_name'] && (int)($credential['agency_id'] ?? 0) === (int)$customerOption['agency_id'] ? 'selected' : '' ?>>
-                  <?= mmEscape((string)$customerOption['customer_name']) ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </label>
           <label class="wide">Projekt
             <select name="credential_project_id" required data-credential-project<?= (int)$credential['is_active'] === 1 ? ' disabled' : '' ?>>
               <option value="">Bitte Projekt auswählen</option>
               <?php foreach ($credentialProjects as $projectOption): ?>
                 <option value="<?= (int)$projectOption['id'] ?>"
                         data-agency-id="<?= (int)$projectOption['agency_id'] ?>"
-                        data-customer="<?= mmEscape((string)$projectOption['customer_name']) ?>"
                         <?= (int)($credential['credential_project_id'] ?? 0) === (int)$projectOption['id'] ? 'selected' : '' ?>>
                   <?= mmEscape((string)$projectOption['project_name']) ?>
                 </option>
@@ -731,28 +708,19 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
 <script>
 (() => {
   const agency = document.querySelector('[data-credential-agency]');
-  const customer = document.querySelector('[data-credential-customer]');
   const project = document.querySelector('[data-credential-project]');
-  if (!agency || !customer || !project) return;
+  if (!agency || !project) return;
 
   const apply = () => {
     const agencyId = agency.value;
-    [...customer.options].forEach((option, index) => {
-      if (index === 0) return;
-      option.hidden = option.dataset.agencyId !== agencyId;
-      if (option.hidden && option.selected) customer.value = '';
-    });
-
-    const customerName = customer.value;
     [...project.options].forEach((option, index) => {
       if (index === 0) return;
-      option.hidden = option.dataset.agencyId !== agencyId || option.dataset.customer !== customerName;
+      option.hidden = option.dataset.agencyId !== agencyId;
       if (option.hidden && option.selected) project.value = '';
     });
   };
 
-  agency.addEventListener('change', () => { customer.value = ''; project.value = ''; apply(); });
-  customer.addEventListener('change', () => { project.value = ''; apply(); });
+  agency.addEventListener('change', () => { project.value = ''; apply(); });
   apply();
 })();
 </script>
