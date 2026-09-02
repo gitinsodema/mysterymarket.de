@@ -284,6 +284,7 @@ mmHeader('Mein Elite Profil', 'Geschütztes Elite-Shopper-Profil.', 'noindex,nof
       <h2>Mein Ausweisfoto.</h2>
       <p>Dieses geschützte Profilfoto ist die einzige Fotoquelle für neue MysteryMarket-Ausweise. Es wird nicht frei pro Ausweis hochgeladen.</p>
     </div>
+    <?php if (isset($_GET['created'])): ?><div class="alert success"><strong>Eigenes Elite-Profil angelegt.</strong> Dein Admin-Login ist jetzt zusätzlich mit einer aktiven Elite-Mitgliedschaft verknüpft.</div><?php endif; ?>
     <?php if (isset($_GET['photo_saved'])): ?><div class="alert success"><strong>Ausweisfoto gespeichert.</strong></div><?php endif; ?>
     <div class="elite-photo-layout">
       <div class="elite-photo-preview">
