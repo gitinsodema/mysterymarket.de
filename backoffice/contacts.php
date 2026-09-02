@@ -79,7 +79,7 @@ usort($rows, static function (array $a, array $b) use ($statusPriority, $riskPri
     return strcmp((string)$b['created_at'], (string)$a['created_at']);
 });
 
-mmHeader('Kontakte', 'Read-only Kontaktanfragen im MysteryMarket Backoffice.', 'noindex,nofollow');
+mmHeader('Kontakte', 'Kontakt-Arbeitsansicht im MysteryMarket Backoffice.', 'noindex,nofollow');
 ?>
 <section class="hero backoffice-dashboard-hero">
   <div>
