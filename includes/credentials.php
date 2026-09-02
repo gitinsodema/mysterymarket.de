@@ -524,7 +524,8 @@ function mmAppleWalletPassPayload(array $credential): array
             ],
             'backFields'=>[
                 ['key'=>'role','label'=>'Rolle','value'=>(string)$credential['role_label']],
-                ['key'=>'brand','label'=>'Marke / Kunde','value'=>(string)$credential['brand_name']],
+                ['key'=>'brand','label'=>'Projektkunde','value'=>(string)$credential['brand_name']],
+                ['key'=>'photoPermission','label'=>'Fotografieren','value'=>(int)($credential['photo_allowed'] ?? 0) === 1 ? 'Erlaubt' : 'Nicht erlaubt'],
                 ['key'=>'projectBack','label'=>'Projekt','value'=>(string)$credential['project_name']],
                 ['key'=>'agencyBack','label'=>'Agentur','value'=>(string)$credential['agency_name']],
                 ['key'=>'validity','label'=>'Gültigkeit','value'=>(string)$credential['valid_from'] . ' – ' . (string)$credential['valid_until']],
