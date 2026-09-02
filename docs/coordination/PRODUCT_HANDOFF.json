@@ -129,6 +129,9 @@
     }
   ],
   "completed_since_last_report": [
+    "Static review confirms credential create/edit no longer expose free person, role, agency, project-customer, project or photo-permission inputs.",
+    "Final review removed the independent scope mutation path; Verify scope now comes from the controlled project master record.",
+    "Final review moved photography permission fully into credential project master data; credential forms no longer expose a free photo-permission checkbox.",
     "Admin dashboard statistics were merged into compact navigation modules; Backoffice CSS now favors dense administrative layouts over public-site presentation.",
     "Backoffice credential project administration now supports create/list/edit with immutable identity fields and editable scope, photo permission and active status.",
     "Existing credential text data is backfilled into controlled master data where possible by migration 20260902_credential_controlled_master_data.sql.",
@@ -522,7 +525,7 @@
   },
   "next_recommended_action": {
     "classification": "OWNER_ACTION_REQUIRED",
-    "summary": "Deploy main, run backoffice-migrate.php and preflight.php, then test: open project master data, set the correct project/photo permission, create one credential draft through controlled dropdowns, verify person name cannot be freely changed, and inspect Verify/CR80 photo-permission display."
+    "summary": "Deploy main, run backoffice-migrate.php and preflight.php. Then open Ausweis-Service -> Projekt-Stammdaten, configure the intended project including Foto erlaubt and scope, create one draft via dropdowns, and inspect CR80 plus public Verify."
   },
   "evidence": [
     {
