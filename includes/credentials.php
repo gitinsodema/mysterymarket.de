@@ -422,7 +422,7 @@ function mmCredentialIntegrityErrors(array $row): array
         $subjectUserId = (int)($row['subject_user_id'] ?? 0);
         if ($subjectUserId > 0) {
             $subjectStmt = mmDb()->prepare(
-                "SELECT m.display_name
+                "SELECT m.display_name, m.profile_photo_asset
                  FROM backoffice_users u
                  JOIN elite_members m ON m.user_id = u.id
                  WHERE u.id = :id
@@ -432,11 +432,12 @@ function mmCredentialIntegrityErrors(array $row): array
                  LIMIT 1"
             );
             $subjectStmt->execute(['id'=>$subjectUserId]);
-            $subjectName = $subjectStmt->fetchColumn();
-            if (!is_string($subjectName) || trim($subjectName) === '') {
+            $subjectRecord = $subjectStmt->fetch();
+            if (!$subjectRecord || trim((string)($subjectRecord['display_name'] ?? '')) === '') {
                 $errors[] = 'Ausweis-Person ist nicht als aktiver Elite Shopper verfügbar';
-            } elseif (!hash_equals(trim($subjectName), trim((string)($row['person_name'] ?? '')))) {
-                $errors[] = 'Ausweis-Person stimmt nicht mit dem Elite-Profil überein';
+            } elseif (!hash_equals(trim((string)$subjectRecord['display_name']), trim((string)($row['person_name'] ?? '')))
+                || !hash_equals(trim((string)($subjectRecord['profile_photo_asset'] ?? '')), trim((string)($row['photo_asset'] ?? '')))) {
+                $errors[] = 'Ausweis-Person oder Profilfoto stimmt nicht mit dem Elite-Profil überein';
             }
         }
 
@@ -617,7 +618,7 @@ function mmAppleWalletPassPayload(array $credential): array
             ],
             'backFields'=>[
                 ['key'=>'role','label'=>'Rolle','value'=>(string)$credential['role_label']],
-                ['key'=>'brand','label'=>'Projektkunde','value'=>(string)$credential['brand_name']],
+                ['key'=>'brand','label'=>'Projekt','value'=>(string)$credential['brand_name']],
                 ['key'=>'photoPermission','label'=>'Fotografieren','value'=>(int)($credential['photo_allowed'] ?? 0) === 1 ? 'Erlaubt' : 'Nicht erlaubt'],
                 ['key'=>'projectBack','label'=>'Projekt','value'=>(string)$credential['project_name']],
                 ['key'=>'agencyBack','label'=>'Agentur','value'=>(string)$credential['agency_name']],
