@@ -38,7 +38,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 }
 
 $stmt = mmDb()->query(
-    "SELECT p.id, p.customer_name, p.project_name, p.scope_key, p.is_active,
+    "SELECT p.id, p.customer_name, p.project_name, p.scope_key, p.photo_allowed, p.is_active,
             a.name AS agency_name
      FROM credential_projects p
      JOIN agencies a ON a.id = p.agency_id
@@ -68,7 +68,7 @@ mmHeader('Ausweis-Projekte', 'Kontrollierte Projektstammdaten für Verify-Auswei
   <div class="backoffice-table-wrap">
     <table class="backoffice-table">
       <thead>
-        <tr><th>Agentur</th><th>Projektkunde</th><th>Projekt</th><th>Scope</th><th>Status</th><th>Aktion</th></tr>
+        <tr><th>Agentur</th><th>Projektkunde</th><th>Projekt</th><th>Foto</th><th>Scope</th><th>Status</th><th>Aktion</th></tr>
       </thead>
       <tbody>
       <?php foreach ($rows as $row): ?>
@@ -76,6 +76,7 @@ mmHeader('Ausweis-Projekte', 'Kontrollierte Projektstammdaten für Verify-Auswei
           <td><?= mmEscape((string)$row['agency_name']) ?></td>
           <td><?= mmEscape((string)$row['customer_name']) ?></td>
           <td><strong><?= mmEscape((string)$row['project_name']) ?></strong></td>
+          <td><?= mmBackofficeStatusBadge((int)$row['photo_allowed'] === 1 ? 'active' : 'inactive', (int)$row['photo_allowed'] === 1 ? 'erlaubt' : 'nein') ?></td>
           <td><?= mmEscape((string)($row['scope_key'] ?: '—')) ?></td>
           <td><?= mmBackofficeStatusBadge((int)$row['is_active'] === 1 ? 'active' : 'inactive') ?></td>
           <td>
