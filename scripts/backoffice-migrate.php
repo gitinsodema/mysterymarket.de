@@ -104,5 +104,15 @@ foreach (['credential_role_id','agency_id','credential_project_id','photo_allowe
     echo "[PASS] audit_verifications.{$column}\n";
 }
 
+$columnCheck->execute([
+    'table_name' => 'credential_projects',
+    'column_name' => 'photo_allowed',
+]);
+if ((int)$columnCheck->fetchColumn() !== 1) {
+    fwrite(STDERR, "[FAIL] Missing credential_projects.photo_allowed\n");
+    exit(1);
+}
+echo "[PASS] credential_projects.photo_allowed\n";
+
 echo "MYSTERYMARKET_BACKOFFICE_FOUNDATION_OK
 ";
