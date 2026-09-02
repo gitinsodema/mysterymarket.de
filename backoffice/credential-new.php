@@ -35,14 +35,11 @@ $values = [
     'confidentiality_mode'=>'public',
     'public_note'=>'Persönliche Audit-Legitimation.',
 ];
-$photoAllowed = false;
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     foreach (array_keys($values) as $key) {
         $values[$key] = trim((string)($_POST[$key] ?? ''));
     }
-    $photoAllowed = ($_POST['photo_allowed'] ?? '') === '1';
-
     if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
         http_response_code(400);
         $error = 'Ungültige Sitzung.';
@@ -111,7 +108,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 'credential_project_id'=>$controlled['credential_project_id'],
                 'brand_name'=>$controlled['brand_name'],
                 'scope_key'=>$controlled['scope_key'],
-                'photo_allowed'=>$photoAllowed ? 1 : 0,
+                'photo_allowed'=>$controlled['photo_allowed'],
             ]);
 
             $id = (int)mmDb()->lastInsertId();
@@ -226,7 +223,9 @@ mmHeader('Neuer Verify-Ausweis', 'Projektbezogenen Verify-Ausweis anlegen.', 'no
               <option value="confidential"<?= $values['confidentiality_mode'] === 'confidential' ? ' selected' : '' ?>>Vertraulich</option>
             </select>
           </label>
-          <label class="wide credential-photo-permission"><input type="checkbox" name="photo_allowed" value="1"<?= $photoAllowed ? ' checked' : '' ?>> <span><strong>Fotografieren erlaubt</strong><small class="field-hint">Wird eindeutig auf Ausweis und Verify angezeigt. Nur aktivieren, wenn das Projekt dies ausdrücklich erlaubt.</small></span></label>
+          <div class="wide credential-photo-permission credential-photo-permission--readonly">
+            <span><strong>Fotoerlaubnis kommt aus dem Projekt</strong><small class="field-hint">Wird automatisch aus den kontrollierten Projekt-Stammdaten übernommen.</small></span>
+          </div>
           <label class="wide">Öffentlicher Hinweis<textarea name="public_note"><?= mmEscape($values['public_note']) ?></textarea></label>
         </div>
       </div>
