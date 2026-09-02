@@ -15,20 +15,14 @@ $credentialRoles = mmCredentialControlledRoles();
 $credentialProjects = mmCredentialControlledProjects();
 
 $agencyOptions = [];
-$customerOptions = [];
 foreach ($credentialProjects as $projectOption) {
     $agencyOptions[(int)$projectOption['agency_id']] = (string)$projectOption['agency_name'];
-    $customerOptions[(int)$projectOption['agency_id'] . '|' . (string)$projectOption['customer_name']] = [
-        'agency_id'=>(int)$projectOption['agency_id'],
-        'customer_name'=>(string)$projectOption['customer_name'],
-    ];
 }
 
 $values = [
     'subject_user_id'=>'',
     'credential_role_id'=>'',
     'agency_id'=>'',
-    'project_customer'=>'',
     'credential_project_id'=>'',
     'valid_from'=>'',
     'valid_until'=>'',
@@ -51,15 +45,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $roleId = (int)$values['credential_role_id'];
             $projectId = (int)$values['credential_project_id'];
             $agencyId = (int)$values['agency_id'];
-            $projectCustomer = $values['project_customer'];
-
-            if ($subjectUserId < 1 || $roleId < 1 || $projectId < 1 || $agencyId < 1 || $projectCustomer === '') {
-                throw new InvalidArgumentException('Person, Rolle, Agentur, Projektkunde und Projekt sind erforderlich.');
+            if ($subjectUserId < 1 || $roleId < 1 || $projectId < 1 || $agencyId < 1) {
+                throw new InvalidArgumentException('Person, Rolle, Agentur und Projekt sind erforderlich.');
             }
 
             $controlled = mmCredentialResolveControlledSelection($subjectUserId, $roleId, $projectId);
-            if ((int)$controlled['agency_id'] !== $agencyId || !hash_equals((string)$controlled['brand_name'], $projectCustomer)) {
-                throw new InvalidArgumentException('Agentur, Projektkunde und Projekt passen nicht zusammen.');
+            if ((int)$controlled['agency_id'] !== $agencyId) {
+                throw new InvalidArgumentException('Agentur und Projekt passen nicht zusammen.');
             }
             if (!in_array($values['confidentiality_mode'], ['public','confidential'], true)) {
                 throw new InvalidArgumentException('Ungültiger Vertraulichkeitsstatus.');
@@ -84,8 +76,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                   :valid_from, :valid_until, :confidentiality_mode, :public_note,
                   :person_name, :role_label, :credential_role_id, :agency_name, :agency_id,
                   :project_name, :credential_project_id, :brand_name,
-                  NULL, NULL, NULL, :scope_key,
-                  NULL, NULL, 0,
+                  :photo_asset, :brand_logo_asset, NULL, :scope_key,
+                  :document_asset, :document_label, :document_enabled,
                   1, :photo_allowed, :subject_user_id, 1, 0,
                   NOW(), NOW())"
             );
@@ -107,7 +99,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 'project_name'=>$controlled['project_name'],
                 'credential_project_id'=>$controlled['credential_project_id'],
                 'brand_name'=>$controlled['brand_name'],
+                'photo_asset'=>$controlled['photo_asset'],
+                'brand_logo_asset'=>$controlled['brand_logo_asset'],
                 'scope_key'=>$controlled['scope_key'],
+                'document_asset'=>$controlled['document_asset'],
+                'document_label'=>$controlled['document_label'],
+                'document_enabled'=>$controlled['document_asset'] ? 1 : 0,
                 'photo_allowed'=>$controlled['photo_allowed'],
             ]);
 
@@ -173,7 +170,7 @@ mmHeader('Neuer Verify-Ausweis', 'Projektbezogenen Verify-Ausweis anlegen.', 'no
       </div>
 
       <div class="credential-editor-section">
-        <div class="credential-editor-head"><span>02</span><div><strong>Projekt</strong><small>Agentur, Projektkunde und freigegebenes Projekt</small></div></div>
+        <div class="credential-editor-head"><span>02</span><div><strong>Projekt</strong><small>Agentur und freigegebenes Projekt</small></div></div>
         <div class="form-grid">
           <label>Agentur
             <select name="agency_id" required data-credential-agency>
@@ -183,25 +180,12 @@ mmHeader('Neuer Verify-Ausweis', 'Projektbezogenen Verify-Ausweis anlegen.', 'no
               <?php endforeach; ?>
             </select>
           </label>
-          <label>Projektkunde
-            <select name="project_customer" required data-credential-customer>
-              <option value="">Bitte auswählen</option>
-              <?php foreach ($customerOptions as $customerOption): ?>
-                <option value="<?= mmEscape((string)$customerOption['customer_name']) ?>"
-                        data-agency-id="<?= (int)$customerOption['agency_id'] ?>"
-                        <?= $values['project_customer'] === (string)$customerOption['customer_name'] && (int)$values['agency_id'] === (int)$customerOption['agency_id'] ? 'selected' : '' ?>>
-                  <?= mmEscape((string)$customerOption['customer_name']) ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </label>
           <label class="wide">Projekt
             <select name="credential_project_id" required data-credential-project>
               <option value="">Bitte Projekt auswählen</option>
               <?php foreach ($credentialProjects as $projectOption): ?>
                 <option value="<?= (int)$projectOption['id'] ?>"
                         data-agency-id="<?= (int)$projectOption['agency_id'] ?>"
-                        data-customer="<?= mmEscape((string)$projectOption['customer_name']) ?>"
                         <?= (int)$values['credential_project_id'] === (int)$projectOption['id'] ? 'selected' : '' ?>>
                   <?= mmEscape((string)$projectOption['project_name']) ?>
                 </option>
@@ -231,7 +215,7 @@ mmHeader('Neuer Verify-Ausweis', 'Projektbezogenen Verify-Ausweis anlegen.', 'no
       </div>
 
       <div class="notice">
-        <strong>Nach dem Anlegen:</strong> Foto, Markenlogo, Agenturlogo, Projektdokument und Scope werden über die bestehende geschützte Verify-Asset-Struktur ergänzt. Der Draft bleibt bis dahin inaktiv.
+        <strong>Automatische Bindung:</strong> Profilfoto, Projektlogo, Legitimationsschreiben, Scope und Fotoerlaubnis kommen aus den geprüften Stammdaten. Nur das Agenturlogo bleibt aktuell als separate Ausweisausstattung offen.
       </div>
 
       <div class="elite-profile-actions"><button type="submit">Ausweis-Draft anlegen</button></div>
@@ -241,28 +225,19 @@ mmHeader('Neuer Verify-Ausweis', 'Projektbezogenen Verify-Ausweis anlegen.', 'no
 <script>
 (() => {
   const agency = document.querySelector('[data-credential-agency]');
-  const customer = document.querySelector('[data-credential-customer]');
   const project = document.querySelector('[data-credential-project]');
-  if (!agency || !customer || !project) return;
+  if (!agency || !project) return;
 
   const apply = () => {
     const agencyId = agency.value;
-    [...customer.options].forEach((option, index) => {
-      if (index === 0) return;
-      option.hidden = option.dataset.agencyId !== agencyId;
-      if (option.hidden && option.selected) customer.value = '';
-    });
-
-    const customerName = customer.value;
     [...project.options].forEach((option, index) => {
       if (index === 0) return;
-      option.hidden = option.dataset.agencyId !== agencyId || option.dataset.customer !== customerName;
+      option.hidden = option.dataset.agencyId !== agencyId;
       if (option.hidden && option.selected) project.value = '';
     });
   };
 
-  agency.addEventListener('change', () => { customer.value = ''; project.value = ''; apply(); });
-  customer.addEventListener('change', () => { project.value = ''; apply(); });
+  agency.addEventListener('change', () => { project.value = ''; apply(); });
   apply();
 })();
 </script>
