@@ -210,6 +210,83 @@ function mmCredentialResolveControlledSelection(int $subjectUserId, int $roleId,
     ];
 }
 
+function mmCredentialStorePrivateUploadedAsset(array $file, string $prefix, array $extensions, array $mimes, int $maxBytes): string
+{
+    $error = (int)($file['error'] ?? UPLOAD_ERR_NO_FILE);
+    if ($error !== UPLOAD_ERR_OK) {
+        throw new RuntimeException('Datei-Upload fehlgeschlagen.');
+    }
+
+    $tmp = (string)($file['tmp_name'] ?? '');
+    $original = (string)($file['name'] ?? '');
+    $size = (int)($file['size'] ?? 0);
+
+    if ($tmp === '' || !is_uploaded_file($tmp) || $size < 1 || $size > $maxBytes) {
+        throw new RuntimeException('Ungültige oder zu große Datei.');
+    }
+
+    $extension = strtolower(pathinfo($original, PATHINFO_EXTENSION));
+    if (!in_array($extension, $extensions, true)) {
+        throw new RuntimeException('Dateiformat nicht erlaubt.');
+    }
+
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($tmp) ?: '';
+    if (!in_array($mime, $mimes, true)) {
+        throw new RuntimeException('Dateiinhalt entspricht keinem erlaubten MIME-Typ.');
+    }
+
+    $assetDir = rtrim((string)(mmConfig()['security']['verify_asset_dir'] ?? ''), '/');
+    $base = $assetDir !== '' ? realpath($assetDir) : false;
+    if ($base === false || !is_dir($base) || !is_writable($base)) {
+        throw new RuntimeException('Privates Verify-Asset-Verzeichnis ist nicht beschreibbar.');
+    }
+
+    $safeExt = $extension === 'jpeg' ? 'jpg' : $extension;
+    $safePrefix = preg_replace('/[^a-z0-9_-]+/i', '_', $prefix) ?: 'asset';
+    $filename = sprintf('%s_%s.%s', $safePrefix, bin2hex(random_bytes(8)), $safeExt);
+    $target = $base . DIRECTORY_SEPARATOR . $filename;
+
+    if (!move_uploaded_file($tmp, $target)) {
+        throw new RuntimeException('Datei konnte nicht in den privaten Verify-Speicher verschoben werden.');
+    }
+
+    @chmod($target, 0640);
+    return $filename;
+}
+
+function mmEliteStoreProfilePhoto(array $file, int $memberId): string
+{
+    return mmCredentialStorePrivateUploadedAsset(
+        $file,
+        'elite_' . $memberId . '_profile',
+        ['png','jpg','jpeg','webp'],
+        ['image/png','image/jpeg','image/webp'],
+        5 * 1024 * 1024
+    );
+}
+
+function mmCredentialStoreProjectLogo(array $file, int $projectId): string
+{
+    return mmCredentialStorePrivateUploadedAsset(
+        $file,
+        'project_' . $projectId . '_logo',
+        ['png','jpg','jpeg','webp'],
+        ['image/png','image/jpeg','image/webp'],
+        5 * 1024 * 1024
+    );
+}
+
+function mmCredentialStoreProjectDocument(array $file, string $prefix): string
+{
+    return mmCredentialStorePrivateUploadedAsset(
+        $file,
+        $prefix,
+        ['pdf'],
+        ['application/pdf'],
+        10 * 1024 * 1024
+    );
+}
+
 function mmCredentialStoreUploadedAsset(array $file, int $credentialId, string $type): string
 {
     $allowedTypes = [
