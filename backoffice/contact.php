@@ -13,6 +13,7 @@ if ($id < 1) {
 }
 
 $allowedStatuses = ['new','seen','done'];
+$allowedModerationDecisions = ['undecided','allow','spam'];
 $error = '';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
@@ -20,22 +21,54 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         http_response_code(400);
         $error = 'Ungültige Sitzung.';
     } else {
-        $newStatus = (string)($_POST['status'] ?? '');
-        if (!in_array($newStatus, $allowedStatuses, true)) {
-            $error = 'Ungültiger Status.';
+        $action = (string)($_POST['action'] ?? 'status');
+
+        if ($action === 'moderation') {
+            $decision = (string)($_POST['moderation_decision'] ?? 'undecided');
+            if (!in_array($decision, $allowedModerationDecisions, true)) {
+                $error = 'Ungültige Moderationsentscheidung.';
+            } else {
+                $stmt = mmDb()->prepare(
+                    'UPDATE contact_requests
+                     SET moderation_decision = :decision,
+                         moderation_reviewed_at = NOW(),
+                         moderation_reviewed_by = :reviewed_by
+                     WHERE id = :id'
+                );
+                $stmt->execute([
+                    'decision' => $decision,
+                    'reviewed_by' => (int)$user['id'],
+                    'id' => $id,
+                ]);
+                mmBackofficeAudit(
+                    (int)$user['id'],
+                    'contact.moderation_decided',
+                    'contact_request',
+                    $id,
+                    ['decision' => $decision]
+                );
+                header('Location: /backoffice/contact.php?id=' . $id . '&moderated=1', true, 303);
+                exit;
+            }
         } else {
-            $stmt = mmDb()->prepare('UPDATE contact_requests SET status = :status WHERE id = :id');
-            $stmt->execute(['status'=>$newStatus,'id'=>$id]);
-            mmBackofficeAudit((int)$user['id'], 'contact.status_changed', 'contact_request', $id, ['status'=>$newStatus]);
-            header('Location: /backoffice/contact.php?id=' . $id . '&updated=1', true, 303);
-            exit;
+            $newStatus = (string)($_POST['status'] ?? '');
+            if (!in_array($newStatus, $allowedStatuses, true)) {
+                $error = 'Ungültiger Status.';
+            } else {
+                $stmt = mmDb()->prepare('UPDATE contact_requests SET status = :status WHERE id = :id');
+                $stmt->execute(['status'=>$newStatus,'id'=>$id]);
+                mmBackofficeAudit((int)$user['id'], 'contact.status_changed', 'contact_request', $id, ['status'=>$newStatus]);
+                header('Location: /backoffice/contact.php?id=' . $id . '&updated=1', true, 303);
+                exit;
+            }
         }
     }
 }
 
 $stmt = mmDb()->prepare(
     'SELECT id, reference_code, request_type, name, organisation, email, phone, subject, message,
-            privacy_acknowledged_at, created_at, status, notification_sent_at, notification_failed_at,
+            privacy_acknowledged_at, created_at, status, moderation_decision, moderation_reviewed_at,
+            moderation_reviewed_by, notification_sent_at, notification_failed_at,
             confirmation_sent_at, confirmation_failed_at
      FROM contact_requests
      WHERE id = :id
@@ -86,6 +119,10 @@ mmHeader('Kontaktanfrage', 'Read-only Kontaktanfrage im MysteryMarket Backoffice
           <?php endforeach; ?>
         </ul>
       <?php endif; ?>
+      <p><strong>Adminentscheidung:</strong> <?= mmBackofficeContactModerationBadge((string)$row['moderation_decision']) ?></p>
+      <?php if (!empty($row['moderation_reviewed_at'])): ?>
+        <p><strong>Entschieden:</strong> <?= mmEscape((string)$row['moderation_reviewed_at']) ?></p>
+      <?php endif; ?>
       <p><strong>Status:</strong> <?= mmBackofficeStatusBadge((string)$row['status']) ?></p>
       <p><strong>Notification:</strong> <?= mmEscape((string)($row['notification_sent_at'] ?: $row['notification_failed_at'] ?: '—')) ?></p>
       <p><strong>Bestätigung:</strong> <?= mmEscape((string)($row['confirmation_sent_at'] ?: $row['confirmation_failed_at'] ?: '—')) ?></p>
@@ -103,9 +140,28 @@ mmHeader('Kontaktanfrage', 'Read-only Kontaktanfrage im MysteryMarket Backoffice
 </section>
 
 <section class="section">
-  <div class="form-card">
-    <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
-    <h2>Status</h2>
+  <div class="grid two">
+    <div class="form-card">
+      <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
+      <h2>Adminentscheidung</h2>
+      <p class="partner-note">Getrennt von der automatischen Ampel. Diese Entscheidung ist deine manuelle Bewertung und wird protokolliert.</p>
+      <form method="post" action="/backoffice/contact.php">
+        <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+        <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
+        <input type="hidden" name="action" value="moderation">
+        <label>Entscheidung
+          <select name="moderation_decision">
+            <option value="undecided"<?= $row['moderation_decision'] === 'undecided' ? ' selected' : '' ?>>Unentschieden</option>
+            <option value="allow"<?= $row['moderation_decision'] === 'allow' ? ' selected' : '' ?>>Zulassen</option>
+            <option value="spam"<?= $row['moderation_decision'] === 'spam' ? ' selected' : '' ?>>Definitiv Spam</option>
+          </select>
+        </label>
+        <button type="submit">Entscheidung speichern</button>
+      </form>
+    </div>
+
+    <div class="form-card">
+      <h2>Status</h2>
     <p class="partner-note">Nur interner Bearbeitungsstatus. Antworten sind in R1.1 ausdrücklich nicht möglich.</p>
     <form method="post" action="/backoffice/contact.php">
       <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
@@ -118,7 +174,8 @@ mmHeader('Kontaktanfrage', 'Read-only Kontaktanfrage im MysteryMarket Backoffice
         </select>
       </label>
       <button type="submit">Status speichern</button>
-    </form>
+      </form>
+    </div>
   </div>
 </section>
 <?php mmFooter(); ?>
