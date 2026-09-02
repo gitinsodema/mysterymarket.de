@@ -50,7 +50,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                  (agency_id, customer_name, project_name,
                   authorization_document_asset, authorization_document_label,
                   scope_key, photo_allowed, is_active, created_at, updated_at)
-                 VALUES (:agency_id, :project_name, :project_name,
+                 VALUES (:agency_id, :customer_name_compat, :project_name,
                          :document, 'Offizielles Legitimationsschreiben',
                          NULL, 0, 0, NOW(), NOW())"
             );
@@ -61,6 +61,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
             $stmt->execute([
                 'agency_id'=>$agencyId,
+                'customer_name_compat'=>$values['project_name'],
                 'project_name'=>$values['project_name'],
                 'document'=>$document,
             ]);
