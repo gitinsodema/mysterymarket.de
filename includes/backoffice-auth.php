@@ -341,9 +341,10 @@ function mmBackofficeStatusTone(string $status): string
 {
     return match (strtolower(trim($status))) {
         'active', 'approved', 'done', 'success', 'valid', 'completed', 'ready', 'shipped' => 'ok',
-        'new', 'draft', 'requested', 'pending', 'pending_review', 'invited', 'paused', 'open', 'processing' => 'warn',
+        'new', 'draft', 'requested', 'pending', 'pending_review', 'invited', 'paused', 'open' => 'warn',
+        'in_progress', 'processing' => 'info',
         'rejected', 'suspended', 'ended', 'expired', 'failed', 'disabled', 'revoked', 'replaced' => 'danger',
-        'seen', 'cancelled', 'inactive' => 'info',
+        'seen', 'cancelled', 'inactive', 'archived' => 'neutral',
         default => 'neutral',
     };
 }
