@@ -12,7 +12,7 @@ if ($id < 1) {
     exit('Not found');
 }
 
-$allowedStatuses = ['new','seen','done'];
+$allowedStatuses = ['new','in_progress','done','archived'];
 $allowedModerationDecisions = ['undecided','allow','spam'];
 $error = '';
 
@@ -168,8 +168,16 @@ mmHeader('Kontaktanfrage', 'Read-only Kontaktanfrage im MysteryMarket Backoffice
       <input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
       <label>Bearbeitungsstatus
         <select name="status">
-          <?php foreach ($allowedStatuses as $s): ?>
-            <option value="<?= mmEscape($s) ?>"<?= $row['status'] === $s ? ' selected' : '' ?>><?= mmEscape($s) ?></option>
+          <?php
+            $statusLabels = [
+              'new' => 'New',
+              'in_progress' => 'In Arbeit',
+              'done' => 'Done',
+              'archived' => 'Archived',
+            ];
+            foreach ($allowedStatuses as $s):
+          ?>
+            <option value="<?= mmEscape($s) ?>"<?= $row['status'] === $s ? ' selected' : '' ?>><?= mmEscape($statusLabels[$s]) ?></option>
           <?php endforeach; ?>
         </select>
       </label>
