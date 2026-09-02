@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/site.php';
 require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/anti-abuse.php';
 
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 if (!in_array($method, ['GET','POST'], true)) {
@@ -34,13 +35,13 @@ $typeLabels = $typeLabelsByLang[$lang] ?? $typeLabelsByLang['de'];
 
 $validationByLang = [
     'de'=>[
-        'session'=>'Die Formularsitzung ist abgelaufen.','failed'=>'Die Anfrage konnte nicht verarbeitet werden.','type'=>'Bitte wählen Sie die Art Ihrer Anfrage.','name'=>'Bitte geben Sie Ihren Namen ein.','email'=>'Bitte geben Sie eine gültige E-Mail-Adresse ein.','subject'=>'Bitte geben Sie einen Betreff ein.','message'=>'Bitte beschreiben Sie Ihre Anfrage.','privacy'=>'Bitte bestätigen Sie die Datenschutzhinweise.','store'=>'Die Anfrage konnte derzeit nicht gespeichert werden. Bitte nutzen Sie alternativ die Kontaktmöglichkeit auf dieser Seite.'
+        'session'=>'Die Formularsitzung ist abgelaufen.','failed'=>'Die Anfrage konnte nicht verarbeitet werden.','security'=>'Die Sicherheitsprüfung konnte nicht bestätigt werden. Bitte laden Sie die Seite neu und versuchen Sie es erneut.','type'=>'Bitte wählen Sie die Art Ihrer Anfrage.','name'=>'Bitte geben Sie Ihren Namen ein.','email'=>'Bitte geben Sie eine gültige E-Mail-Adresse ein.','subject'=>'Bitte geben Sie einen Betreff ein.','message'=>'Bitte beschreiben Sie Ihre Anfrage.','privacy'=>'Bitte bestätigen Sie die Datenschutzhinweise.','store'=>'Die Anfrage konnte derzeit nicht gespeichert werden. Bitte nutzen Sie alternativ die Kontaktmöglichkeit auf dieser Seite.'
     ],
     'en'=>[
-        'session'=>'The form session has expired.','failed'=>'The enquiry could not be processed.','type'=>'Please select the type of enquiry.','name'=>'Please enter your name.','email'=>'Please enter a valid email address.','subject'=>'Please enter a subject.','message'=>'Please describe your enquiry.','privacy'=>'Please confirm the privacy notice.','store'=>'The enquiry could not be saved at this time. Please use the contact option on this page instead.'
+        'session'=>'The form session has expired.','failed'=>'The enquiry could not be processed.','security'=>'The security check could not be confirmed. Please reload the page and try again.','type'=>'Please select the type of enquiry.','name'=>'Please enter your name.','email'=>'Please enter a valid email address.','subject'=>'Please enter a subject.','message'=>'Please describe your enquiry.','privacy'=>'Please confirm the privacy notice.','store'=>'The enquiry could not be saved at this time. Please use the contact option on this page instead.'
     ],
     'nl'=>[
-        'session'=>'De formuliesessie is verlopen.','failed'=>'De aanvraag kon niet worden verwerkt.','type'=>'Selecteer het type aanvraag.','name'=>'Vul uw naam in.','email'=>'Vul een geldig e-mailadres in.','subject'=>'Vul een onderwerp in.','message'=>'Beschrijf uw aanvraag.','privacy'=>'Bevestig de privacyverklaring.','store'=>'De aanvraag kon momenteel niet worden opgeslagen. Gebruik eventueel de contactmogelijkheid op deze pagina.'
+        'session'=>'De formuliesessie is verlopen.','failed'=>'De aanvraag kon niet worden verwerkt.','security'=>'De beveiligingscontrole kon niet worden bevestigd. Laad de pagina opnieuw en probeer het opnieuw.','type'=>'Selecteer het type aanvraag.','name'=>'Vul uw naam in.','email'=>'Vul een geldig e-mailadres in.','subject'=>'Vul een onderwerp in.','message'=>'Beschrijf uw aanvraag.','privacy'=>'Bevestig de privacyverklaring.','store'=>'De aanvraag kon momenteel niet worden opgeslagen. Gebruik eventueel de contactmogelijkheid op deze pagina.'
     ],
 ];
 $validation = $validationByLang[$lang] ?? $validationByLang['de'];
@@ -263,6 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $privacy = ($_POST['privacy'] ?? '') === '1';
     $csrf = (string)($_POST['csrf'] ?? '');
     $honeypot = trim((string)($_POST['company_url'] ?? ''));
+    $turnstileToken = trim((string)($_POST['cf-turnstile-response'] ?? ''));
 
     if (!$errors && !hash_equals((string)$_SESSION['mm_csrf'], $csrf)) $errors[] = $validation['session'];
     if ($honeypot !== '') $errors[] = $validation['failed'];
@@ -274,6 +276,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($subject === '' || mb_strlen($subject) > 200) $errors[] = $validation['subject'];
     if (mb_strlen($message) < 10 || mb_strlen($message) > 10000) $errors[] = $validation['message'];
     if (!$privacy) $errors[] = $validation['privacy'];
+
+    if (!$errors) {
+        $turnstile = mmTurnstileVerify($turnstileToken, 'contact_submit');
+        if (empty($turnstile['ok'])) {
+            http_response_code(403);
+            $errors[] = $validation['security'];
+        }
+    }
 
     if (!$errors) {
         try {
@@ -370,9 +380,13 @@ mmHeader($c['title'], $c['lead']);
 <label><?= mmEscape($c['subject']) ?> *<input name="subject" maxlength="200" required></label>
 <label class="wide"><?= mmEscape($c['message']) ?> *<textarea name="message" minlength="10" maxlength="10000" required></textarea></label>
 <label class="wide privacy-check"><input type="checkbox" name="privacy" value="1" required> <span><?= mmEscape($c['privacy']) ?> *</span></label>
+<div class="wide turnstile-wrap">
+  <div class="cf-turnstile" data-sitekey="<?= mmEscape(mmTurnstileSiteKey()) ?>" data-action="contact_submit" data-theme="light"></div>
+</div>
 </div>
 <button type="submit"><?= mmEscape($c['send']) ?></button>
 </form>
 </div>
 </section>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <?php mmFooter(); ?>
