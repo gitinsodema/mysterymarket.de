@@ -281,7 +281,7 @@ function mmCredentialStoreUploadedAsset(array $file, int $credentialId, string $
     $projectId = (int)($row['credential_project_id'] ?? 0);
     if ($projectId > 0) {
         $projectStmt = mmDb()->prepare(
-            "SELECT p.agency_id, p.customer_name, p.project_name, a.name AS agency_name
+            "SELECT p.agency_id, p.customer_name, p.project_name, p.scope_key, a.name AS agency_name
              FROM credential_projects p
              JOIN agencies a ON a.id = p.agency_id
              WHERE p.id = :id
@@ -295,7 +295,8 @@ function mmCredentialStoreUploadedAsset(array $file, int $credentialId, string $
             || (int)$project['agency_id'] !== (int)($row['agency_id'] ?? 0)
             || !hash_equals(trim((string)$project['agency_name']), trim((string)($row['agency_name'] ?? '')))
             || !hash_equals(trim((string)$project['customer_name']), trim((string)($row['brand_name'] ?? '')))
-            || !hash_equals(trim((string)$project['project_name']), trim((string)($row['project_name'] ?? '')))) {
+            || !hash_equals(trim((string)$project['project_name']), trim((string)($row['project_name'] ?? '')))
+            || !hash_equals(trim((string)($project['scope_key'] ?? '')), trim((string)($row['scope_key'] ?? '')))) {
             $errors[] = 'Agentur, Projektkunde und Projekt stimmen nicht mit den Stammdaten überein';
         }
     }
