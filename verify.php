@@ -538,7 +538,7 @@ $rtl = $verifyLang === 'ar';
 
           <?php if ((int)($result['photo_allowed'] ?? 0) === 1): ?>
             <div class="verify-photo-permission">
-              <span aria-hidden="true">📷</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 4l1.4-2h3.2L15 4h3a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h3zm3 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2.2A2.8 2.8 0 1 1 12 14.8 2.8 2.8 0 0 1 12 9.2z"/></svg>
               <strong><?= mmEscape($detailCopy['photo_allowed'] ?? 'Photography permitted') ?></strong>
             </div>
           <?php endif; ?>
