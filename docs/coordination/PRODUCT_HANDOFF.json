@@ -129,6 +129,10 @@
     }
   ],
   "completed_since_last_report": [
+    "CSP and privacy disclosure updated for Cloudflare Turnstile; existing honeypot and rate limiting remain layered underneath.",
+    "Turnstile secret remains server-local in config/local.php and is explicitly excluded from repository storage.",
+    "MysteryMarket contact form is the first Turnstile pilot: managed widget, server-side Siteverify before database insert, expected action contact_submit, expected hostname mysterymarket.de.",
+    "Owner created Cloudflare Turnstile account/widget and supplied public site key 0x4AAAAAAEkyOLYcyYVdVC_p for INSODEMA Public Forms.",
     "Current spam example is intentionally not answered.",
     "Contact risk is computed read-only from submitted fields; it does not delete, reject or change enquiry status automatically.",
     "Owner approved a small explainable green/yellow/red contact-risk hint for Backoffice review.",
@@ -502,8 +506,8 @@
     "confidentiality_note": "BARE/HP broad homepage/current-audits relationship was anonymised pending approved public context; code-gated credential may display factual authorisation details."
   },
   "next_recommended_action": {
-    "classification": "PROPOSAL",
-    "summary": "Deploy main and verify contact DB-ID 7 shows red Spam-Verdacht with explanatory reasons in the Backoffice list/detail view."
+    "classification": "OWNER_ACTION_REQUIRED",
+    "summary": "Add the Turnstile site key, secret key and hostname to production config/local.php, then deploy main, run preflight and submit one legitimate contact-form test. Do not paste the secret into chat or Git."
   },
   "evidence": [
     {
