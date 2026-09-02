@@ -45,7 +45,7 @@ Important fields used by the reusable subsystem:
 - `agency_id` (controlled agency master reference)
 - `project_name`
 - `credential_project_id` (controlled project master reference)
-- `brand_name` (credential snapshot of the project customer)
+- `brand_name` (compatibility snapshot; for current MysteryMarket issuance it mirrors `project_name`)
 - `photo_allowed` (credential snapshot of the project-level photography permission)
 - `valid_from`
 - `valid_until`
@@ -74,7 +74,7 @@ Authoritative supporting master data:
 - `elite_members` + `backoffice_users`: selectable credential person
 - `credential_roles`: permitted role labels
 - `agencies`: permitted agency identities
-- `credential_projects`: permitted agency / project-customer / project combinations
+- `credential_projects`: permitted agency / project combinations
 
 `credential_projects` also owns:
 
@@ -90,6 +90,24 @@ The credential stores both the controlled IDs and text snapshots. This is delibe
 4. A revision is created as a draft and must again satisfy the current master-data rules before activation.
 
 Photography permission is therefore not a free checkbox on a credential. It is authorised on the project master record and copied into `audit_verifications.photo_allowed` when the credential draft is created/saved. Public Verify, printable CR80 and Wallet consume that same snapshot.
+
+MysteryMarket no longer exposes a separate project-customer field in credential issuance. The controlled business identity is agency + project. The legacy `customer_name` / `brand_name` compatibility fields are retained internally for existing Verify/Wallet paths and mirror the project label.
+
+The credential photo is also not an issuance-time upload. `elite_members.profile_photo_asset` is the authoritative holder-photo source for new drafts and revisions. Draft integrity verifies that the credential photo snapshot matches the currently selected active Elite profile.
+
+Elite users may propose a new project, but cannot create an approved project master record. A proposal contains:
+
+- active agency selection
+- project label
+- mandatory authorisation/legitimation PDF
+
+Admin approval creates or links a project master record in an inactive state. Admin then controls project logo, Verify scope, photography permission and activation. Only a complete active project becomes selectable during credential issuance.
+
+### `credential_project_requests`
+
+Elite project proposals are intake records, not project authority.
+
+They preserve the submitting Elite member, selected agency, proposed project and protected authorisation PDF. Status is `pending`, `approved` or `rejected`. Approval links to `credential_projects`; it does not itself make the project available for credential issuance.
 
 ### `verify_credential_outputs`
 
@@ -135,11 +153,11 @@ A newly created record must not become publicly valid merely because mandatory t
 
 The draft is equipped with:
 
-- photo
-- brand/client logo
+- profile photo snapshot from the selected Elite member
+- project logo snapshot from controlled project master data
 - agency/partner logo
-- project scope
-- evidence/authorisation PDF
+- project scope from controlled project master data
+- evidence/authorisation PDF from controlled project master data
 - document label
 - validity window
 
@@ -430,6 +448,12 @@ Core:
 - `backoffice/credential-projects.php`
 - `backoffice/credential-project.php`
 - `backoffice/credential-project-new.php`
+- `backoffice/project-requests.php`
+- `backoffice/project-request.php`
+- `backoffice/project-request-new.php`
+- `backoffice/project-request-asset.php`
+- `backoffice/project-asset.php`
+- `backoffice/member-photo.php`
 - `backoffice/credential-asset.php`
 - `backoffice/credential-output.php`
 - `backoffice/credential-wallet.php`
@@ -452,6 +476,7 @@ Schema:
 - `database/20260830_credentials_foundation.sql`
 - `database/20260830_verify_credential_revision.sql`
 - `database/20260902_credential_controlled_master_data.sql`
+- `database/20260902_elite_project_proposals_and_profile_photo.sql`
 
 Configuration template:
 
