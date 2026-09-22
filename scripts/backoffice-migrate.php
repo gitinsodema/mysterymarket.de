@@ -4,8 +4,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/includes/db.php';
 
 if (PHP_SAPI !== 'cli') {
-    fwrite(STDERR, "CLI only
-");
+    fwrite(STDERR, "CLI only\n");
     exit(1);
 }
 
@@ -24,6 +23,7 @@ $files = [
     dirname(__DIR__) . '/database/20260902_credential_controlled_master_data.sql',
     dirname(__DIR__) . '/database/20260902_elite_project_proposals_and_profile_photo.sql',
     dirname(__DIR__) . '/database/20260902_agency_business_card_master.sql',
+    dirname(__DIR__) . '/database/20260922_credential_validity_requests.sql',
 ];
 
 $pdo = mmDb();
@@ -58,6 +58,7 @@ $required = [
     'credential_roles',
     'credential_projects',
     'credential_project_requests',
+    'credential_validity_requests',
 ];
 
 $check = $pdo->prepare(
@@ -68,12 +69,10 @@ $check = $pdo->prepare(
 foreach ($required as $table) {
     $check->execute(['table_name' => $table]);
     if ((int)$check->fetchColumn() !== 1) {
-        fwrite(STDERR, "[FAIL] Missing table after migration: {$table}
-");
+        fwrite(STDERR, "[FAIL] Missing table after migration: {$table}\n");
         exit(1);
     }
-    echo "[PASS] {$table}
-";
+    echo "[PASS] {$table}\n";
 }
 
 $columnCheck = $pdo->prepare(
@@ -84,10 +83,7 @@ $columnCheck = $pdo->prepare(
 );
 
 foreach (['moderation_decision','moderation_reviewed_at','moderation_reviewed_by'] as $column) {
-    $columnCheck->execute([
-        'table_name' => 'contact_requests',
-        'column_name' => $column,
-    ]);
+    $columnCheck->execute(['table_name'=>'contact_requests','column_name'=>$column]);
     if ((int)$columnCheck->fetchColumn() !== 1) {
         fwrite(STDERR, "[FAIL] Missing contact moderation column: {$column}\n");
         exit(1);
@@ -96,10 +92,7 @@ foreach (['moderation_decision','moderation_reviewed_at','moderation_reviewed_by
 }
 
 foreach (['credential_role_id','agency_id','credential_project_id','photo_allowed'] as $column) {
-    $columnCheck->execute([
-        'table_name' => 'audit_verifications',
-        'column_name' => $column,
-    ]);
+    $columnCheck->execute(['table_name'=>'audit_verifications','column_name'=>$column]);
     if ((int)$columnCheck->fetchColumn() !== 1) {
         fwrite(STDERR, "[FAIL] Missing credential control column: {$column}\n");
         exit(1);
@@ -107,34 +100,12 @@ foreach (['credential_role_id','agency_id','credential_project_id','photo_allowe
     echo "[PASS] audit_verifications.{$column}\n";
 }
 
-$columnCheck->execute([
-    'table_name' => 'credential_projects',
-    'column_name' => 'photo_allowed',
-]);
-if ((int)$columnCheck->fetchColumn() !== 1) {
-    fwrite(STDERR, "[FAIL] Missing credential_projects.photo_allowed\n");
-    exit(1);
-}
-echo "[PASS] credential_projects.photo_allowed\n";
-
 foreach ([
+    ['credential_projects','photo_allowed'],
     ['elite_members','profile_photo_asset'],
     ['credential_projects','project_logo_asset'],
     ['credential_projects','authorization_document_asset'],
     ['credential_projects','authorization_document_label'],
-] as [$table,$column]) {
-    $columnCheck->execute([
-        'table_name' => $table,
-        'column_name' => $column,
-    ]);
-    if ((int)$columnCheck->fetchColumn() !== 1) {
-        fwrite(STDERR, "[FAIL] Missing {$table}.{$column}\n");
-        exit(1);
-    }
-    echo "[PASS] {$table}.{$column}\n";
-}
-
-foreach ([
     ['agencies','logo_asset'],
     ['agencies','logo_source_url'],
     ['agencies','address_line1'],
@@ -147,10 +118,7 @@ foreach ([
     ['agencies','public_note'],
     ['agencies','elite_visible'],
 ] as [$table,$column]) {
-    $columnCheck->execute([
-        'table_name' => $table,
-        'column_name' => $column,
-    ]);
+    $columnCheck->execute(['table_name'=>$table,'column_name'=>$column]);
     if ((int)$columnCheck->fetchColumn() !== 1) {
         fwrite(STDERR, "[FAIL] Missing {$table}.{$column}\n");
         exit(1);
@@ -158,5 +126,4 @@ foreach ([
     echo "[PASS] {$table}.{$column}\n";
 }
 
-echo "MYSTERYMARKET_BACKOFFICE_FOUNDATION_OK
-";
+echo "MYSTERYMARKET_BACKOFFICE_FOUNDATION_OK\n";
