@@ -103,6 +103,9 @@ $outputStmt = mmDb()->query(
 );
 $outputs = $outputStmt->fetchAll();
 $walletReadiness = mmAppleWalletReadiness();
+$pendingValidityRequests = (int)mmDb()->query(
+    "SELECT COUNT(*) FROM credential_validity_requests WHERE request_status = 'pending'"
+)->fetchColumn();
 
 mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Credentials.', 'noindex,nofollow');
 ?>
@@ -114,6 +117,7 @@ mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Creden
     <div class="actions">
       <a class="button secondary" href="/backoffice/">Dashboard</a>
       <a class="button secondary" href="/backoffice/credential-projects.php">Projekt-Stammdaten</a>
+      <a class="button secondary" href="/backoffice/credential-validity.php">Verlängerungen<?= $pendingValidityRequests > 0 ? ' · ' . $pendingValidityRequests : '' ?></a>
       <a class="button secondary" href="/backoffice/card-calibration.php">CR80 kalibrieren</a>
     </div>
   </div>
@@ -173,6 +177,9 @@ mmHeader('Credentials', 'Verify-Ausweisservice für projektbezogene Audit Creden
               </div>
               <div class="credential-service-actions">
                 <a class="button" href="/backoffice/credential.php?id=<?= (int)$credential['id'] ?>">Ausweis verwalten</a>
+                <?php if ((int)$credential['is_active'] === 1): ?>
+                  <a class="button secondary" href="/backoffice/credential-validity.php?id=<?= (int)$credential['id'] ?>">Gültigkeit ändern</a>
+                <?php endif; ?>
                 <a class="button secondary" href="/verify?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Verify öffnen</a>
                 <?php if ((int)$credential['print_card_enabled'] === 1): ?>
                   <a class="button secondary" href="/verify-card.php?code=<?= rawurlencode((string)$credential['reference_code']) ?>">Druckkarte anzeigen</a>
