@@ -129,6 +129,11 @@
     }
   ],
   "completed_since_last_report": [
+    "Previous authorisation files are retained in private storage for traceability rather than deleted during replacement.",
+    "The project master receives the replacement authorisation PDF for future issuance; inactive drafts for the project receive the new document binding, while other active credentials are not silently rewritten.",
+    "credential_document_replacements stores old/new document asset, old/new validity end, acting admin, note and timestamp; normal Backoffice audit also records verify_credential.legitimation_extended.",
+    "Active credential administration now supports Legitimation verlängern: mandatory new PDF plus a later valid_until, same audit_verifications.id/reference, and explicit confirmation.",
+    "Owner requested an admin-only logged workflow to extend an active credential when a project receives a new official authorisation letter, without changing credential ID or Verify reference.",
     "Agency master data includes an elite_visible flag preparing a later read-only Elite Shopper agency card.",
     "Project activation now requires an authoritative agency logo in addition to project logo/document/scope readiness.",
     "Agency logo changes propagate automatically to inactive credential drafts; active credentials remain immutable snapshots and revisions resolve the current logo.",
@@ -543,7 +548,7 @@
   },
   "next_recommended_action": {
     "classification": "OWNER_ACTION_REQUIRED",
-    "summary": "Deploy main, run backoffice-migrate.php and preflight.php, then open Admin -> Agenturen -> agency.php, complete one agency including logo via upload or direct image URL, verify linked projects, activate a project, and create a credential draft to confirm the agency logo is inherited automatically."
+    "summary": "Deploy main, run backoffice-migrate.php and preflight.php before opening credential.php. Then open the affected active credential, use Legitimation verlängern, upload the new PDF and set the new end date (for the current continuation, 2026-11-05 if that is the intended official end), then verify public Verify and the displayed history entry."
   },
   "evidence": [
     {
