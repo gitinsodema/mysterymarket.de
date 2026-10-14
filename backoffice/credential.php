@@ -50,7 +50,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!mmBackofficeVerifyCsrf((string)($_POST['csrf'] ?? ''))) {
         http_response_code(400);
         $error = 'Ungültige Sitzung.';
-    } elseif ((int)$credential['is_active'] === 1 && !in_array($action, ['deactivate','create_revision'], true)) {
+    } elseif ((int)$credential['is_active'] === 1 && !in_array($action, ['deactivate','create_revision','extend_legitimation'], true)) {
         $error = 'Aktive Verify-Ausweise sind schreibgeschützt. Änderungen erfolgen über Deaktivierung oder einen kontrollierten Revisions-Draft.';
     } else {
         try {
@@ -251,6 +251,151 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
 
+            if ($action === 'extend_legitimation') {
+                if ((int)$credential['is_active'] !== 1) {
+                    throw new RuntimeException('Legitimationsverlängerung ist nur für aktive Ausweise vorgesehen.');
+                }
+
+                $projectId = (int)($credential['credential_project_id'] ?? 0);
+                if ($projectId < 1) {
+                    throw new RuntimeException('Dem Ausweis ist kein kontrolliertes Projekt zugeordnet.');
+                }
+
+                $newValidUntil = mmCredentialDateOrNull((string)($_POST['new_valid_until'] ?? ''));
+                if ($newValidUntil === null) {
+                    throw new InvalidArgumentException('Neues Gültigkeitsende ist erforderlich.');
+                }
+                if (!empty($credential['valid_from']) && $newValidUntil < (string)$credential['valid_from']) {
+                    throw new InvalidArgumentException('Das neue Gültigkeitsende liegt vor dem Beginn.');
+                }
+                if (!empty($credential['valid_until']) && $newValidUntil <= (string)$credential['valid_until']) {
+                    throw new InvalidArgumentException('Das neue Gültigkeitsende muss nach dem bisherigen Ende liegen.');
+                }
+
+                $note = trim((string)($_POST['extension_note'] ?? ''));
+                if (mb_strlen($note) > 500) {
+                    throw new InvalidArgumentException('Interner Hinweis ist zu lang.');
+                }
+
+                $newDocument = mmCredentialStoreProjectDocument(
+                    $_FILES['authorization_document'] ?? [],
+                    'credential_' . $id . '_legitimation'
+                );
+
+                $previousDocument = trim((string)($credential['document_asset'] ?? ''));
+                $previousValidUntil = $credential['valid_until'] !== null
+                    ? (string)$credential['valid_until']
+                    : null;
+
+                $pdo = mmDb();
+                $pdo->beginTransaction();
+
+                try {
+                    $projectUpdate = $pdo->prepare(
+                        "UPDATE credential_projects
+                         SET authorization_document_asset = :asset,
+                             authorization_document_label = 'Offizielles Legitimationsschreiben',
+                             updated_at = NOW()
+                         WHERE id = :id"
+                    );
+                    $projectUpdate->execute([
+                        'asset'=>$newDocument,
+                        'id'=>$projectId,
+                    ]);
+
+                    if ($projectUpdate->rowCount() !== 1) {
+                        throw new RuntimeException('Projekt-Legitimationsschreiben konnte nicht aktualisiert werden.');
+                    }
+
+                    $credentialUpdate = $pdo->prepare(
+                        "UPDATE audit_verifications
+                         SET document_asset = :asset,
+                             document_label = 'Offizielles Legitimationsschreiben',
+                             document_enabled = 1,
+                             valid_until = :valid_until,
+                             updated_at = NOW()
+                         WHERE id = :id
+                           AND is_personal_verification = 1
+                           AND is_active = 1"
+                    );
+                    $credentialUpdate->execute([
+                        'asset'=>$newDocument,
+                        'valid_until'=>$newValidUntil,
+                        'id'=>$id,
+                    ]);
+
+                    if ($credentialUpdate->rowCount() !== 1) {
+                        throw new RuntimeException('Aktiver Ausweis konnte nicht verlängert werden.');
+                    }
+
+                    $draftUpdate = $pdo->prepare(
+                        "UPDATE audit_verifications
+                         SET document_asset = :asset,
+                             document_label = 'Offizielles Legitimationsschreiben',
+                             document_enabled = 1,
+                             updated_at = NOW()
+                         WHERE credential_project_id = :project_id
+                           AND is_personal_verification = 1
+                           AND is_active = 0"
+                    );
+                    $draftUpdate->execute([
+                        'asset'=>$newDocument,
+                        'project_id'=>$projectId,
+                    ]);
+
+                    $history = $pdo->prepare(
+                        "INSERT INTO credential_document_replacements
+                         (audit_verification_id, credential_project_id,
+                          previous_document_asset, new_document_asset,
+                          previous_valid_until, new_valid_until,
+                          replaced_by, note, created_at)
+                         VALUES
+                         (:credential_id, :project_id,
+                          :previous_document, :new_document,
+                          :previous_valid_until, :new_valid_until,
+                          :replaced_by, :note, NOW())"
+                    );
+                    $history->execute([
+                        'credential_id'=>$id,
+                        'project_id'=>$projectId,
+                        'previous_document'=>$previousDocument !== '' ? $previousDocument : null,
+                        'new_document'=>$newDocument,
+                        'previous_valid_until'=>$previousValidUntil,
+                        'new_valid_until'=>$newValidUntil,
+                        'replaced_by'=>(int)$user['id'],
+                        'note'=>$note !== '' ? $note : null,
+                    ]);
+                    $replacementId = (int)$pdo->lastInsertId();
+
+                    $pdo->commit();
+                } catch (Throwable $e) {
+                    if ($pdo->inTransaction()) {
+                        $pdo->rollBack();
+                    }
+                    throw $e;
+                }
+
+                mmBackofficeAudit(
+                    (int)$user['id'],
+                    'verify_credential.legitimation_extended',
+                    'audit_verification',
+                    $id,
+                    [
+                        'reference_code'=>(string)$credential['reference_code'],
+                        'replacement_id'=>$replacementId,
+                        'credential_project_id'=>$projectId,
+                        'previous_document_asset'=>$previousDocument !== '' ? $previousDocument : null,
+                        'new_document_asset'=>$newDocument,
+                        'previous_valid_until'=>$previousValidUntil,
+                        'new_valid_until'=>$newValidUntil,
+                        'note'=>$note !== '' ? $note : null,
+                    ]
+                );
+
+                header('Location: /backoffice/credential.php?id=' . $id . '&legitimation_extended=1', true, 303);
+                exit;
+            }
+
             if ($action === 'deactivate') {
                 if ((int)$credential['is_active'] !== 1) {
                     throw new RuntimeException('Nur aktive Verify-Ausweise können deaktiviert werden.');
@@ -368,6 +513,17 @@ $state = mmCredentialVerifyState($credential);
 $integrityErrors = mmCredentialIntegrityErrors($credential);
 $activationReady = (int)$credential['is_active'] !== 1 && $integrityErrors === [];
 
+$legitimationHistoryStmt = mmDb()->prepare(
+    "SELECT h.*, u.email AS replaced_by_email
+     FROM credential_document_replacements h
+     LEFT JOIN backoffice_users u ON u.id = h.replaced_by
+     WHERE h.audit_verification_id = :credential_id
+     ORDER BY h.created_at DESC, h.id DESC
+     LIMIT 20"
+);
+$legitimationHistoryStmt->execute(['credential_id'=>$id]);
+$legitimationHistory = $legitimationHistoryStmt->fetchAll();
+
 $assets = [
     'Foto'=>$credential['photo_asset'] ?? null,
     'Markenlogo'=>$credential['brand_logo_asset'] ?? null,
@@ -398,6 +554,7 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
   <?php if (isset($_GET['activated'])): ?><div class="alert success"><strong>Verify-Ausweis aktiviert.</strong> Der Datensatz ist jetzt produktiv und über Verify gültig, sofern er im Gültigkeitszeitraum liegt.</div><?php endif; ?>
   <?php if (isset($_GET['deactivated'])): ?><div class="alert success"><strong>Verify-Ausweis deaktiviert.</strong> Die Referenz ist nicht mehr produktiv gültig.</div><?php endif; ?>
   <?php if (isset($_GET['revision_created'])): ?><div class="alert success"><strong>Revision als neuer Draft angelegt.</strong> Der bisherige Ausweis wurde nicht verändert.</div><?php endif; ?>
+  <?php if (isset($_GET['legitimation_extended'])): ?><div class="alert success"><strong>Legitimation verlängert.</strong> Ausweis-ID und Verify-Referenz sind unverändert; neues PDF und neues Gültigkeitsende sind aktiv.</div><?php endif; ?>
   <?php if ($error !== ''): ?><div class="alert"><?= mmEscape($error) ?></div><?php endif; ?>
 
   <div class="grid two">
@@ -474,6 +631,68 @@ mmHeader('Verify-Ausweis', 'Projektbezogenen Verify-Ausweis verwalten.', 'noinde
     </form>
   </div>
 </section>
+
+<?php if ((int)$credential['is_active'] === 1): ?>
+<section class="section">
+  <div class="form-card credential-editor">
+    <div class="section-head">
+      <p class="eyebrow">Admin · kontrollierte Verlängerung</p>
+      <h2>Legitimation verlängern.</h2>
+      <p>Ersetzt das Legitimationsschreiben und verlängert das Gültigkeitsende am bestehenden aktiven Ausweis. Ausweis-ID und Verify-Referenz bleiben unverändert. Das bisherige PDF bleibt im privaten Speicher und der Austausch wird historisch protokolliert.</p>
+    </div>
+
+    <form method="post" action="/backoffice/credential.php?id=<?= $id ?>" enctype="multipart/form-data"
+          onsubmit="return confirm('Legitimationsschreiben ersetzen und Gültigkeit dieses bestehenden Ausweises verlängern?');">
+      <input type="hidden" name="csrf" value="<?= mmEscape(mmBackofficeCsrfToken()) ?>">
+      <input type="hidden" name="id" value="<?= $id ?>">
+      <input type="hidden" name="action" value="extend_legitimation">
+
+      <div class="form-grid">
+        <label>Bisher gültig bis
+          <input value="<?= mmEscape((string)($credential['valid_until'] ?: '—')) ?>" disabled>
+        </label>
+        <label>Neu gültig bis
+          <input type="date" name="new_valid_until" required
+                 min="<?= mmEscape((string)($credential['valid_until'] ?: $credential['valid_from'] ?: '')) ?>">
+        </label>
+        <label class="wide">Neues Legitimationsschreiben
+          <input type="file" name="authorization_document" accept="application/pdf" required>
+          <small class="field-hint">PDF bis 10 MB. Der neue Upload überschreibt die aktive Bindung; das alte Dokument wird nicht gelöscht.</small>
+        </label>
+        <label class="wide">Interner Hinweis
+          <input name="extension_note" maxlength="500" placeholder="z. B. Projektverlängerung bis 05.11.2026">
+        </label>
+      </div>
+
+      <div class="elite-profile-actions">
+        <button type="submit">Legitimation ersetzen & verlängern</button>
+      </div>
+    </form>
+
+    <?php if ($legitimationHistory): ?>
+      <div class="credential-editor-section">
+        <div class="credential-editor-head"><span>LOG</span><div><strong>Verlängerungshistorie</strong><small>letzte <?= count($legitimationHistory) ?> Vorgänge</small></div></div>
+        <div class="backoffice-list">
+          <?php foreach ($legitimationHistory as $history): ?>
+            <article>
+              <div>
+                <strong><?= mmEscape((string)$history['created_at']) ?></strong>
+                <small>
+                  <?= mmEscape((string)($history['previous_valid_until'] ?: 'offen')) ?>
+                  → <?= mmEscape((string)$history['new_valid_until']) ?>
+                  · <?= mmEscape((string)($history['replaced_by_email'] ?: 'Admin')) ?>
+                  <?php if (!empty($history['note'])): ?> · <?= mmEscape((string)$history['note']) ?><?php endif; ?>
+                </small>
+              </div>
+              <?= mmBackofficeStatusBadge('active', 'ersetzt') ?>
+            </article>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    <?php endif; ?>
+  </div>
+</section>
+<?php endif; ?>
 
 <section class="section">
   <div class="form-card credential-activation-card">
