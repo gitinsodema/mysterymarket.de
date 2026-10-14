@@ -86,3 +86,20 @@ CREATE TABLE IF NOT EXISTS contact_rate_limits (
     KEY idx_contact_rate_ip_time (ip_hash, attempted_at),
     KEY idx_contact_rate_attempted_at (attempted_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS credential_document_replacements (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    audit_verification_id BIGINT UNSIGNED NOT NULL,
+    credential_project_id BIGINT UNSIGNED NULL,
+    previous_document_asset VARCHAR(255) NULL,
+    new_document_asset VARCHAR(255) NOT NULL,
+    previous_valid_until DATE NULL,
+    new_valid_until DATE NOT NULL,
+    replaced_by BIGINT UNSIGNED NOT NULL,
+    note VARCHAR(500) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_credential_document_replacements_credential (audit_verification_id, created_at),
+    KEY idx_credential_document_replacements_project (credential_project_id, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
