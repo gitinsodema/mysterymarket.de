@@ -23,6 +23,7 @@ $files = [
     dirname(__DIR__) . '/database/20260902_credential_controlled_master_data.sql',
     dirname(__DIR__) . '/database/20260902_elite_project_proposals_and_profile_photo.sql',
     dirname(__DIR__) . '/database/20260902_agency_business_card_master.sql',
+    dirname(__DIR__) . '/database/20261014_credential_document_replacements.sql',
     dirname(__DIR__) . '/database/20260922_credential_validity_requests.sql',
 ];
 
