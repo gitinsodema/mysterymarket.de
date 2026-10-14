@@ -526,3 +526,33 @@ This avoids per-credential agency-logo editing and keeps the operational control
 
 Migration:
 - `database/20260902_agency_business_card_master.sql`
+
+
+## Legitimation extension without credential replacement
+
+An active credential may receive a controlled admin-only legitimacy extension when the underlying project continues and a new official authorisation letter is issued.
+
+This lifecycle action deliberately keeps:
+
+- the same `audit_verifications.id`
+- the same Verify reference
+- the same holder identity
+- the same project/agency/role identity
+
+The admin action requires:
+
+- a new authorisation PDF
+- a new `valid_until` later than the previous end date
+- optional internal note
+
+On success:
+
+1. the project master receives the new current authorisation document;
+2. the selected active credential receives the same document and new validity end;
+3. inactive drafts for that project receive the new document binding;
+4. other active credentials are not silently rewritten;
+5. the old file is retained in private storage;
+6. `credential_document_replacements` records old/new document asset, old/new validity, admin and timestamp;
+7. the normal Backoffice audit log records `verify_credential.legitimation_extended`.
+
+This is not a credential revision: identity and Verify reference remain stable. A true identity/project/role change still requires the normal revision workflow.
